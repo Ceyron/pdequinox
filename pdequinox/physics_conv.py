@@ -1,6 +1,6 @@
 from jaxtyping import PRNGKeyArray
 
-from periodic_conv import PeriodicConv
+from .periodic_conv import PeriodicConv
 
 def PhysicsConv(
     num_spacial_dims: int,

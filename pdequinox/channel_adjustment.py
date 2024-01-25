@@ -1,7 +1,7 @@
 import jax.numpy as jnp
 import equinox as eqx
 
-from physics_conv import PhysicsConv
+from .physics_conv import PhysicsConv
 from typing import Any, Callable
 from jaxtyping import PRNGKeyArray
 
@@ -18,7 +18,9 @@ class ChannelAdjusterFactory(eqx.Module):
         out_channels: int,
         activation: Callable,
         *,
+        boundary_mode: str,
         key: PRNGKeyArray,
+        **boundary_kwargs,
     ) -> ChannelAdjuster:
         raise NotImplementedError("Must be implemented by subclass")
     
@@ -29,7 +31,7 @@ class LinearAdjuster(ChannelAdjuster):
 
     def __init__(
         self,
-        num_spacial_dims: int,
+        num_spatial_dims: int,
         in_channels: int,
         out_channels: int,
         *,
@@ -64,7 +66,9 @@ class LinearAdjusterFactory(ChannelAdjusterFactory):
         out_channels: int,
         activation: Callable, # unused
         *,
+        boundary_mode: str, # unused
         key: PRNGKeyArray,
+        **boundary_kwargs, # unused
     ) -> ChannelAdjuster:
         return LinearAdjuster(
             num_spacial_dims,

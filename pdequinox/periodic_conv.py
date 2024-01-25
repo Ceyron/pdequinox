@@ -6,7 +6,7 @@ class PeriodicPadding(eqx.Module):
     num_spatial_dims: int
     padding: int
 
-    def __call__(self, x: Float[Array, "C *N"]) -> Float[Array, "C *(N+2*padding)"]:
+    def __call__(self, x: Float[Array, "C *N"]):
         """Periodic padding for convolution.
 
         Args:
@@ -25,7 +25,7 @@ class PeriodicConv(eqx.Module):
 
     def __init__(
         self,
-        num_spacial_dims: int,
+        num_spatial_dims: int,
         in_channels: int,
         out_channels: int,
         kernel_size: int,
@@ -38,10 +38,11 @@ class PeriodicConv(eqx.Module):
         if kernel_size % 2 == 0:
             raise ValueError("kernel_size must be odd")
 
-        # padding_with = ((kernel_size - 1) // 2) * dilation
+        padding_width = ((kernel_size - 1) // 2) * dilation
 
         self.pad = PeriodicPadding(num_spatial_dims, padding_width)
         self.conv = eqx.nn.Conv(
+            num_spatial_dims,
             in_channels,
             out_channels,
             kernel_size,
