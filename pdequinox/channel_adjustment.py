@@ -2,6 +2,7 @@ import jax.numpy as jnp
 import equinox as eqx
 
 from .physics_conv import PhysicsConv
+from .pointwise_linear_conv import PointwiseLinearConv
 from typing import Any, Callable
 from jaxtyping import PRNGKeyArray
 
