@@ -28,7 +28,7 @@ class ChannelAdjusterFactory(eqx.Module):
 # Linear Adjusters
     
 class LinearAdjuster(ChannelAdjuster):
-    conv: eqx.Module
+    pointwise_linear_conv: PointwiseLinearConv
 
     def __init__(
         self,
@@ -40,18 +40,14 @@ class LinearAdjuster(ChannelAdjuster):
         use_bias: bool = True,
         zero_bias_init: bool = False,
     ):
-        self.conv = eqx.nn.Conv(
+        self.pointwise_linear_conv = PointwiseLinearConv(
             num_spatial_dims,
             in_channels,
             out_channels,
-            1,
-            1,
             key=key,
             use_bias=use_bias,
+            zero_bias_init=zero_bias_init,
         )
-        if use_bias and zero_bias_init:
-            zero_bias = jnp.zeros_like(self.conv.bias)
-            self.conv = eqx.tree_at(lambda l: l.bias, self.conv, zero_bias)
 
     def __call__(self, x):
         return self.conv(x)
