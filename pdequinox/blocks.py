@@ -91,7 +91,6 @@ class ClassicResBlockFactory(eqx.Module):
         *,
         use_bias: bool = True,
         zero_bias_init: bool = False,
-        **boundary_kwargs,
     ):
         self.kernel_size = kernel_size
         self.dilation = dilation
