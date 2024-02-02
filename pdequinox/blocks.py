@@ -133,6 +133,7 @@ class ClassicSpectralBlock(Block):
         self,
         num_spacial_dims: int,
         channels: int,
+        num_modes: int,
         activation: Callable,
         *,
         use_bias: bool = True,
@@ -143,6 +144,7 @@ class ClassicSpectralBlock(Block):
             num_spacial_dims,
             channels,
             channels,
+            num_modes,
             key=key,
         )
         self.by_pass_conv = PointwiseLinearConv(
@@ -161,6 +163,7 @@ class ClassicSpectralBlock(Block):
         return x
     
 class ClassicSpectralBlockFactory(BlockFactory):
+    num_modes: int or tuple[int, ...]
     use_bias: bool = True
     zero_bias_init: bool = False
 
@@ -170,13 +173,14 @@ class ClassicSpectralBlockFactory(BlockFactory):
         channels: int,
         activation: Callable,
         *,
-        boundary_mode: str,
+        boundary_mode: str,  # unused
         key: PRNGKeyArray,
-        **boundary_kwargs,
+        **boundary_kwargs,  # unused
     ):
         return ClassicSpectralBlock(
             num_spacial_dims,
             channels,
+            self.num_modes,
             activation,
             key=key,
             use_bias=self.use_bias,
