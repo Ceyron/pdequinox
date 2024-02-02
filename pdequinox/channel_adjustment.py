@@ -50,7 +50,7 @@ class LinearAdjuster(ChannelAdjuster):
         )
 
     def __call__(self, x):
-        return self.conv(x)
+        return self.pointwise_linear_conv(x)
     
 class LinearAdjusterFactory(ChannelAdjusterFactory):
     use_bias: bool = True
