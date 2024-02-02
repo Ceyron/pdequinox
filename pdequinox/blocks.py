@@ -1,6 +1,8 @@
 import equinox as eqx
 
 from .physics_conv import PhysicsConv
+from .spectral_conv import SpectralConv
+from .pointwise_linear_conv import PointwiseLinearConv
 from typing import Any, Callable
 from jaxtyping import PRNGKeyArray
 
@@ -119,3 +121,65 @@ class ClassicResBlockFactory(eqx.Module):
             zero_bias_init=self.zero_bias_init,
             **boundary_kwargs,
         )
+    
+### Spectral ResNet Blocks (aka FNO-Block)
+    
+class ClassicSpectralBlock(Block):
+    spectral_conv: SpectralConv
+    by_pass_conv: PointwiseLinearConv
+    activation: Callable
+
+    def __init__(
+        self,
+        num_spacial_dims: int,
+        channels: int,
+        activation: Callable,
+        *,
+        use_bias: bool = True,
+        zero_bias_init: bool = False,
+        key: PRNGKeyArray,
+    ):
+        self.spectral_conv = SpectralConv(
+            num_spacial_dims,
+            channels,
+            channels,
+            key=key,
+        )
+        self.by_pass_conv = PointwiseLinearConv(
+            num_spacial_dims,
+            channels,
+            channels,
+            use_bias=use_bias,
+            zero_bias_init=zero_bias_init,
+            key=key,
+        )
+        self.activation = activation
+
+    def __call__(self, x):
+        x = self.spectral_conv(x) + self.by_pass_conv(x)
+        x = self.activation(x)
+        return x
+    
+class ClassicSpectralBlockFactory(BlockFactory):
+    use_bias: bool = True
+    zero_bias_init: bool = False
+
+    def __call__(
+        self,
+        num_spacial_dims: int,
+        channels: int,
+        activation: Callable,
+        *,
+        boundary_mode: str,
+        key: PRNGKeyArray,
+        **boundary_kwargs,
+    ):
+        return ClassicSpectralBlock(
+            num_spacial_dims,
+            channels,
+            activation,
+            key=key,
+            use_bias=self.use_bias,
+            zero_bias_init=self.zero_bias_init,
+        )
+            
