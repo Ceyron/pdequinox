@@ -2,53 +2,83 @@ import jax.numpy as jnp
 import equinox as eqx
 from jaxtyping import Array, Float, Complex, PRNGKeyArray
 import jax.random as jr
+from typing import List
+from itertools import product
 
+            
 class SpectralConv(eqx.Module):
+    """
+    Huge credit to the Serket library for this implementation:
+    https://github.com/ASEM000/serket
+    """
     num_spatial_dims: int
-    num_modes: int
-    weights_real: Complex[Array, "C_i C_o *K"]
-    weights_imag: Complex[Array, "C_i C_o *K"]
+    num_modes: tuple[int]
+    weights_real: Float[Array, "G C_o C_i ..."]
+    weights_imag: Float[Array, "G C_o C_i ..."]
 
     def __init__(
         self,
         num_spatial_dims: int,
         in_channels: int,
         out_channels: int,
-        num_modes: int,
+        num_modes: tuple[int, ...] or int,
         *,
         key: PRNGKeyArray,
     ):
+        if isinstance(num_modes, int):
+            num_modes = (num_modes,) * num_spatial_dims
+
+        if len(num_modes) != num_spatial_dims:
+            raise ValueError("num_modes must have the same length as num_spatial_dims")
+
         self.num_spatial_dims = num_spatial_dims
         self.num_modes = num_modes
 
-        weight_shape = (in_channels, out_channels,) + (num_modes,) * num_spatial_dims
+        weight_shape = (2 ** (num_spatial_dims - 1), in_channels, out_channels,) + num_modes
 
         real_key, imag_key = jr.split(key)
         scale = 1 / (in_channels * out_channels)
         self.weights_real = scale * jr.normal(real_key, weight_shape)
         self.weights_imag = scale * jr.normal(imag_key, weight_shape)
 
-    def __call__(self, x: Float[Array, "C *N"]) -> Float[Array, "C *N"]:
-        """Spectral convolution.
-
-        Args:
-            x: Input array with shape (C, *N).
-
-        Returns:
-            Array with shape (C, *N).
-        """
-        spatial_shape = x.shape[1:]
-        x_hat = jnp.fft.rfftn(x, axes=tuple(range(1, self.num_spatial_dims + 1)))
-        
-        right_most_wavenumbers = jnp.fft.rfftfreq(spatial_shape[-1], d=1 / spatial_shape[-1])
-        other_wave_numbers = [jnp.fft.fftfreq(spatial_shape[i], d=1 / spatial_shape[i]) for i in range(self.num_spatial_dims - 1)]
-        wavenumbers = other_wave_numbers + [right_most_wavenumbers]
-        wavenumbers = jnp.stack(jnp.meshgrid(*wavenumbers, indexing="ij", sparse=True))
-
-        mask = True
-        for one_wavenumber in wavenumbers:
-            mask = mask & (jnp.abs(one_wavenumber) <= self.num_modes)
-
-        # ToDo!
+    def __call__(self, x: Float[Array, "C_i ..."]) -> Float[Array, "C_o ..."]:
+        return spectral_conv_nd(x, self.weights_real, self.weights_imag, self.num_modes)
         
 
+def spectral_conv_nd(
+    input: Float[Array, "C_i ..."],
+    weight_r: Float[Array, "G C_o C_i ..."],
+    weight_i: Float[Array, "G C_o C_i ..."],
+    modes: tuple[int, ...],
+) -> Float[Array, "C_o ..."]:
+    """fourier neural operator convolution function.
+
+    Full credit to the Serket library for this function:
+    https://github.com/ASEM000/serket/blob/fc6e754b8d5b22075e09b2bceff497a4e8c57fad/serket/_src/nn/convolution.py#L464
+
+    Args:
+        input: input array. shape is ``(in_features, spatial size)``. weight_r:
+        real convolutional kernel. shape is ``(2 ** (dim-1), out_features,
+        in_features, modes)``.
+            where dim is the number of spatial dimensions.
+        weight_i: convolutional kernel. shape is ``(2 ** (dim-1), out_features,
+        in_features, modes)``.
+            where dim is the number of spatial dimensions.
+        modes: number of modes included in the fft representation of the input.
+    """
+
+    def generate_modes_slices(modes: tuple[int, ...]):
+        *ms, ml = modes
+        slices_ = [[slice(None, ml)]]
+        slices_ += [[slice(None, mode), slice(-mode, None)] for mode in reversed(ms)]
+        return [[slice(None)] + list(reversed(i)) for i in product(*slices_)]
+
+    _, *si, sl = input.shape
+    weight = weight_r + 1j * weight_i
+    _, o, *_ = weight.shape
+    x_fft = jnp.fft.rfftn(input, s=(*si, sl))
+    out = jnp.zeros([o, *si, sl // 2 + 1], dtype=input.dtype) + 0j
+    for i, slice_i in enumerate(generate_modes_slices(modes)):
+        matmul_out = jnp.einsum("i...,oi...->o...", x_fft[tuple(slice_i)], weight[i])
+        out = out.at[tuple(slice_i)].set(matmul_out)
+    return jnp.fft.irfftn(out, s=(*si, sl))
