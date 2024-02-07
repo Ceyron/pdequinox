@@ -172,13 +172,23 @@ class PhysicsConvTranspose(eqx.Module):
         self.boundary_kwargs = boundary_kwargs
         self.pad = self._setup_padder(output_padding)
     
+    def _setup_output_padding(self, output_padding: int):
+        if isinstance(output_padding, int):
+            output_padding = (output_padding,) * self.conv.num_spatial_dims
+        else:
+            raise ValueError("output_padding must be an int (current limitation)")
+        return output_padding
+    
     def _setup_padder(self, output_padding: int):
         valid_padding_width = compute_valid_padding(
             self.conv.kernel_size,
             self.conv.dilation,
         )
         transpose_padding_width = compute_valid_transpose_padding(
-            self.conv.kernel_size, self.conv.dilation, valid_padding_width, output_padding
+            self.conv.kernel_size,
+            self.conv.dilation,
+            valid_padding_width,
+            self._setup_output_padding(output_padding),
         )
         if self.boundary_mode == "periodic":
             padder = PeriodicPadding(
