@@ -33,7 +33,7 @@ def compute_valid_padding(
     dilation: tuple[int, ...],
 ) -> tuple[tuple[int, int], ...]:
     padding_width = tuple(
-        ((k - 1) // 2) * d
+        (((k - 1) // 2) * d, ((k - 1) // 2) * d)
         for k, d in zip(kernel_size, dilation)
     )
     return padding_width
