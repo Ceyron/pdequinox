@@ -1,4 +1,7 @@
-from .physics_conv import PhysicsConv
+from .physics_conv import (
+    PhysicsConv,
+    PhysicsConvTranspose,
+)
 from .blocks import (
     ClassicResBlock,
     ClassicResBlockFactory,
