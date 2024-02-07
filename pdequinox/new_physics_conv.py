@@ -54,7 +54,7 @@ def periodic_padding(
     return np.pad(x, ((0, 0),) + padding, mode="wrap")
 
 
-class Conv(Module, strict=True):
+class PhysicsConv(Module, strict=True):
     """General N-dimensional convolution."""
 
     num_spatial_dims: int = field(static=True)
@@ -68,6 +68,8 @@ class Conv(Module, strict=True):
     dilation: tuple[int, ...] = field(static=True)
     groups: int = field(static=True)
     use_bias: bool = field(static=True)
+    boundary_mode: str = field(static=True)
+    boundary_kwargs: dict = field(static=True)
 
     def __init__(
         self,
@@ -76,12 +78,14 @@ class Conv(Module, strict=True):
         out_channels: int,
         kernel_size: Union[int, Sequence[int]],
         stride: Union[int, Sequence[int]] = 1,
-        padding: Union[int, Sequence[int], Sequence[tuple[int, int]]] = 0,
+        # no padding because it always chosen to retain spatial size
         dilation: Union[int, Sequence[int]] = 1,
         groups: int = 1,
         use_bias: bool = True,
         *,
         key: PRNGKeyArray,
+        boundary_mode: str,
+        **boundary_kwargs,
     ):
         wkey, bkey = jrandom.split(key, 2)
 
@@ -119,6 +123,12 @@ class Conv(Module, strict=True):
         self.out_channels = out_channels
         self.kernel_size = kernel_size
         self.stride = stride
+
+        padding = tuple(
+            ((k - 1) * d // 2, (k - 1) * d // 2)
+            for k, d in zip(kernel_size, dilation)
+        )
+
         if isinstance(padding, int):
             self.padding = tuple((padding, padding) for _ in range(num_spatial_dims))
         elif isinstance(padding, Sequence) and len(padding) == num_spatial_dims:
@@ -134,8 +144,10 @@ class Conv(Module, strict=True):
         self.dilation = dilation
         self.groups = groups
         self.use_bias = use_bias
+        self.boundary_mode = boundary_mode
+        self.boundary_kwargs = boundary_kwargs
 
-    @jax.named_scope("eqx.nn.Conv")
+    @jax.named_scope("PhysicsConv")
     def __call__(self, x: Array, *, key: Optional[PRNGKeyArray] = None) -> Array:
         """**Arguments:**
 
@@ -155,12 +167,18 @@ class Conv(Module, strict=True):
                 f"Input to `Conv` needs to have rank {unbatched_rank},",
                 f" but input has shape {x.shape}.",
             )
+        if self.boundary_mode == "periodic":
+            x = periodic_padding(x, self.padding)
+        else:
+            raise ValueError(f"boundary_mode={self.boundary_mode} not implemented")
+
         x = jnp.expand_dims(x, axis=0)
+        padding_lax = ((0, 0),) * self.num_spatial_dims
         x = lax.conv_general_dilated(
             lhs=x,
             rhs=self.weight,
             window_strides=self.stride,
-            padding=self.padding,
+            padding=padding_lax,  # no padding is applied here
             rhs_dilation=self.dilation,
             feature_group_count=self.groups,
         )
@@ -169,7 +187,7 @@ class Conv(Module, strict=True):
             x = x + self.bias
         return x
 
-class ConvTranspose(Module, strict=True):
+class PhysicsConvTranspose(Module, strict=True):
     """General N-dimensional transposed convolution."""
 
     num_spatial_dims: int = field(static=True)
@@ -184,6 +202,8 @@ class ConvTranspose(Module, strict=True):
     dilation: tuple[int, ...] = field(static=True)
     groups: int = field(static=True)
     use_bias: bool = field(static=True)
+    boundary_mode: str = field(static=True)
+    boundary_kwargs: dict = field(static=True)
 
     def __init__(
         self,
@@ -192,13 +212,15 @@ class ConvTranspose(Module, strict=True):
         out_channels: int,
         kernel_size: Union[int, Sequence[int]],
         stride: Union[int, Sequence[int]] = 1,
-        padding: Union[int, Sequence[int], Sequence[tuple[int, int]]] = 0,
+        # no padding because it always chosen to retain spatial size
         output_padding: Union[int, Sequence[int]] = 0,
         dilation: Union[int, Sequence[int]] = 1,
         groups: int = 1,
         use_bias: bool = True,
         *,
         key: PRNGKeyArray,
+        boundary_mode: str,
+        **boundary_kwargs,
     ):
         wkey, bkey = jrandom.split(key, 2)
 
@@ -235,6 +257,12 @@ class ConvTranspose(Module, strict=True):
         self.out_channels = out_channels
         self.kernel_size = kernel_size
         self.stride = stride
+
+        padding = tuple(
+            ((k - 1) * d // 2, (k - 1) * d // 2)
+            for k, d in zip(kernel_size, dilation)
+        )
+
         if isinstance(padding, int):
             self.padding = tuple((padding, padding) for _ in range(num_spatial_dims))
         elif isinstance(padding, Sequence) and len(padding) == num_spatial_dims:
@@ -251,8 +279,10 @@ class ConvTranspose(Module, strict=True):
         self.dilation = dilation
         self.groups = groups
         self.use_bias = use_bias
+        self.boundary_mode = boundary_mode
+        self.boundary_kwargs = boundary_kwargs
 
-    @jax.named_scope("eqx.nn.ConvTranspose")
+    @jax.named_scope("PhysicsConvTranspose")
     def __call__(self, x: Array, *, key: Optional[PRNGKeyArray] = None) -> Array:
         """**Arguments:**
 
@@ -271,7 +301,6 @@ class ConvTranspose(Module, strict=True):
                 f"Input to `ConvTranspose` needs to have rank {unbatched_rank},",
                 f" but input has shape {x.shape}.",
             )
-        x = jnp.expand_dims(x, axis=0)
         # Given by Relationship 14 of https://arxiv.org/abs/1603.07285
         padding = tuple(
             (d * (k - 1) - p0, d * (k - 1) - p1 + o)
@@ -279,11 +308,18 @@ class ConvTranspose(Module, strict=True):
                 self.kernel_size, self.padding, self.output_padding, self.dilation
             )
         )
+        if self.boundary_mode == "periodic":
+            x = periodic_padding(x, padding)
+        else:
+            raise ValueError(f"boundary_mode={self.boundary_mode} not implemented")
+
+        x = jnp.expand_dims(x, axis=0)
+        padding_lax = ((0, 0),) * self.num_spatial_dims
         x = lax.conv_general_dilated(
             lhs=x,
             rhs=self.weight,
             window_strides=(1,) * self.num_spatial_dims,
-            padding=padding,
+            padding=padding_lax,  # no padding is applied here
             lhs_dilation=self.stride,
             rhs_dilation=self.dilation,
             feature_group_count=self.groups,
