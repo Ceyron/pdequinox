@@ -259,7 +259,10 @@ class PhysicsConvTranspose(Module, strict=True):
         self.stride = stride
 
         padding = tuple(
-            ((k - 1) * d // 2, (k - 1) * d // 2)
+            (
+                int(np.floor((k - 1) * d / 2.0)),
+                int(np.ceil ((k - 1) * d / 2.0)),
+            )
             for k, d in zip(kernel_size, dilation)
         )
 
@@ -301,11 +304,13 @@ class PhysicsConvTranspose(Module, strict=True):
                 f"Input to `ConvTranspose` needs to have rank {unbatched_rank},",
                 f" but input has shape {x.shape}.",
             )
-        # Given by Relationship 14 of https://arxiv.org/abs/1603.07285
         padding = tuple(
-            (d * (k - 1) - p0, d * (k - 1) - p1 + o)
-            for k, (p0, p1), o, d in zip(
-                self.kernel_size, self.padding, self.output_padding, self.dilation
+            (
+                int(np.floor((d * (k - 1) - p0) / s)),
+                int( np.ceil((d * (k - 1) - p1) / s)),
+            )
+            for k, s, (p0, p1), o, d in zip(
+                self.kernel_size, self.stride, self.padding, self.output_padding, self.dilation
             )
         )
         if self.boundary_mode == "periodic":
@@ -314,12 +319,14 @@ class PhysicsConvTranspose(Module, strict=True):
             raise ValueError(f"boundary_mode={self.boundary_mode} not implemented")
 
         x = jnp.expand_dims(x, axis=0)
-        padding_lax = ((0, 0),) * self.num_spatial_dims
+        # ToDo: is this correct?
+        padding_lax = ((0, o) for o in self.output_padding)
+        # padding_lax = ((0, 0),) * self.num_spatial_dims
         x = lax.conv_general_dilated(
             lhs=x,
             rhs=self.weight,
             window_strides=(1,) * self.num_spatial_dims,
-            padding=padding_lax,  # no padding is applied here
+            padding=padding_lax,  # no padding is applied here, only output padding to correct shapes
             lhs_dilation=self.stride,
             rhs_dilation=self.dilation,
             feature_group_count=self.groups,
