@@ -46,6 +46,7 @@ class ClassicResBlock(eqx.Module):
         zero_bias_init: bool = False,
         **boundary_kwargs,
     ):
+        k_1, k_2 = jax.random.split(key)
         self.conv_1 = PhysicsConv(
             num_spatial_dims=num_spatial_dims,
             in_channels=channels,
@@ -56,7 +57,7 @@ class ClassicResBlock(eqx.Module):
             boundary_mode=boundary_mode,
             use_bias=use_bias,
             zero_bias_init=zero_bias_init,
-            key=key,
+            key=k_1,
             **boundary_kwargs,
         )
         self.conv_2 = PhysicsConv(
@@ -69,7 +70,7 @@ class ClassicResBlock(eqx.Module):
             boundary_mode=boundary_mode,
             use_bias=use_bias,
             zero_bias_init=zero_bias_init,
-            key=key,
+            key=k_2,
             **boundary_kwargs,
         )
         self.activation = activation
@@ -149,12 +150,13 @@ class ClassicSpectralBlock(Block):
         zero_bias_init: bool = False,
         key: PRNGKeyArray,
     ):
+        k_1, k_2 = jax.random.split(key)
         self.spectral_conv = SpectralConv(
             num_spatial_dims=num_spatial_dims,
             in_channels=in_channels,
             out_channels=out_channels,
             num_modes=num_modes,
-            key=key,
+            key=k_1,
         )
         self.by_pass_conv = PointwiseLinearConv(
             num_spatial_dims=num_spatial_dims,
@@ -162,7 +164,7 @@ class ClassicSpectralBlock(Block):
             out_channels=out_channels,
             use_bias=use_bias,
             zero_bias_init=zero_bias_init,
-            key=key,
+            key=k_2,
         )
         self.activation = activation
 
