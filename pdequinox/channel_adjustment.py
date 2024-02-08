@@ -14,7 +14,7 @@ class ChannelAdjuster(eqx.Module):
 class ChannelAdjusterFactory(eqx.Module):
     def __call__(
         self,
-        num_spacial_dims: int,
+        num_spatial_dims: int,
         in_channels: int,
         out_channels: int,
         activation: Callable,
@@ -58,7 +58,7 @@ class LinearAdjusterFactory(ChannelAdjusterFactory):
 
     def __call__(
         self,
-        num_spacial_dims: int,
+        num_spatial_dims: int,
         in_channels: int,
         out_channels: int,
         activation: Callable, # unused
@@ -68,7 +68,7 @@ class LinearAdjusterFactory(ChannelAdjusterFactory):
         **boundary_kwargs, # unused
     ) -> ChannelAdjuster:
         return LinearAdjuster(
-            num_spacial_dims,
+            num_spatial_dims,
             in_channels,
             out_channels,
             key=key,

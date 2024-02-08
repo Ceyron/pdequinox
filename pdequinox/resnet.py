@@ -14,7 +14,7 @@ class ResNet(eqx.Module):
 
     def __init__(
         self,
-        num_spacial_dims: int,
+        num_spatial_dims: int,
         in_channels: int,
         out_channels: int,
         hidden_channels: int,
@@ -30,10 +30,10 @@ class ResNet(eqx.Module):
     ):
         subkey, key = jr.split(key)
         self.lifting = lifting_factory(
-            num_spacial_dims,
-            in_channels,
-            hidden_channels,
-            activation,
+            num_spatial_dims=num_spatial_dims,
+            in_channels=in_channels,
+            out_channels=hidden_channels,
+            activation=activation,
             boundary_mode=boundary_mode,
             key=subkey,
             **boundary_kwargs,
@@ -42,18 +42,19 @@ class ResNet(eqx.Module):
         for _ in range(num_blocks):
             subkey, key = jr.split(key)
             self.blocks.append(block_factory(
-                num_spacial_dims,
-                hidden_channels,
-                activation,
+                num_spatial_dims=num_spatial_dims,
+                in_channels=hidden_channels,
+                out_channels=hidden_channels,
+                activation=activation,
                 boundary_mode=boundary_mode,
                 key=subkey,
                 **boundary_kwargs,
             ))
         self.projection = projection_factory(
-            num_spacial_dims,
-            hidden_channels,
-            out_channels,
-            activation,
+            num_spatial_dims=num_spatial_dims,
+            in_channels=hidden_channels,
+            out_channels=out_channels,
+            activation=activation,
             boundary_mode=boundary_mode,
             key=key,
             **boundary_kwargs,

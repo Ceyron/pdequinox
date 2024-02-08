@@ -14,8 +14,9 @@ class Block(eqx.Module):
 class BlockFactory(eqx.Module):
     def __call__(
         self,
-        num_spacial_dims: int,
-        channels: int,
+        num_spatial_dims: int,
+        in_channels: int,
+        out_channels: int,
         activation: Callable,
         *,
         boundary_mode: str,
@@ -33,7 +34,7 @@ class ClassicResBlock(eqx.Module):
 
     def __init__(
         self,
-        num_spacial_dims: int,
+        num_spatial_dims: int,
         channels: int,
         activation: Callable,
         kernel_size: int = 3,
@@ -46,7 +47,7 @@ class ClassicResBlock(eqx.Module):
         **boundary_kwargs,
     ):
         self.conv_1 = PhysicsConv(
-            num_spatial_dims=num_spacial_dims,
+            num_spatial_dims=num_spatial_dims,
             in_channels=channels,
             out_channels=channels,
             kernel_size=kernel_size,
@@ -59,7 +60,7 @@ class ClassicResBlock(eqx.Module):
             **boundary_kwargs,
         )
         self.conv_2 = PhysicsConv(
-            num_spatial_dims=num_spacial_dims,
+            num_spatial_dims=num_spatial_dims,
             in_channels=channels,
             out_channels=channels,
             kernel_size=kernel_size,
@@ -103,16 +104,21 @@ class ClassicResBlockFactory(eqx.Module):
 
     def __call__(
         self,
-        num_spacial_dims: int,
-        channels: int,
+        num_spatial_dims: int,
+        in_channels: int,
+        out_channels: int,
         activation: Callable,
         *,
         boundary_mode: str,
         key: PRNGKeyArray,
         **boundary_kwargs,
     ):
+        if in_channels != out_channels:
+            raise ValueError("ClassicResBlock only supports in_channels == out_channels")
+        else:
+            channels = in_channels
         return ClassicResBlock(
-            num_spacial_dims,
+            num_spatial_dims,
             channels,
             activation,
             self.kernel_size,
@@ -133,8 +139,9 @@ class ClassicSpectralBlock(Block):
 
     def __init__(
         self,
-        num_spacial_dims: int,
-        channels: int,
+        num_spatial_dims: int,
+        in_channels: int,
+        out_channels: int,
         num_modes: int,
         activation: Callable,
         *,
@@ -143,16 +150,16 @@ class ClassicSpectralBlock(Block):
         key: PRNGKeyArray,
     ):
         self.spectral_conv = SpectralConv(
-            num_spacial_dims,
-            channels,
-            channels,
-            num_modes,
+            num_spatial_dims=num_spatial_dims,
+            in_channels=in_channels,
+            out_channels=out_channels,
+            num_modes=num_modes,
             key=key,
         )
         self.by_pass_conv = PointwiseLinearConv(
-            num_spacial_dims,
-            channels,
-            channels,
+            num_spatial_dims=num_spatial_dims,
+            in_channels=in_channels,
+            out_channels=out_channels,
             use_bias=use_bias,
             zero_bias_init=zero_bias_init,
             key=key,
@@ -171,8 +178,9 @@ class ClassicSpectralBlockFactory(BlockFactory):
 
     def __call__(
         self,
-        num_spacial_dims: int,
-        channels: int,
+        num_spatial_dims: int,
+        in_channels: int,
+        out_channels: int,
         activation: Callable,
         *,
         boundary_mode: str,  # unused
@@ -180,10 +188,11 @@ class ClassicSpectralBlockFactory(BlockFactory):
         **boundary_kwargs,  # unused
     ):
         return ClassicSpectralBlock(
-            num_spacial_dims,
-            channels,
-            self.num_modes,
-            activation,
+            num_spatial_dims=num_spatial_dims,
+            in_channels=in_channels,
+            out_channels=out_channels,
+            num_modes=self.num_modes,
+            activation=activation,
             key=key,
             use_bias=self.use_bias,
             zero_bias_init=self.zero_bias_init,
