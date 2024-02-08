@@ -85,6 +85,7 @@ class PhysicsConv(Module, strict=True):
         *,
         key: PRNGKeyArray,
         boundary_mode: str,
+        zero_bias_init: bool = False,
         **boundary_kwargs,
     ):
         wkey, bkey = jrandom.split(key, 2)
@@ -109,12 +110,15 @@ class PhysicsConv(Module, strict=True):
             maxval=lim,
         )
         if use_bias:
-            self.bias = jrandom.uniform(
-                bkey,
-                (out_channels,) + (1,) * num_spatial_dims,
-                minval=-lim,
-                maxval=lim,
-            )
+            if zero_bias_init:
+                self.bias = jnp.zeros((out_channels,) + (1,) * num_spatial_dims)
+            else:
+                self.bias = jrandom.uniform(
+                    bkey,
+                    (out_channels,) + (1,) * num_spatial_dims,
+                    minval=-lim,
+                    maxval=lim,
+                )
         else:
             self.bias = None
 
@@ -220,6 +224,7 @@ class PhysicsConvTranspose(Module, strict=True):
         *,
         key: PRNGKeyArray,
         boundary_mode: str,
+        zero_bias_init: bool = False,
         **boundary_kwargs,
     ):
         wkey, bkey = jrandom.split(key, 2)
@@ -243,12 +248,15 @@ class PhysicsConvTranspose(Module, strict=True):
             maxval=lim,
         )
         if use_bias:
-            self.bias = jrandom.uniform(
-                bkey,
-                (out_channels,) + (1,) * num_spatial_dims,
-                minval=-lim,
-                maxval=lim,
-            )
+            if zero_bias_init:
+                self.bias = jnp.zeros((out_channels,) + (1,) * num_spatial_dims)
+            else:
+                self.bias = jrandom.uniform(
+                    bkey,
+                    (out_channels,) + (1,) * num_spatial_dims,
+                    minval=-lim,
+                    maxval=lim,
+                )
         else:
             self.bias = None
 
