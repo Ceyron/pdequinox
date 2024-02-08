@@ -286,18 +286,33 @@ class PhysicsConvTranspose(Module, strict=True):
         self.boundary_kwargs = boundary_kwargs
 
     @jax.named_scope("PhysicsConvTranspose")
-    def __call__(self, x: Array, *, key: Optional[PRNGKeyArray] = None) -> Array:
+    def __call__(
+        self,
+        x: Array,
+        *,
+        key: Optional[PRNGKeyArray] = None,
+        output_padding: Optional[Union[int, Sequence[int]]] = None,
+    ) -> Array:
         """**Arguments:**
 
         - `x`: The input. Should be a JAX array of shape
             `(in_channels, dim_1, ..., dim_N)`, where `N = num_spatial_dims`.
         - `key`: Ignored; provided for compatibility with the rest of the Equinox API.
             (Keyword only argument.)
+        - `output_padding`: Overwrite the `output_padding` attribute specified in the
+            constructor for this call only. If `None`, the attribute is used. (Keyword
+            only argument.)
 
         **Returns:**
 
         A JAX array of shape `(out_channels, new_dim_1, ..., new_dim_N)`.
         """
+        if output_padding is not None:
+            parse = _ntuple(self.num_spatial_dims)
+            this_output_padding = parse(output_padding)
+        else:
+            this_output_padding = self.output_padding
+
         unbatched_rank = self.num_spatial_dims + 1
         if x.ndim != unbatched_rank:
             raise ValueError(
@@ -310,7 +325,7 @@ class PhysicsConvTranspose(Module, strict=True):
                 int( np.ceil((d * (k - 1) - p1) / s)),
             )
             for k, s, (p0, p1), o, d in zip(
-                self.kernel_size, self.stride, self.padding, self.output_padding, self.dilation
+                self.kernel_size, self.stride, self.padding, this_output_padding, self.dilation
             )
         )
         if self.boundary_mode == "periodic":
@@ -320,7 +335,7 @@ class PhysicsConvTranspose(Module, strict=True):
 
         x = jnp.expand_dims(x, axis=0)
         # ToDo: is this correct?
-        padding_lax = ((0, o) for o in self.output_padding)
+        padding_lax = ((0, o) for o in this_output_padding)
         # padding_lax = ((0, 0),) * self.num_spatial_dims
         x = lax.conv_general_dilated(
             lhs=x,
