@@ -4,13 +4,12 @@ import equinox as eqx
 from typing import Any, Callable, List
 from jaxtyping import PRNGKeyArray
 
-from .channel_adjustment import ChannelAdjuster, ChannelAdjusterFactory, LinearAdjusterFactory
-from .blocks import Block, BlockFactory, ClassicResBlockFactory
+from .blocks import Block, BlockFactory, ClassicResBlockFactory, LinearChannelAdjustmentBlockFactory
 
 class ResNet(eqx.Module):
-    lifting: ChannelAdjuster
+    lifting: Block
     blocks: List[Block]
-    projection: ChannelAdjuster
+    projection: Block
 
     def __init__(
         self,
@@ -23,9 +22,9 @@ class ResNet(eqx.Module):
         *,
         key: PRNGKeyArray,
         boundary_mode: str,
-        lifting_factory: ChannelAdjusterFactory = LinearAdjusterFactory(),
+        lifting_factory: BlockFactory = LinearChannelAdjustmentBlockFactory(),
         block_factory: BlockFactory = ClassicResBlockFactory(),
-        projection_factory: ChannelAdjusterFactory = LinearAdjusterFactory(),
+        projection_factory: BlockFactory = LinearChannelAdjustmentBlockFactory(),
         **boundary_kwargs,
     ):
         subkey, key = jr.split(key)

@@ -8,10 +8,6 @@ from .blocks import (
     ClassicSpectralBlock,
     ClassicSpectralBlockFactory,
 )
-from .channel_adjustment import (
-    LinearAdjuster,
-    LinearAdjusterFactory,
-)
 from .resnet import ResNet
 from .utils import (
     ConstantEmbeddingMetadataNetwork,
