@@ -51,7 +51,7 @@ def periodic_padding(
     Returns:
         Array with shape (C, *(N + 2 * padding)).
     """
-    return np.pad(x, ((0, 0),) + padding, mode="wrap")
+    return jnp.pad(x, ((0, 0),) + padding, mode="wrap")
 
 
 class PhysicsConv(Module, strict=True):
