@@ -4,7 +4,7 @@ import equinox as eqx
 from typing import Any, Callable, List
 from jaxtyping import PRNGKeyArray
 
-from .blocks import Block, BlockFactory, ClassicResBlockFactory, LinearChannelAdjustmentBlockFactory
+from .blocks import Block, BlockFactory, ClassicResBlockFactory, LinearChannelAdjustBlockFactory
 
 class ResNet(eqx.Module):
     lifting: Block
@@ -22,9 +22,9 @@ class ResNet(eqx.Module):
         *,
         key: PRNGKeyArray,
         boundary_mode: str,
-        lifting_factory: BlockFactory = LinearChannelAdjustmentBlockFactory(),
+        lifting_factory: BlockFactory = LinearChannelAdjustBlockFactory(),
         block_factory: BlockFactory = ClassicResBlockFactory(),
-        projection_factory: BlockFactory = LinearChannelAdjustmentBlockFactory(),
+        projection_factory: BlockFactory = LinearChannelAdjustBlockFactory(),
         **boundary_kwargs,
     ):
         subkey, key = jr.split(key)

@@ -12,7 +12,7 @@ from .blocks import (
     ClassicDoubleConvBlockFactory,
     LinearConvDownBlockFactory,
     LinearConvUpBlockFactory,
-    LinearChannelAdjustmentBlockFactory,
+    LinearChannelAdjustBlockFactory,
 )
 
 class UNet(eqx.Module):
@@ -45,7 +45,7 @@ class UNet(eqx.Module):
         left_arch_factory: BlockFactory = ClassicDoubleConvBlockFactory(),
         up_sampling_factory: BlockFactory = LinearConvUpBlockFactory(),
         right_arch_factory: BlockFactory = ClassicDoubleConvBlockFactory(),
-        projection_factory: BlockFactory = LinearChannelAdjustmentBlockFactory(),
+        projection_factory: BlockFactory = LinearChannelAdjustBlockFactory(),
         **boundary_kwargs,
     ):
         self.down_sampling_blocks = []

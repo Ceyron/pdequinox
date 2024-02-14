@@ -2,20 +2,7 @@ from .physics_conv import (
     PhysicsConv,
     PhysicsConvTranspose,
 )
-from .blocks import (
-    ClassicResBlock,
-    ClassicResBlockFactory,
-    ClassicSpectralBlock,
-    ClassicSpectralBlockFactory,
-    ClassicDoubleConvBlock,
-    ClassicDoubleConvBlockFactory,
-    LinearChannelAdjustmentBlock,
-    LinearChannelAdjustmentBlockFactory,
-    LinearConvDownBlock,
-    LinearConvDownBlockFactory,
-    LinearConvUpBlock,
-    LinearConvUpBlockFactory,
-)
+# from .blocks import * # This is not a good practice, changed to submodule
 from .convnet import ConvNet
 from .resnet import ResNet
 from .unet import UNet
