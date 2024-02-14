@@ -133,18 +133,6 @@ class PhysicsConv(Module, strict=True):
             for k, d in zip(kernel_size, dilation)
         )
 
-        if isinstance(padding, int):
-            self.padding = tuple((padding, padding) for _ in range(num_spatial_dims))
-        elif isinstance(padding, Sequence) and len(padding) == num_spatial_dims:
-            if all_sequences(padding):
-                self.padding = tuple(padding)
-            else:
-                self.padding = tuple((p, p) for p in padding)
-        else:
-            raise ValueError(
-                "`padding` must either be an int or tuple of length "
-                f"{num_spatial_dims} containing ints or tuples of length 2."
-            )
         self.dilation = dilation
         self.groups = groups
         self.use_bias = use_bias
