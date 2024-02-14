@@ -224,7 +224,7 @@ class PhysicsConvTranspose(Module, strict=True):
         dilation = parse(dilation)
 
         for s, o in zip(stride, output_padding):
-            if output_padding >= stride:
+            if o >= s:
                 raise ValueError("Must have `output_padding < stride` (elementwise).")
 
         grouped_in_channels = in_channels // groups
