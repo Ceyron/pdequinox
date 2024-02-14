@@ -128,7 +128,7 @@ class PhysicsConv(Module, strict=True):
         self.kernel_size = kernel_size
         self.stride = stride
 
-        padding = tuple(
+        self.padding = tuple(
             ((k - 1) * d // 2, (k - 1) * d // 2)
             for k, d in zip(kernel_size, dilation)
         )
