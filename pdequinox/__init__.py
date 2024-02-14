@@ -16,6 +16,7 @@ from .blocks import (
     LinearConvUpBlock,
     LinearConvUpBlockFactory,
 )
+from .convnet import ConvNet
 from .resnet import ResNet
 from .unet import UNet
 from .utils import (
