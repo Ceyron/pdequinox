@@ -5,3 +5,4 @@ from .classic_spectral_block import ClassicSpectralBlock, ClassicSpectralBlockFa
 from .linear_channel_adjust_block import LinearChannelAdjustBlock, LinearChannelAdjustBlockFactory
 from .linear_conv_down_block import LinearConvDownBlock, LinearConvDownBlockFactory
 from .linear_conv_up_block import LinearConvUpBlock, LinearConvUpBlockFactory
+from .modern_res_block import ModernResBlock, ModernResBlockFactory
