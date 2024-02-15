@@ -88,6 +88,15 @@ class PhysicsConv(Module, strict=True):
         zero_bias_init: bool = False,
         **boundary_kwargs,
     ):
+        """
+        Always retains shape; padding is chosen accordingly.
+        Only way to reduce the size is via strides.
+
+        if N is the number of spatial dimensions and s the stride, then:
+        N' = (N + (s - 1)) // s
+
+        will be the reduced number of spatial dimensions.
+        """
         wkey, bkey = jrandom.split(key, 2)
 
         parse = _ntuple(num_spatial_dims)
@@ -224,6 +233,27 @@ class PhysicsConvTranspose(Module, strict=True):
         zero_bias_init: bool = False,
         **boundary_kwargs,
     ):
+        """
+        Requires a couple of considerations:
+
+        if N was the original number of spatial dimensions and s the stride,
+        then:
+        
+        N' = (N + (s - 1)) // s
+
+        now, we are onl given N' and s, and we want to find N.
+
+        so we do the following steps:
+
+        1. Pad the input (according to our padding mode) with k // 2 on each
+           side (now the size is (k//2 + N' + k//2,))
+        2. Internally, the `jax.lax.conv_general_dilated` function will then
+           dilate the lhs according to the strides to give (k//2 + N' + k//2) *
+           (s + 1) - s
+        3. Then we apply the regular convolution with stride 1 and no explicit
+           padding, which will give us the original size (N + k - 1)
+        4. We then slice out the original size (N,)
+        """
         if dilation != 1:
             raise NotImplementedError("Dilation not yet supported in `ConvTranspose`.")
 
