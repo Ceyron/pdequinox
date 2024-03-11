@@ -1,3 +1,5 @@
+from typing import Union
+
 import equinox as eqx
 import jax
 import jax.numpy as jnp
@@ -45,7 +47,7 @@ def count_parameters(model: eqx.Module):
 
 
 def dataloader(
-    data: PyTree or Array,
+    data: Union[PyTree, Array],
     *,
     batch_size: int,
     key: PRNGKeyArray,
@@ -81,7 +83,7 @@ def dataloader(
 
 
 def cycling_dataloader(
-    data: PyTree or Array,
+    data: Union[PyTree, Array],
     *,
     batch_size: int,
     n_steps: int,

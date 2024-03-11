@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Union
 
 import jax
 from jaxtyping import PRNGKeyArray
@@ -49,7 +49,7 @@ class ClassicSpectralBlock(Block):
 
 
 class ClassicSpectralBlockFactory(BlockFactory):
-    num_modes: int or tuple[int, ...]
+    num_modes: Union[int, tuple[int, ...]]
     use_bias: bool = True
     zero_bias_init: bool = False
 

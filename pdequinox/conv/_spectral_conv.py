@@ -1,4 +1,5 @@
 from itertools import product
+from typing import Union
 
 import equinox as eqx
 import jax.numpy as jnp
@@ -22,7 +23,7 @@ class SpectralConv(eqx.Module):
         num_spatial_dims: int,
         in_channels: int,
         out_channels: int,
-        num_modes: tuple[int, ...] or int,
+        num_modes: Union[tuple[int, ...], int],
         *,
         key: PRNGKeyArray,
     ):
