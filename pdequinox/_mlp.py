@@ -39,10 +39,10 @@ class MLP(eqx.Module):
         self.in_channels = in_channels
         self.out_channels = out_channels
 
-        self.in_shape = (in_channels,) + (1, num_points) * num_spatial_dims
-        self.out_shape = (out_channels,) + (1, num_points) * num_spatial_dims
-        flat_in_size = prod(self.in_shape)
-        flat_out_size = prod(self.out_shape)
+        self._in_shape = (in_channels,) + (1, num_points) * num_spatial_dims
+        self._out_shape = (out_channels,) + (1, num_points) * num_spatial_dims
+        flat_in_size = prod(self._in_shape)
+        flat_out_size = prod(self._out_shape)
 
         self.flat_mlp = eqx.nn.MLP(
             in_size=flat_in_size,
