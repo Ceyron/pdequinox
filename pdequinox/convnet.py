@@ -25,7 +25,7 @@ class ConvNet(eqx.Module):
         activation: Callable,
         kernel_size: int = 3,
         final_activation: Callable = _identity,
-        use_bias_bias: bool = True,
+        use_bias: bool = True,
         use_final_bias: bool = True,
         *,
         boundary_mode: str,
@@ -61,9 +61,9 @@ class ConvNet(eqx.Module):
         if depth == 0:
             layers.append(conv_constructor(in_channels, out_channels, use_final_bias, keys[0]))
         else:
-            layers.append(conv_constructor(in_channels, hidden_channels, use_bias_bias, keys[0]))
+            layers.append(conv_constructor(in_channels, hidden_channels, use_bias, keys[0]))
             for i in range(depth - 1):
-                layers.append(conv_constructor(hidden_channels, hidden_channels, use_bias_bias, keys[i + 1]))
+                layers.append(conv_constructor(hidden_channels, hidden_channels, use_bias, keys[i + 1]))
             layers.append(conv_constructor(hidden_channels, out_channels, use_final_bias, keys[-1]))
 
         self.layers = tuple(layers)
