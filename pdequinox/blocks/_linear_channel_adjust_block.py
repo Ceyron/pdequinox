@@ -2,16 +2,15 @@ from typing import Callable
 
 from jaxtyping import PRNGKeyArray
 
-from ..physics_conv import PhysicsConv
-from .base_block import BlockFactory
+from .._pointwise_linear_conv import PointwiseLinearConv
+from ._base_block import BlockFactory
 
-LinearConvDownBlock = PhysicsConv
+LinearChannelAdjustBlock = PointwiseLinearConv
 
 
-class LinearConvDownBlockFactory(BlockFactory):
-    kernel_size: int = 3
-    factor: int = 2
+class LinearChannelAdjustBlockFactory(BlockFactory):
     use_bias: bool = True
+    zero_bias_init: bool = False
 
     def __call__(
         self,
@@ -20,18 +19,15 @@ class LinearConvDownBlockFactory(BlockFactory):
         out_channels: int,
         activation: Callable,  # unused
         *,
-        boundary_mode: str,
+        boundary_mode: str,  # unused
         key: PRNGKeyArray,
-        **boundary_kwargs,
+        **boundary_kwargs,  # unused
     ):
-        return LinearConvDownBlock(
+        return LinearChannelAdjustBlock(
             num_spatial_dims=num_spatial_dims,
             in_channels=in_channels,
             out_channels=out_channels,
-            kernel_size=self.kernel_size,
-            stride=self.factor,
-            boundary_mode=boundary_mode,
             use_bias=self.use_bias,
+            zero_bias_init=self.zero_bias_init,
             key=key,
-            **boundary_kwargs,
         )

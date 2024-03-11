@@ -3,9 +3,9 @@ from typing import Callable
 import jax
 from jaxtyping import PRNGKeyArray
 
-from ..pointwise_linear_conv import PointwiseLinearConv
-from ..spectral_conv import SpectralConv
-from .base_block import Block, BlockFactory
+from .._pointwise_linear_conv import PointwiseLinearConv
+from .._spectral_conv import SpectralConv
+from ._base_block import Block, BlockFactory
 
 
 class ClassicSpectralBlock(Block):

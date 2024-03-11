@@ -5,7 +5,7 @@ import jax.numpy as jnp
 from equinox import field
 from jaxtyping import PRNGKeyArray
 
-from .conv import MorePaddingConv, MorePaddingConvTranspose, _ntuple
+from ._conv import MorePaddingConv, MorePaddingConvTranspose, _ntuple
 
 
 def compute_same_padding(

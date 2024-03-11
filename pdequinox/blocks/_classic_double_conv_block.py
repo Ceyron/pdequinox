@@ -4,8 +4,8 @@ import equinox as eqx
 import jax
 from jaxtyping import PRNGKeyArray
 
-from ..physics_conv import PhysicsConv
-from .base_block import Block, BlockFactory
+from .._physics_conv import PhysicsConv
+from ._base_block import Block, BlockFactory
 
 
 class ClassicDoubleConvBlock(Block):
