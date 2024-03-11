@@ -1,4 +1,4 @@
-from . import blocks, conv
+from . import arch, blocks, conv
 from ._convnet import ConvNet
 from ._mlp import MLP
 from ._resnet import ResNet
@@ -24,6 +24,7 @@ __all__ = [
     "cycling_dataloader",
     "dataloader",
     "extract_from_ensemble",
+    "arch",
     "blocks",
     "conv",
 ]
