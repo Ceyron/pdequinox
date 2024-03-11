@@ -4,7 +4,7 @@ import equinox as eqx
 import jax
 from jaxtyping import PRNGKeyArray
 
-from .._physics_conv import PhysicsConv
+from ..conv import PhysicsConv
 
 
 class ClassicResBlock(eqx.Module):

@@ -2,7 +2,7 @@ from typing import Callable
 
 from jaxtyping import PRNGKeyArray
 
-from .._physics_conv import PhysicsConv
+from ..conv import PhysicsConv
 from ._base_block import BlockFactory
 
 LinearConvDownBlock = PhysicsConv

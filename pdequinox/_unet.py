@@ -5,7 +5,6 @@ import jax.numpy as jnp
 import jax.random as jr
 from jaxtyping import PRNGKeyArray
 
-from ._physics_conv import PhysicsConv
 from .blocks import (
     Block,
     BlockFactory,
@@ -14,6 +13,7 @@ from .blocks import (
     LinearConvDownBlockFactory,
     LinearConvUpBlockFactory,
 )
+from .conv import PhysicsConv
 
 
 class UNet(eqx.Module):

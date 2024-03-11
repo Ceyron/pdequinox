@@ -13,8 +13,7 @@ import equinox as eqx
 import jax
 from jaxtyping import PRNGKeyArray
 
-from .._physics_conv import PhysicsConv
-from .._pointwise_linear_conv import PointwiseLinearConv
+from ..conv import PhysicsConv, PointwiseLinearConv
 
 
 class ModernResBlock(eqx.Module):

@@ -3,8 +3,7 @@ from typing import Callable
 import jax
 from jaxtyping import PRNGKeyArray
 
-from .._pointwise_linear_conv import PointwiseLinearConv
-from .._spectral_conv import SpectralConv
+from ..conv import PointwiseLinearConv, SpectralConv
 from ._base_block import Block, BlockFactory
 
 
