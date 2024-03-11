@@ -2,10 +2,7 @@ import equinox as eqx
 import jax
 import jax.numpy as jnp
 import jax.tree_util as jtu
-
-from jaxtyping import Array, PyTree, PRNGKeyArray
-
-import equinox as eqx
+from jaxtyping import Array, PRNGKeyArray, PyTree
 
 
 class ConstantEmbeddingMetadataNetwork(eqx.Module):
@@ -28,23 +25,31 @@ class ConstantEmbeddingMetadataNetwork(eqx.Module):
 
         meta_data = meta_data / normalization_factor_detached
 
-        meta_data_embedded = (
-            meta_data.reshape((-1, *([1,] * (x.ndim - 1))))
-            *
-            jnp.ones((1, *x.shape[1:]))
-        )
+        meta_data_embedded = meta_data.reshape(
+            (
+                -1,
+                *(
+                    [
+                        1,
+                    ]
+                    * (x.ndim - 1)
+                ),
+            )
+        ) * jnp.ones((1, *x.shape[1:]))
         x_with_embedding = jnp.concatenate((x, meta_data_embedded), axis=0)
         return self.network(x_with_embedding)
+
 
 def count_parameters(model: eqx.Module):
     return sum(p.size for p in jtu.tree_leaves(eqx.filter(model, eqx.is_array)))
 
+
 def dataloader(
-        data: PyTree or Array,
-        *,
-        batch_size: int,
-        key: PRNGKeyArray,
-    ):
+    data: PyTree or Array,
+    *,
+    batch_size: int,
+    key: PRNGKeyArray,
+):
     """
     Loop generator over the data. The data can be a PyTree or an Array. For
     supervised learning problems you can also hand over a tuple of Arrays
@@ -54,7 +59,9 @@ def dataloader(
     n_samples_list = [a.shape[0] for a in jtu.tree_leaves(data)]
 
     if not all(n == n_samples_list[0] for n in n_samples_list):
-        raise ValueError("All arrays / PyTree leaves must have the same number of samples. (Leading array axis)")
+        raise ValueError(
+            "All arrays / PyTree leaves must have the same number of samples. (Leading array axis)"
+        )
 
     n_samples = n_samples_list[0]
 
@@ -71,23 +78,25 @@ def dataloader(
         sub_data = jtu.tree_map(lambda a: a[batch_indices], data)
 
         yield sub_data
-    
+
+
 def cycling_dataloader(
-        data: PyTree or Array,
-        *,
-        batch_size: int,
-        n_steps: int,
-        key: PRNGKeyArray,
-        return_info: bool = False
-        ):
-    
+    data: PyTree or Array,
+    *,
+    batch_size: int,
+    n_steps: int,
+    key: PRNGKeyArray,
+    return_info: bool = False,
+):
     epoch_id = 0
     total_step_id = 0
 
     while True:
         key, subkey = jax.random.split(key)
 
-        for batch_id, sub_data in enumerate(dataloader(data, batch_size=batch_size, key=subkey)):
+        for batch_id, sub_data in enumerate(
+            dataloader(data, batch_size=batch_size, key=subkey)
+        ):
             if total_step_id == n_steps:
                 return
 
@@ -100,10 +109,9 @@ def cycling_dataloader(
 
         epoch_id += 1
 
+
 def extract_from_ensemble(ensemble, i):
     params, static = eqx.partition(ensemble, eqx.is_array)
     params_extracted = jtu.tree_map(lambda x: x[i], params)
     network_extracted = eqx.combine(params_extracted, static)
     return network_extracted
-
-

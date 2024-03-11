@@ -5,14 +5,15 @@ https://github.com/microsoft/pdearena/blob/22360a766387c3995220b4a1265a936ab9a81
 but correctly does the channel matching
 """
 
-import jax
-import equinox as eqx
+from typing import Callable
 
-from ..physics_conv import PhysicsConv, PhysicsConvTranspose
-from ..spectral_conv import SpectralConv
-from ..pointwise_linear_conv import PointwiseLinearConv
-from typing import Any, Callable
+import equinox as eqx
+import jax
 from jaxtyping import PRNGKeyArray
+
+from ..physics_conv import PhysicsConv
+from ..pointwise_linear_conv import PointwiseLinearConv
+
 
 class DilatedResBlock(eqx.Module):
     norm_layers: tuple[eqx.nn.GroupNorm]
@@ -33,7 +34,7 @@ class DilatedResBlock(eqx.Module):
         boundary_mode: str,
         key,
         use_norm: bool = True,
-        num_groups: int = 1, # for GroupNorm
+        num_groups: int = 1,  # for GroupNorm
         use_bias: bool = True,
         zero_bias_init: bool = False,
         **boundary_kwargs,
@@ -52,13 +53,17 @@ class DilatedResBlock(eqx.Module):
                 key=k,
                 **boundary_kwargs,
             )
-        
+
         if use_norm:
             norm_layers = []
-            norm_layers.append(eqx.nn.GroupNorm(groups=num_groups, channels=in_channels))
+            norm_layers.append(
+                eqx.nn.GroupNorm(groups=num_groups, channels=in_channels)
+            )
 
             for _ in dilation_rates[1:]:
-                norm_layers.append(eqx.nn.GroupNorm(groups=num_groups, channels=out_channels))
+                norm_layers.append(
+                    eqx.nn.GroupNorm(groups=num_groups, channels=out_channels)
+                )
 
             self.norm_layers = tuple(norm_layers)
         else:
@@ -67,13 +72,15 @@ class DilatedResBlock(eqx.Module):
         key, *keys = jax.random.split(key, len(dilation_rates) + 1)
 
         conv_layers = []
-        conv_layers.append(conv_constructor(
-            in_channels, out_channels, dilation_rates[0], use_bias, keys[0]
-        ))
+        conv_layers.append(
+            conv_constructor(
+                in_channels, out_channels, dilation_rates[0], use_bias, keys[0]
+            )
+        )
         for d, k in zip(dilation_rates[1:], keys[1:]):
-            conv_layers.append(conv_constructor(
-                out_channels, out_channels, d, use_bias, k
-            ))
+            conv_layers.append(
+                conv_constructor(out_channels, out_channels, d, use_bias, k)
+            )
 
         self.conv_layers = tuple(conv_layers)
 
@@ -91,13 +98,14 @@ class DilatedResBlock(eqx.Module):
                 **boundary_kwargs,
             )
             if use_norm:
-                self.bypass_norm = eqx.nn.GroupNorm(groups=num_groups, channels=out_channels)
+                self.bypass_norm = eqx.nn.GroupNorm(
+                    groups=num_groups, channels=out_channels
+                )
             else:
                 self.bypass_norm = eqx.nn.Identity()
         else:
             self.bypass_conv = eqx.nn.Identity()
             self.bypass_norm = eqx.nn.Identity()
-
 
     def __call__(self, x):
         x_skip = x
@@ -110,7 +118,8 @@ class DilatedResBlock(eqx.Module):
         x = x + x_skip
 
         return x
-    
+
+
 class DilatedResBlockFactory(eqx.Module):
     kernel_size: int
     dilation_rates: tuple[int]
@@ -162,4 +171,3 @@ class DilatedResBlockFactory(eqx.Module):
             zero_bias_init=self.zero_bias_init,
             **boundary_kwargs,
         )
-

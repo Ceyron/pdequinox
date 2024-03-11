@@ -1,10 +1,16 @@
-import jax.random as jr
-import equinox as eqx
+from typing import Callable, List
 
-from typing import Any, Callable, List
+import equinox as eqx
+import jax.random as jr
 from jaxtyping import PRNGKeyArray
 
-from .blocks import Block, BlockFactory, ClassicResBlockFactory, LinearChannelAdjustBlockFactory
+from .blocks import (
+    Block,
+    BlockFactory,
+    ClassicResBlockFactory,
+    LinearChannelAdjustBlockFactory,
+)
+
 
 class ResNet(eqx.Module):
     lifting: Block
@@ -40,15 +46,17 @@ class ResNet(eqx.Module):
         self.blocks = []
         for _ in range(num_blocks):
             subkey, key = jr.split(key)
-            self.blocks.append(block_factory(
-                num_spatial_dims=num_spatial_dims,
-                in_channels=hidden_channels,
-                out_channels=hidden_channels,
-                activation=activation,
-                boundary_mode=boundary_mode,
-                key=subkey,
-                **boundary_kwargs,
-            ))
+            self.blocks.append(
+                block_factory(
+                    num_spatial_dims=num_spatial_dims,
+                    in_channels=hidden_channels,
+                    out_channels=hidden_channels,
+                    activation=activation,
+                    boundary_mode=boundary_mode,
+                    key=subkey,
+                    **boundary_kwargs,
+                )
+            )
         self.projection = projection_factory(
             num_spatial_dims=num_spatial_dims,
             in_channels=hidden_channels,
@@ -65,4 +73,3 @@ class ResNet(eqx.Module):
             x = block(x)
         x = self.projection(x)
         return x
-

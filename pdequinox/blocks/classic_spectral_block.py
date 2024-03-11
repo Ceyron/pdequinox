@@ -1,13 +1,12 @@
-import jax
-import equinox as eqx
+from typing import Callable
 
-from ..physics_conv import PhysicsConv, PhysicsConvTranspose
-from ..spectral_conv import SpectralConv
-from ..pointwise_linear_conv import PointwiseLinearConv
-from typing import Any, Callable
+import jax
 from jaxtyping import PRNGKeyArray
 
+from ..pointwise_linear_conv import PointwiseLinearConv
+from ..spectral_conv import SpectralConv
 from .base_block import Block, BlockFactory
+
 
 class ClassicSpectralBlock(Block):
     spectral_conv: SpectralConv
@@ -48,7 +47,8 @@ class ClassicSpectralBlock(Block):
         x = self.spectral_conv(x) + self.by_pass_conv(x)
         x = self.activation(x)
         return x
-    
+
+
 class ClassicSpectralBlockFactory(BlockFactory):
     num_modes: int or tuple[int, ...]
     use_bias: bool = True

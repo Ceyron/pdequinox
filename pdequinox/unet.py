@@ -1,24 +1,26 @@
-import jax.random as jr
-import jax.numpy as jnp
-import equinox as eqx
-
 from typing import Any, Callable, List
+
+import equinox as eqx
+import jax.numpy as jnp
+import jax.random as jr
 from jaxtyping import PRNGKeyArray
 
-from .physics_conv import PhysicsConv
 from .blocks import (
     Block,
     BlockFactory,
     ClassicDoubleConvBlockFactory,
+    LinearChannelAdjustBlockFactory,
     LinearConvDownBlockFactory,
     LinearConvUpBlockFactory,
-    LinearChannelAdjustBlockFactory,
 )
+from .physics_conv import PhysicsConv
+
 
 class UNet(eqx.Module):
     """
     Uses convolution for downsampling instead of max pooling
     """
+
     lifting: Block
     down_sampling_blocks: List[Block]
     left_arch_blocks: List[Block]  # Includes the bottleneck
@@ -76,7 +78,9 @@ class UNet(eqx.Module):
             **boundary_kwargs,
         )
 
-        channel_list = [hidden_channels * self.reduction_factor**i for i in range(num_levels)]
+        channel_list = [
+            hidden_channels * self.reduction_factor**i for i in range(num_levels)
+        ]
 
         for (
             fan_in,
@@ -86,49 +90,57 @@ class UNet(eqx.Module):
             channel_list[1:],
         ):
             key, down_key, left_key, up_key, right_key = jr.split(key, 5)
-            self.down_sampling_blocks.append(down_sampling_factory(
-                num_spatial_dims=num_spatial_dims,
-                in_channels=fan_in,
-                out_channels=fan_in,
-                activation=activation,
-                boundary_mode=boundary_mode,
-                key=down_key,
-                **boundary_kwargs,
-            ))
-            self.left_arch_blocks.append(left_arch_factory(
-                num_spatial_dims=num_spatial_dims,
-                in_channels=fan_in,
-                out_channels=fan_out,
-                activation=activation,
-                boundary_mode=boundary_mode,
-                key=left_key,
-                **boundary_kwargs,
-            ))
-            self.up_sampling_blocks.append(up_sampling_factory(
-                num_spatial_dims=num_spatial_dims,
-                in_channels=fan_out,
-                out_channels=fan_out // self.reduction_factor,
-                activation=activation,
-                boundary_mode=boundary_mode,
-                key=up_key,
-                **boundary_kwargs,
-            ))
-            self.right_arch_blocks.append(right_arch_factory(
-                num_spatial_dims=num_spatial_dims,
-                in_channels=self.reduction_factor * fan_in,
-                out_channels=fan_in,
-                activation=activation,
-                boundary_mode=boundary_mode,
-                key=right_key,
-                **boundary_kwargs,
-            ))
+            self.down_sampling_blocks.append(
+                down_sampling_factory(
+                    num_spatial_dims=num_spatial_dims,
+                    in_channels=fan_in,
+                    out_channels=fan_in,
+                    activation=activation,
+                    boundary_mode=boundary_mode,
+                    key=down_key,
+                    **boundary_kwargs,
+                )
+            )
+            self.left_arch_blocks.append(
+                left_arch_factory(
+                    num_spatial_dims=num_spatial_dims,
+                    in_channels=fan_in,
+                    out_channels=fan_out,
+                    activation=activation,
+                    boundary_mode=boundary_mode,
+                    key=left_key,
+                    **boundary_kwargs,
+                )
+            )
+            self.up_sampling_blocks.append(
+                up_sampling_factory(
+                    num_spatial_dims=num_spatial_dims,
+                    in_channels=fan_out,
+                    out_channels=fan_out // self.reduction_factor,
+                    activation=activation,
+                    boundary_mode=boundary_mode,
+                    key=up_key,
+                    **boundary_kwargs,
+                )
+            )
+            self.right_arch_blocks.append(
+                right_arch_factory(
+                    num_spatial_dims=num_spatial_dims,
+                    in_channels=self.reduction_factor * fan_in,
+                    out_channels=fan_in,
+                    activation=activation,
+                    boundary_mode=boundary_mode,
+                    key=right_key,
+                    **boundary_kwargs,
+                )
+            )
 
     def __call__(self, x: Any) -> Any:
         spatial_shape = x.shape[1:]
         for dims in spatial_shape:
             if dims % self.reduction_factor**self.levels != 0:
                 raise ValueError("Spatial dim issue")
-            
+
         x = self.lifting(x)
 
         skips = []

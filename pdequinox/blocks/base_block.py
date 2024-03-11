@@ -1,17 +1,15 @@
 from abc import ABC, abstractmethod
+from typing import Callable
 
-import jax
 import equinox as eqx
-
-from typing import Any, Callable
 from jaxtyping import PRNGKeyArray
 
 
 class Block(eqx.Module, ABC):
     pass
 
-class BlockFactory(eqx.Module, ABC):
 
+class BlockFactory(eqx.Module, ABC):
     @abstractmethod
     def __call__(
         self,

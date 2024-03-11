@@ -1,19 +1,12 @@
+from collections.abc import Sequence
+from typing import Union
+
+import jax.numpy as jnp
 from equinox import field
+from jaxtyping import PRNGKeyArray
 
 from .conv import MorePaddingConv, MorePaddingConvTranspose, _ntuple
 
-import itertools as it
-import math
-from collections.abc import Callable, Sequence
-from typing import Optional, TypeVar, Union, Any
-
-import jax
-import jax.lax as lax
-import jax.numpy as jnp
-import jax.random as jrandom
-import numpy as np
-from equinox import Module, field
-from jaxtyping import Array, PRNGKeyArray
 
 def compute_same_padding(
     num_spatial_dims: int,
@@ -55,7 +48,9 @@ class PhysicsConv(MorePaddingConv):
         **boundary_kwargs,
     ):
         if boundary_mode.lower() != "periodic":
-            raise ValueError(f"Only 'periodic' boundary mode is supported, got {boundary_mode}")
+            raise ValueError(
+                f"Only 'periodic' boundary mode is supported, got {boundary_mode}"
+            )
         self.boundary_mode = boundary_mode.lower()
         self.boundary_kwargs = boundary_kwargs
 
@@ -78,6 +73,7 @@ class PhysicsConv(MorePaddingConv):
 
         if use_bias and zero_bias_init:
             self.bias = jnp.zeros_like(self.bias)
+
 
 class PhysicsConvTranspose(MorePaddingConvTranspose):
     boundary_mode: str = field(static=True)
@@ -102,7 +98,9 @@ class PhysicsConvTranspose(MorePaddingConvTranspose):
         **boundary_kwargs,
     ):
         if boundary_mode.lower() != "periodic":
-            raise ValueError(f"Only 'periodic' boundary mode is supported, got {boundary_mode}")
+            raise ValueError(
+                f"Only 'periodic' boundary mode is supported, got {boundary_mode}"
+            )
         self.boundary_mode = boundary_mode.lower()
         self.boundary_kwargs = boundary_kwargs
 

@@ -7,14 +7,15 @@ most importantly, it oes pre-activation instead of post-activation
 ToDo: check if we also need the no-bias in the bypass
 """
 
-import jax
-import equinox as eqx
+from typing import Callable
 
-from ..physics_conv import PhysicsConv, PhysicsConvTranspose
-from ..spectral_conv import SpectralConv
-from ..pointwise_linear_conv import PointwiseLinearConv
-from typing import Any, Callable
+import equinox as eqx
+import jax
 from jaxtyping import PRNGKeyArray
+
+from ..physics_conv import PhysicsConv
+from ..pointwise_linear_conv import PointwiseLinearConv
+
 
 class ModernResBlock(eqx.Module):
     conv_1: eqx.Module
@@ -36,7 +37,7 @@ class ModernResBlock(eqx.Module):
         boundary_mode: str,
         key,
         use_norm: bool = True,
-        num_groups: int = 1, # for GroupNorm
+        num_groups: int = 1,  # for GroupNorm
         use_bias: bool = True,
         zero_bias_init: bool = False,
         **boundary_kwargs,
@@ -55,7 +56,7 @@ class ModernResBlock(eqx.Module):
                 key=k,
                 **boundary_kwargs,
             )
-        
+
         conv_1_key, conv_2_key, key = jax.random.split(key, 3)
         self.conv_1 = conv_constructor(in_channels, out_channels, use_bias, conv_1_key)
         if use_norm:
@@ -81,7 +82,9 @@ class ModernResBlock(eqx.Module):
                 key=bypass_conv_key,
             )
             if use_norm:
-                self.bypass_norm = eqx.nn.GroupNorm(groups=num_groups, channels=out_channels)
+                self.bypass_norm = eqx.nn.GroupNorm(
+                    groups=num_groups, channels=out_channels
+                )
             else:
                 self.bypass_norm = eqx.nn.Identity()
         else:
@@ -96,6 +99,7 @@ class ModernResBlock(eqx.Module):
 
         x = x + self.bypass_conv(self.bypass_norm(x_skip))
         return x
+
 
 class ModernResBlockFactory(eqx.Module):
     kernel_size: int

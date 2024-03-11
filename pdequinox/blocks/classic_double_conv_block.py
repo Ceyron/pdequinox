@@ -1,16 +1,16 @@
-import jax
-import equinox as eqx
+from typing import Callable
 
-from ..physics_conv import PhysicsConv, PhysicsConvTranspose
-from ..spectral_conv import SpectralConv
-from ..pointwise_linear_conv import PointwiseLinearConv
-from typing import Any, Callable
+import equinox as eqx
+import jax
 from jaxtyping import PRNGKeyArray
 
+from ..physics_conv import PhysicsConv
 from .base_block import Block, BlockFactory
+
 
 class ClassicDoubleConvBlock(Block):
     """Also does channel adjustment"""
+
     conv_1: PhysicsConv
     norm_1: eqx.nn.GroupNorm
     conv_2: PhysicsConv
@@ -28,7 +28,7 @@ class ClassicDoubleConvBlock(Block):
         boundary_mode: str,
         key: PRNGKeyArray,
         use_norm: bool = True,
-        num_groups: int = 1, # for GroupNorm
+        num_groups: int = 1,  # for GroupNorm
         use_bias: bool = True,
         zero_bias_init: bool = False,
         **boundary_kwargs,
@@ -47,6 +47,7 @@ class ClassicDoubleConvBlock(Block):
                 key=k,
                 **boundary_kwargs,
             )
+
         k_1, k_2 = jax.random.split(key)
         self.conv_1 = conv_constructor(in_channels, out_channels, use_bias, k_1)
         if use_norm:
@@ -65,7 +66,8 @@ class ClassicDoubleConvBlock(Block):
         x = self.activation(self.norm_1(self.conv_1(x)))
         x = self.activation(self.norm_2(self.conv_2(x)))
         return x
-    
+
+
 class ClassicDoubleConvBlockFactory(BlockFactory):
     kernel_size: int = 3
     use_norm: bool = True

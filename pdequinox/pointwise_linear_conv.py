@@ -1,6 +1,6 @@
-import jax.numpy as jnp
 import equinox as eqx
-from jaxtyping import Array, Float
+import jax.numpy as jnp
+
 
 class PointwiseLinearConv(eqx.nn.Conv):
     """
@@ -30,4 +30,4 @@ class PointwiseLinearConv(eqx.nn.Conv):
         )
         if use_bias and zero_bias_init:
             zero_bias = jnp.zeros_like(self.conv.bias)
-            self.conv = eqx.tree_at(lambda l: l.bias, self.conv, zero_bias)
+            self.conv = eqx.tree_at(lambda leaf: leaf.bias, self.conv, zero_bias)

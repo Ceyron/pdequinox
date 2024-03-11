@@ -1,11 +1,11 @@
-import jax
-import equinox as eqx
+from typing import Callable
 
-from ..physics_conv import PhysicsConv, PhysicsConvTranspose
-from ..spectral_conv import SpectralConv
-from ..pointwise_linear_conv import PointwiseLinearConv
-from typing import Any, Callable
+import equinox as eqx
+import jax
 from jaxtyping import PRNGKeyArray
+
+from ..physics_conv import PhysicsConv
+
 
 class ClassicResBlock(eqx.Module):
     conv_1: eqx.Module
@@ -63,6 +63,7 @@ class ClassicResBlock(eqx.Module):
         x = self.activation(x)
         return x
 
+
 class ClassicResBlockFactory(eqx.Module):
     kernel_size: int
     use_bias: bool
@@ -91,7 +92,9 @@ class ClassicResBlockFactory(eqx.Module):
         **boundary_kwargs,
     ):
         if in_channels != out_channels:
-            raise ValueError("ClassicResBlock only supports in_channels == out_channels")
+            raise ValueError(
+                "ClassicResBlock only supports in_channels == out_channels"
+            )
         else:
             channels = in_channels
         return ClassicResBlock(

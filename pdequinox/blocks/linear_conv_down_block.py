@@ -1,16 +1,12 @@
-import jax
-import equinox as eqx
+from typing import Callable
 
-from ..physics_conv import PhysicsConv, PhysicsConvTranspose
-from ..spectral_conv import SpectralConv
-from ..pointwise_linear_conv import PointwiseLinearConv
-from typing import Any, Callable
 from jaxtyping import PRNGKeyArray
 
-from .base_block import Block, BlockFactory
-
+from ..physics_conv import PhysicsConv
+from .base_block import BlockFactory
 
 LinearConvDownBlock = PhysicsConv
+
 
 class LinearConvDownBlockFactory(BlockFactory):
     kernel_size: int = 3
@@ -22,7 +18,7 @@ class LinearConvDownBlockFactory(BlockFactory):
         num_spatial_dims: int,
         in_channels: int,
         out_channels: int,
-        activation: Callable, # unused
+        activation: Callable,  # unused
         *,
         boundary_mode: str,
         key: PRNGKeyArray,

@@ -1,15 +1,13 @@
-import jax
-import jax.numpy as jnp
-import equinox as eqx
-
-from typing import Callable, List
-from jaxtyping import PRNGKeyArray
 from math import prod
+from typing import Callable
 
-from .physics_conv import PhysicsConv
+import equinox as eqx
+from jaxtyping import PRNGKeyArray
+
 
 def _identity(x):
     return x
+
 
 class MLP(eqx.Module):
     num_spatial_dims: int
@@ -60,7 +58,9 @@ class MLP(eqx.Module):
 
     def __call__(self, x):
         if x.shape != self.in_shape:
-            raise ValueError(f"Input shape {x.shape} does not match expected shape {self.in_shape}. For batched operation use jax.vmap")
+            raise ValueError(
+                f"Input shape {x.shape} does not match expected shape {self.in_shape}. For batched operation use jax.vmap"
+            )
         x_flat = x.flatten()
         x_flat = self.flat_mlp(x_flat)
         x = x_flat.reshape(self.out_shape)

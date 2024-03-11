@@ -1,16 +1,17 @@
-import jax.numpy as jnp
-import equinox as eqx
-from jaxtyping import Array, Float, Complex, PRNGKeyArray
-import jax.random as jr
-from typing import List
 from itertools import product
 
-            
+import equinox as eqx
+import jax.numpy as jnp
+import jax.random as jr
+from jaxtyping import Array, Float, PRNGKeyArray
+
+
 class SpectralConv(eqx.Module):
     """
     Huge credit to the Serket library for this implementation:
     https://github.com/ASEM000/serket
     """
+
     num_spatial_dims: int
     num_modes: tuple[int]
     weights_real: Float[Array, "G C_o C_i ..."]
@@ -34,7 +35,11 @@ class SpectralConv(eqx.Module):
         self.num_spatial_dims = num_spatial_dims
         self.num_modes = num_modes
 
-        weight_shape = (2 ** (num_spatial_dims - 1), in_channels, out_channels,) + num_modes
+        weight_shape = (
+            2 ** (num_spatial_dims - 1),
+            in_channels,
+            out_channels,
+        ) + num_modes
 
         real_key, imag_key = jr.split(key)
         scale = 1 / (in_channels * out_channels)
@@ -43,7 +48,7 @@ class SpectralConv(eqx.Module):
 
     def __call__(self, x: Float[Array, "C_i ..."]) -> Float[Array, "C_o ..."]:
         return spectral_conv_nd(x, self.weights_real, self.weights_imag, self.num_modes)
-        
+
 
 def spectral_conv_nd(
     input: Float[Array, "C_i ..."],

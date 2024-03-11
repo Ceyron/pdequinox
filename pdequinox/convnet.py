@@ -1,14 +1,15 @@
-import jax
-import jax.numpy as jnp
-import equinox as eqx
+from typing import Callable
 
-from typing import Callable, List
+import equinox as eqx
+import jax
 from jaxtyping import PRNGKeyArray
 
 from .physics_conv import PhysicsConv
 
+
 def _identity(x):
     return x
+
 
 class ConvNet(eqx.Module):
     layers: tuple[PhysicsConv, ...]
@@ -59,12 +60,24 @@ class ConvNet(eqx.Module):
 
         layers = []
         if depth == 0:
-            layers.append(conv_constructor(in_channels, out_channels, use_final_bias, keys[0]))
+            layers.append(
+                conv_constructor(in_channels, out_channels, use_final_bias, keys[0])
+            )
         else:
-            layers.append(conv_constructor(in_channels, hidden_channels, use_bias, keys[0]))
+            layers.append(
+                conv_constructor(in_channels, hidden_channels, use_bias, keys[0])
+            )
             for i in range(depth - 1):
-                layers.append(conv_constructor(hidden_channels, hidden_channels, use_bias, keys[i + 1]))
-            layers.append(conv_constructor(hidden_channels, out_channels, use_final_bias, keys[-1]))
+                layers.append(
+                    conv_constructor(
+                        hidden_channels, hidden_channels, use_bias, keys[i + 1]
+                    )
+                )
+            layers.append(
+                conv_constructor(
+                    hidden_channels, out_channels, use_final_bias, keys[-1]
+                )
+            )
 
         self.layers = tuple(layers)
 

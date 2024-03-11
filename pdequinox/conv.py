@@ -5,7 +5,7 @@ Patch more padding modes into Equinox
 import itertools as it
 import math
 from collections.abc import Callable, Sequence
-from typing import Optional, TypeVar, Union, Any
+from typing import Any, Optional, TypeVar, Union
 
 import jax
 import jax.lax as lax
@@ -14,8 +14,6 @@ import jax.random as jrandom
 import numpy as np
 from equinox import Module, field
 from jaxtyping import Array, PRNGKeyArray
-
-
 
 _T = TypeVar("_T")
 
@@ -34,8 +32,10 @@ def _ntuple(n: int) -> Callable[[Union[_T, Sequence[_T]]], tuple[_T, ...]]:
 
     return parse
 
+
 def all_sequences(x: Union[Sequence[Any], Sequence[_T]]) -> bool:
     return all(isinstance(xi, Sequence) for xi in x)
+
 
 class MorePaddingConv(Module, strict=True):
     """General N-dimensional convolution."""
@@ -112,7 +112,7 @@ class MorePaddingConv(Module, strict=True):
                 f"`padding_mode` must be one of ['zeros', 'reflect', 'replicate', 'circular'],"
                 f" but got {padding_mode}."
             )
-        
+
         wkey, bkey = jrandom.split(key, 2)
 
         parse = _ntuple(num_spatial_dims)
@@ -217,6 +217,7 @@ class MorePaddingConv(Module, strict=True):
         if self.use_bias:
             x = x + self.bias
         return x
+
 
 class MorePaddingConvTranspose(Module, strict=True):
     """General N-dimensional transposed convolution."""
@@ -395,8 +396,8 @@ class MorePaddingConvTranspose(Module, strict=True):
         if self.padding_mode != "zeros":
             pre_dilation_padding = tuple(
                 (
-                    (p_l + (s-1)) // s,
-                    (p_r + (s-1)) // s,
+                    (p_l + (s - 1)) // s,
+                    (p_r + (s - 1)) // s,
                 )
                 for (p_l, p_r), s in zip(transpose_padding, self.stride)
             )
@@ -425,7 +426,6 @@ class MorePaddingConvTranspose(Module, strict=True):
             post_dilation_padding = self.padding
             x = x
 
-
         x = jnp.expand_dims(x, axis=0)
         x = lax.conv_general_dilated(
             lhs=x,
@@ -440,4 +440,3 @@ class MorePaddingConvTranspose(Module, strict=True):
         if self.use_bias:
             x = x + self.bias
         return x
-
