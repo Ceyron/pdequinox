@@ -3,6 +3,7 @@ from .physics_conv import (
     PhysicsConvTranspose,
 )
 # from .blocks import * # This is not a good practice, changed to submodule
+from .mlp import MLP
 from .convnet import ConvNet
 from .resnet import ResNet
 from .unet import UNet
