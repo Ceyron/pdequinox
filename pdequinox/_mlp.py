@@ -57,11 +57,11 @@ class MLP(eqx.Module):
         )
 
     def __call__(self, x):
-        if x.shape != self.in_shape:
+        if x.shape != self._in_shape:
             raise ValueError(
-                f"Input shape {x.shape} does not match expected shape {self.in_shape}. For batched operation use jax.vmap"
+                f"Input shape {x.shape} does not match expected shape {self._in_shape}. For batched operation use jax.vmap"
             )
         x_flat = x.flatten()
         x_flat = self.flat_mlp(x_flat)
-        x = x_flat.reshape(self.out_shape)
+        x = x_flat.reshape(self._out_shape)
         return x
