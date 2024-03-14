@@ -37,7 +37,7 @@ def all_sequences(x: Union[Sequence[Any], Sequence[_T]]) -> bool:
     return all(isinstance(xi, Sequence) for xi in x)
 
 
-class MorePaddingConv(Module, strict=True):
+class MorePaddingConv(Module):
     """General N-dimensional convolution."""
 
     num_spatial_dims: int = field(static=True)
@@ -219,7 +219,7 @@ class MorePaddingConv(Module, strict=True):
         return x
 
 
-class MorePaddingConvTranspose(Module, strict=True):
+class MorePaddingConvTranspose(Module):
     """General N-dimensional transposed convolution."""
 
     num_spatial_dims: int = field(static=True)
