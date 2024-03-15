@@ -47,6 +47,10 @@ class ClassicSpectralBlock(Block):
         x = self.activation(x)
         return x
 
+    @property
+    def receptive_field(self) -> tuple[tuple[float, float], ...]:
+        return self.spectral_conv.receptive_field
+
 
 class ClassicSpectralBlockFactory(BlockFactory):
     num_modes: Union[int, tuple[int, ...]]

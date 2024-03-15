@@ -4,6 +4,7 @@ import equinox as eqx
 import jax
 from jaxtyping import PRNGKeyArray
 
+from ._utils import sum_receptive_fields
 from .conv import PhysicsConv
 
 
@@ -85,3 +86,8 @@ class ConvNet(eqx.Module):
         for layer in self.layers[:-1]:
             x = self.activation(layer(x))
         return self.final_activation(self.layers[-1](x))
+
+    @property
+    def receptive_field(self) -> tuple[tuple[float, float], ...]:
+        individual_receptive_fields = (conv.receptive_field for conv in self.layers)
+        return sum_receptive_fields(individual_receptive_fields)

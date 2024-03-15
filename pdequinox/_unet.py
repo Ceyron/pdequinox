@@ -5,6 +5,7 @@ import jax.numpy as jnp
 import jax.random as jr
 from jaxtyping import PRNGKeyArray
 
+from ._utils import sum_receptive_fields
 from .blocks import (
     Block,
     BlockFactory,
@@ -187,3 +188,80 @@ class UNet(eqx.Module):
         x = self.projection(x)
 
         return x
+
+    @property
+    def receptive_field(self) -> tuple[tuple[float, float], ...]:
+        lifting_receptive_field = self.lifting.receptive_field
+        projection_receptive_fields = self.projection.receptive_field
+
+        down_receptive_fields = tuple(
+            block.receptive_field for block in self.down_sampling_blocks
+        )
+        left_receptive_fields = tuple(
+            block.receptive_field for block in self.left_arch_blocks
+        )
+        up_receptive_fields = tuple(
+            block.receptive_field for block in self.up_sampling_blocks
+        )
+        right_receptive_fields = tuple(
+            block.receptive_field for block in self.right_arch_blocks
+        )
+
+        spatial_reduction = tuple(
+            self.reduction_factor**level for level in range(0, self.num_levels + 1)
+        )
+
+        # Down block acts on the fan_in spatial resolution
+        scaled_down_receptive_field = tuple(
+            tuple(
+                (c_i_backward * r, c_i_forward * r)
+                for (c_i_backward, c_i_forward) in conv_receptive_field
+            )
+            for conv_receptive_field, r in zip(
+                down_receptive_fields, spatial_reduction[:-1]
+            )
+        )
+
+        # Left block acts on the fan_out spatial resolution
+        scaled_left_receptive_field = tuple(
+            tuple(
+                (c_i_backward * r, c_i_forward * r)
+                for (c_i_backward, c_i_forward) in conv_receptive_field
+            )
+            for conv_receptive_field, r in zip(
+                left_receptive_fields, spatial_reduction[1:]
+            )
+        )
+
+        # Up block acts on the fan_out spatial resolution
+        scaled_up_receptive_field = tuple(
+            tuple(
+                (c_i_backward * r, c_i_forward * r)
+                for (c_i_backward, c_i_forward) in conv_receptive_field
+            )
+            for conv_receptive_field, r in zip(
+                up_receptive_fields, spatial_reduction[1:]
+            )
+        )
+
+        # Right block acts on the fan_in spatial resolution
+        scaled_right_receptive_field = tuple(
+            tuple(
+                (c_i_backward * r, c_i_forward * r)
+                for (c_i_backward, c_i_forward) in conv_receptive_field
+            )
+            for conv_receptive_field, r in zip(
+                right_receptive_fields, spatial_reduction[:-1]
+            )
+        )
+
+        collection_of_receptive_fields = (
+            lifting_receptive_field,
+            *scaled_down_receptive_field,
+            *scaled_left_receptive_field,
+            *scaled_up_receptive_field,
+            *scaled_right_receptive_field,
+            projection_receptive_fields,
+        )
+
+        return sum_receptive_fields(collection_of_receptive_fields)

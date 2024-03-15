@@ -50,6 +50,10 @@ class SpectralConv(eqx.Module):
     def __call__(self, x: Float[Array, "C_i ..."]) -> Float[Array, "C_o ..."]:
         return spectral_conv_nd(x, self.weights_real, self.weights_imag, self.num_modes)
 
+    @property
+    def receptive_field(self) -> tuple[tuple[float, float], ...]:
+        return tuple(((jnp.inf, jnp.inf),) * self.num_spatial_dims)
+
 
 def spectral_conv_nd(
     input: Float[Array, "C_i ..."],

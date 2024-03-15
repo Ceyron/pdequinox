@@ -117,3 +117,13 @@ def extract_from_ensemble(ensemble, i):
     params_extracted = jtu.tree_map(lambda x: x[i], params)
     network_extracted = eqx.combine(params_extracted, static)
     return network_extracted
+
+
+def sum_receptive_fields(
+    receptive_fields: tuple[tuple[tuple[float, float], ...], ...]
+) -> tuple[tuple[float, float], ...]:
+    num_spatial_dims = len(receptive_fields[0])
+    return tuple(
+        tuple(sum(r[i][direction] for r in receptive_fields) for direction in range(2))
+        for i in range(num_spatial_dims)
+    )

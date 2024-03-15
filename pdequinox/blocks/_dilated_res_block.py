@@ -11,6 +11,7 @@ import equinox as eqx
 import jax
 from jaxtyping import PRNGKeyArray
 
+from .._utils import sum_receptive_fields
 from ..conv import PhysicsConv, PointwiseLinearConv
 
 
@@ -117,6 +118,13 @@ class DilatedResBlock(eqx.Module):
         x = x + x_skip
 
         return x
+
+    @property
+    def receptive_field(self) -> tuple[tuple[float, float], ...]:
+        individual_receptive_fields = tuple(
+            (conv.receptive_field for conv in self.conv_layers)
+        )
+        return sum_receptive_fields(individual_receptive_fields)
 
 
 class DilatedResBlockFactory(eqx.Module):

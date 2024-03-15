@@ -4,6 +4,7 @@ import equinox as eqx
 import jax.random as jr
 from jaxtyping import PRNGKeyArray
 
+from ._utils import sum_receptive_fields
 from .blocks import (
     Block,
     BlockFactory,
@@ -73,3 +74,15 @@ class ResNet(eqx.Module):
             x = block(x)
         x = self.projection(x)
         return x
+
+    @property
+    def receptive_field(self) -> tuple[tuple[float, float], ...]:
+        lifting_receptive_field = self.lifting.receptive_field
+        block_receptive_fields = tuple(block.receptive_field for block in self.blocks)
+        projection_receptive_field = self.projection.receptive_field
+        receptive_fields = (
+            (lifting_receptive_field,)
+            + block_receptive_fields
+            + (projection_receptive_field,)
+        )
+        return sum_receptive_fields(receptive_fields)

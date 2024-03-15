@@ -65,3 +65,7 @@ class MLP(eqx.Module):
         x_flat = self.flat_mlp(x_flat)
         x = x_flat.reshape(self._out_shape)
         return x
+
+    @property
+    def receptive_field(self) -> tuple[tuple[float, float], ...]:
+        return ((self.num_points, self.num_points),) * self.num_spatial_dims

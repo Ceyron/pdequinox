@@ -218,6 +218,17 @@ class MorePaddingConv(Module):
             x = x + self.bias
         return x
 
+    @property
+    def receptive_field(self) -> tuple[tuple[float, float], ...]:
+        """The receptive field of the convolutional kernel."""
+        return tuple(
+            (
+                ((k - 1) // 2) * d,
+                (k // 2) * d,
+            )
+            for k, d in zip(self.kernel_size, self.dilation)
+        )
+
 
 class MorePaddingConvTranspose(Module):
     """General N-dimensional transposed convolution."""
@@ -440,3 +451,14 @@ class MorePaddingConvTranspose(Module):
         if self.use_bias:
             x = x + self.bias
         return x
+
+    @property
+    def receptive_field(self) -> tuple[tuple[float, float], ...]:
+        """The receptive field of the transposed convolutional kernel."""
+        return tuple(
+            (
+                float(((k - 1) // 2) * d),
+                float((k // 2) * d),
+            )
+            for k, d in zip(self.kernel_size, self.dilation)
+        )

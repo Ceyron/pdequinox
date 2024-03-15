@@ -63,6 +63,20 @@ class ClassicResBlock(eqx.Module):
         x = self.activation(x)
         return x
 
+    @property
+    def receptive_field(self) -> tuple[tuple[float, float], ...]:
+        conv_1_receptive_field = self.conv_1.receptive_field
+        conv_2_receptive_field = self.conv_2.receptive_field
+        return tuple(
+            (
+                c_1_i_backward + c_2_i_backward,
+                c_1_i_forward + c_2_i_forward,
+            )
+            for (c_1_i_backward, c_1_i_forward), (c_2_i_backward, c_2_i_forward) in zip(
+                conv_1_receptive_field, conv_2_receptive_field
+            )
+        )
+
 
 class ClassicResBlockFactory(eqx.Module):
     kernel_size: int
