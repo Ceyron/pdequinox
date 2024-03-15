@@ -1,4 +1,4 @@
-from typing import Any, Callable, List
+from typing import Any, Callable, List, Optional
 
 import equinox as eqx
 import jax.numpy as jnp
@@ -29,6 +29,7 @@ class UNet(eqx.Module):
     projection: PhysicsConv
     reduction_factor: int
     num_levels: int
+    channel_multipliers: tuple[int, ...]
 
     def __init__(
         self,
@@ -42,6 +43,7 @@ class UNet(eqx.Module):
         key: PRNGKeyArray,
         reduction_factor: int = 2,
         boundary_mode: str,
+        channel_multipliers: Optional[tuple[int, ...]] = None,
         lifting_factory: BlockFactory = ClassicDoubleConvBlockFactory(),
         down_sampling_factory: BlockFactory = LinearConvDownBlockFactory(),
         left_arch_factory: BlockFactory = ClassicDoubleConvBlockFactory(),
@@ -54,6 +56,10 @@ class UNet(eqx.Module):
         num_levels define how deep the UNet goes. If set to 0, this will just be
         a classical conv net. If set to 1, this will be a single down and up
         sampling block etc.
+
+        Use the channel multipliers to adjust the channel growth over depth. If
+        set to None, the channels will grow by a factor of reduction_factor at
+        each level.
         """
         self.down_sampling_blocks = []
         self.left_arch_blocks = []
@@ -83,9 +89,19 @@ class UNet(eqx.Module):
             **boundary_kwargs,
         )
 
+        if channel_multipliers is not None:
+            if len(channel_multipliers) != num_levels:
+                raise ValueError("len(channel_multipliers) must match num_levels")
+        else:
+            channel_multipliers = tuple(
+                self.reduction_factor**i for i in range(1, num_levels + 1)
+            )
+
+        self.channel_multipliers = channel_multipliers
+
         channel_list = [
-            hidden_channels * self.reduction_factor**i for i in range(num_levels + 1)
-        ]
+            hidden_channels,
+        ] + [hidden_channels * m for m in channel_multipliers]
 
         for (
             fan_in,
