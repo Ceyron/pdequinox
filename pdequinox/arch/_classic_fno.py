@@ -13,11 +13,11 @@ class ClassicFNO(BlockNet):
         num_spatial_dims: int,
         in_channels: int,
         out_channels: int,
-        hidden_channels: int,
-        num_modes: int,
+        *,
+        hidden_channels: int = 32,
+        num_modes: int = 12,
         num_blocks: int = 4,
         activation: Callable = jax.nn.gelu,
-        *,
         key: PRNGKeyArray,
     ):
         """

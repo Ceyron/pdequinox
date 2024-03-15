@@ -1,4 +1,5 @@
 import jax
+import pytest
 
 import pdequinox as pdeqx
 
@@ -63,3 +64,15 @@ def test_instantiate():
         key=jax.random.PRNGKey(0),
         boundary_mode="periodic",
     )
+
+
+@pytest.mark.parametrize(
+    "arch",
+    [
+        pdeqx.arch.ConvNet,
+        pdeqx.arch.ClassicFNO,
+        pdeqx.arch.ClassicUNet,
+    ],
+)
+def test_default_config(arch):
+    arch(1, 2, 5, key=jax.random.PRNGKey(0))

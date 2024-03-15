@@ -2,6 +2,7 @@ from math import prod
 from typing import Callable
 
 import equinox as eqx
+import jax
 from jaxtyping import PRNGKeyArray
 
 
@@ -22,16 +23,16 @@ class MLP(eqx.Module):
     def __init__(
         self,
         num_spatial_dims: int,
-        num_points: int,
         in_channels: int,
         out_channels: int,
-        width_size: int,
-        depth: int,
-        activation: Callable,
+        *,
+        num_points: int,
+        width_size: int = 64,
+        depth: int = 3,
+        activation: Callable = jax.nn.relu,
         final_activation: Callable = _identity,
         use_bias: bool = True,
         use_final_bias: bool = True,
-        *,
         key: PRNGKeyArray,
     ):
         self.num_spatial_dims = num_spatial_dims
