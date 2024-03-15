@@ -50,6 +50,11 @@ class UNet(eqx.Module):
         projection_factory: BlockFactory = LinearChannelAdjustBlockFactory(),
         **boundary_kwargs,
     ):
+        """
+        num_levels define how deep the UNet goes. If set to 0, this will just be
+        a classical conv net. If set to 1, this will be a single down and up
+        sampling block etc.
+        """
         self.down_sampling_blocks = []
         self.left_arch_blocks = []
         self.up_sampling_blocks = []
@@ -79,7 +84,7 @@ class UNet(eqx.Module):
         )
 
         channel_list = [
-            hidden_channels * self.reduction_factor**i for i in range(num_levels)
+            hidden_channels * self.reduction_factor**i for i in range(num_levels + 1)
         ]
 
         for (
