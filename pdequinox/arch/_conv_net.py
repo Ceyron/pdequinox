@@ -4,8 +4,8 @@ import equinox as eqx
 import jax
 from jaxtyping import PRNGKeyArray
 
-from ._utils import sum_receptive_fields
-from .conv import PhysicsConv
+from .._utils import sum_receptive_fields
+from ..conv import PhysicsConv
 
 
 def _identity(x):
