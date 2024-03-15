@@ -3,11 +3,11 @@ from typing import Callable
 import jax
 from jaxtyping import PRNGKeyArray
 
-from .._resnet import ResNet
+from .._resnet import BlockNet
 from ..blocks import ClassicSpectralBlockFactory, LinearChannelAdjustBlockFactory
 
 
-class FNO(ResNet):
+class FNO(BlockNet):
     def __init__(
         self,
         num_spatial_dims: int,

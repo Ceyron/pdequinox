@@ -9,7 +9,7 @@ def test_instantiate():
     configurations.
     """
 
-    pdeqx.ResNet(
+    pdeqx.BlockNet(
         num_spatial_dims=1,
         in_channels=1,
         out_channels=1,

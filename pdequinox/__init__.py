@@ -1,7 +1,7 @@
 from . import arch, blocks, conv
 from ._convnet import ConvNet
 from ._mlp import MLP
-from ._resnet import ResNet
+from ._resnet import BlockNet
 from ._unet import UNet
 from ._utils import (
     ConstantEmbeddingMetadataNetwork,
@@ -17,7 +17,7 @@ __all__ = [
     "MLP",
     "PhysicsConv",
     "PhysicsConvTranspose",
-    "ResNet",
+    "BlockNet",
     "UNet",
     "ConstantEmbeddingMetadataNetwork",
     "count_parameters",
