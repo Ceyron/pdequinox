@@ -28,7 +28,7 @@ class UNet(eqx.Module):
     right_arch_blocks: List[Block]
     projection: PhysicsConv
     reduction_factor: int
-    levels: int
+    num_levels: int
 
     def __init__(
         self,
@@ -55,7 +55,7 @@ class UNet(eqx.Module):
         self.up_sampling_blocks = []
         self.right_arch_blocks = []
         self.reduction_factor = reduction_factor
-        self.levels = num_levels
+        self.num_levels = num_levels
 
         key, lifting_key, projection_key = jr.split(key, 3)
 
@@ -138,7 +138,7 @@ class UNet(eqx.Module):
     def __call__(self, x: Any) -> Any:
         spatial_shape = x.shape[1:]
         for dims in spatial_shape:
-            if dims % self.reduction_factor**self.levels != 0:
+            if dims % self.reduction_factor**self.num_levels != 0:
                 raise ValueError("Spatial dim issue")
 
         x = self.lifting(x)
