@@ -13,7 +13,7 @@ from .blocks import (
 )
 
 
-class BlockNet(eqx.Module):
+class BaseBlockNet(eqx.Module):
     lifting: Block
     blocks: List[Block]
     projection: Block

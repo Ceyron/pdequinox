@@ -1,6 +1,6 @@
 from . import arch, blocks, conv
-from ._block_net import BlockNet
-from ._u_net import UNet
+from ._block_net import BaseBlockNet
+from ._u_net import BaseUNet
 from ._utils import (
     ConstantEmbeddingMetadataNetwork,
     count_parameters,
@@ -10,8 +10,8 @@ from ._utils import (
 )
 
 __all__ = [
-    "BlockNet",
-    "UNet",
+    "BaseBlockNet",
+    "BaseUNet",
     "ConstantEmbeddingMetadataNetwork",
     "count_parameters",
     "cycling_dataloader",

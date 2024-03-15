@@ -17,7 +17,7 @@ from .blocks import (
 from .conv import PhysicsConv
 
 
-class UNet(eqx.Module):
+class BaseUNet(eqx.Module):
     """
     Uses convolution for downsampling instead of max pooling
     """
@@ -54,6 +54,8 @@ class UNet(eqx.Module):
         **boundary_kwargs,
     ):
         """
+        You are probably looking for pdequinox.arch.ClassicUNet.
+
         num_levels define how deep the UNet goes. If set to 0, this will just be
         a classical conv net. If set to 1, this will be a single down and up
         sampling block etc.
