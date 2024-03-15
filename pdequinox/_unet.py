@@ -148,7 +148,7 @@ class UNet(eqx.Module):
             self.right_arch_blocks.append(
                 right_arch_factory(
                     num_spatial_dims=num_spatial_dims,
-                    in_channels=self.reduction_factor * fan_in,
+                    in_channels=(fan_out // self.reduction_factor) + fan_in,
                     out_channels=fan_in,
                     activation=activation,
                     boundary_mode=boundary_mode,
