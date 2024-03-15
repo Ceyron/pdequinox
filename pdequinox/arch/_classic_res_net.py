@@ -3,7 +3,7 @@ from typing import Callable
 import jax
 from jaxtyping import PRNGKeyArray
 
-from .._block_net import BaseBlockNet
+from .._base_block_net import BaseBlockNet
 from ..blocks import ClassicResBlockFactory, LinearChannelAdjustBlockFactory
 
 

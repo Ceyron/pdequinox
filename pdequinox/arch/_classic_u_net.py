@@ -3,7 +3,7 @@ from typing import Callable
 import jax
 from jaxtyping import PRNGKeyArray
 
-from .._u_net import BaseUNet
+from .._base_u_net import BaseUNet
 
 
 # ToDo change to maxpool
