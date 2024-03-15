@@ -94,6 +94,7 @@ class UNet(eqx.Module):
             channel_list[:-1],
             channel_list[1:],
         ):
+            # If num_levels is 0, the loop will not run
             key, down_key, left_key, up_key, right_key = jr.split(key, 5)
             self.down_sampling_blocks.append(
                 down_sampling_factory(
@@ -150,6 +151,7 @@ class UNet(eqx.Module):
 
         skips = []
         for down, left in zip(self.down_sampling_blocks, self.left_arch_blocks):
+            # If num_levels is 0, the loop will not run
             skips.append(x)
             x = down(x)
             x = left(x)  # The last in the loop is the bottleneck block
@@ -158,6 +160,7 @@ class UNet(eqx.Module):
             reversed(self.up_sampling_blocks),
             reversed(self.right_arch_blocks),
         ):
+            # If num_levels is 0, the loop will not run
             skip = skips.pop()
             x = up(x)
             # Equinox models are by default single batch, hence the channels are
