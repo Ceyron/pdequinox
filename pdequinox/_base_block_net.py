@@ -34,6 +34,32 @@ class BaseBlockNet(eqx.Module):
         projection_factory: BlockFactory = LinearChannelAdjustBlockFactory(),
         **boundary_kwargs,
     ):
+        """
+        Generic constructor for block-based architectures like ResNets.
+
+        **Arguments:**
+
+        - `num_spatial_dims`: The number of spatial dimensions. For example
+            traditional convolutions for image processing have this set to `2`.
+        - `in_channels`: The number of input channels.
+        - `out_channels`: The number of output channels.
+        - `hidden_channels`: The number of channels in the hidden layers.
+        - `num_blocks`: The number of blocks to use. TODO add clarification
+        - `activation`: The activation function to use in the blocks.
+        - `key`: A `jax.random.PRNGKey` used to provide randomness for parameter
+            initialisation. (Keyword only argument.)
+        - `boundary_mode`: The boundary mode to use for the convolution.
+            (Keyword only argument)
+        - `lifting_factory`: The factory to use for the lifting block.
+            Default is `LinearChannelAdjustBlockFactory` which is simply a
+            linear 1x1 convolution for channel adjustment.
+        - `block_factory`: The factory to use for the blocks. Default is
+            `ClassicResBlockFactory` which is a classic ResNet block (with
+            postactivation)
+        - `projection_factory`: The factory to use for the projection block.
+            Default is `LinearChannelAdjustBlockFactory` which is simply a
+            linear 1x1 convolution for channel adjustment.
+        """
         subkey, key = jr.split(key)
         self.lifting = lifting_factory(
             num_spatial_dims=num_spatial_dims,
