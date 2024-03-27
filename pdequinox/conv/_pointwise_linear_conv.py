@@ -17,6 +17,22 @@ class PointwiseLinearConv(eqx.nn.Conv):
         key,
         zero_bias_init: bool = False,
     ):
+        """
+        General n-dimensional pointwise linear convolution (=1x1 convolution).
+        This is primarily used for channel adjustment.
+
+        **Arguments:**
+
+        - `num_spatial_dims`: The number of spatial dimensions. For example
+            traditional, convolutions for image processing have this set to `2`.
+        - `in_channels`: The number of input channels.
+        - `out_channels`: The number of output channels.
+        - `use_bias`: Whether to use a bias term. (Default: `True`)
+        - `key`: A `jax.random.PRNGKey` used to provide randomness for parameter
+            initialisation. (Keyword only argument.)
+        - `zero_bias_init`: Whether to initialise the bias to zero. (Default:
+            `False`)
+        """
         super().__init__(
             num_spatial_dims=num_spatial_dims,
             in_channels=in_channels,

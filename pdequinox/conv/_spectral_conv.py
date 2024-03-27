@@ -27,6 +27,21 @@ class SpectralConv(eqx.Module):
         *,
         key: PRNGKeyArray,
     ):
+        """
+        General n-dimensional spectral convolution on **real** fields.
+
+        **Arguments:**
+
+        - `num_spatial_dims`: The number of spatial dimensions. For example
+            traditional, convolutions for image processing have this set to `2`.
+        - `in_channels`: The number of input channels.
+        - `out_channels`: The number of output channels.
+        - `num_modes`: The number of modes to use in the fourier representation
+            of the input. If an integer is passed, the same number of modes will
+            be used for each spatial dimension.
+        - `key`: A `jax.random.PRNGKey` used to provide randomness for parameter
+            initialisation. (Keyword only argument.)
+        """
         if isinstance(num_modes, int):
             num_modes = (num_modes,) * num_spatial_dims
 
