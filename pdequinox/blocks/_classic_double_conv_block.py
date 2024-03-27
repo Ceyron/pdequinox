@@ -9,8 +9,6 @@ from ._base_block import Block, BlockFactory
 
 
 class ClassicDoubleConvBlock(Block):
-    """Also does channel adjustment"""
-
     conv_1: PhysicsConv
     norm_1: eqx.nn.GroupNorm
     conv_2: PhysicsConv
@@ -22,11 +20,11 @@ class ClassicDoubleConvBlock(Block):
         num_spatial_dims: int,
         in_channels: int,
         out_channels: int,
-        activation: Callable,
-        kernel_size: int = 3,
         *,
         boundary_mode: str,
         key: PRNGKeyArray,
+        activation: Callable = jax.nn.relu,
+        kernel_size: int = 3,
         use_norm: bool = True,
         num_groups: int = 1,  # for GroupNorm
         use_bias: bool = True,

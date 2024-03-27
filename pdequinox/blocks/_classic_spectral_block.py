@@ -17,12 +17,13 @@ class ClassicSpectralBlock(Block):
         num_spatial_dims: int,
         in_channels: int,
         out_channels: int,
-        num_modes: int,
-        activation: Callable,
         *,
+        key: PRNGKeyArray,
+        num_modes: int = 8,
+        # Uses gelu because it likely recovers more modes
+        activation: Callable = jax.nn.gelu,
         use_bias: bool = True,
         zero_bias_init: bool = False,
-        key: PRNGKeyArray,
     ):
         k_1, k_2 = jax.random.split(key)
         self.spectral_conv = SpectralConv(
