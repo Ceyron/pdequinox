@@ -61,6 +61,9 @@ class BaseBlockNet(eqx.Module):
             linear 1x1 convolution for channel adjustment.
         """
         subkey, key = jr.split(key)
+        if num_blocks < 1:
+            raise ValueError("num_blocks must be at least 1")
+
         self.lifting = lifting_factory(
             num_spatial_dims=num_spatial_dims,
             in_channels=in_channels,
