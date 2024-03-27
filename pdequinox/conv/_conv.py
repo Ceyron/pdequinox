@@ -376,7 +376,13 @@ class MorePaddingConvTranspose(Module):
         self.use_bias = use_bias
 
     @jax.named_scope("eqx.nn.ConvTranspose")
-    def __call__(self, x: Array, *, output_padding: Optional[Union[int, Sequence[int]]] = None, key: Optional[PRNGKeyArray] = None) -> Array:
+    def __call__(
+        self,
+        x: Array,
+        *,
+        output_padding: Optional[Union[int, Sequence[int]]] = None,
+        key: Optional[PRNGKeyArray] = None,
+    ) -> Array:
         """**Arguments:**
 
         - `x`: The input. Should be a JAX array of shape
@@ -397,7 +403,7 @@ class MorePaddingConvTranspose(Module):
                 f"Input to `ConvTranspose` needs to have rank {unbatched_rank},",
                 f" but input has shape {x.shape}.",
             )
-        
+
         if output_padding is None:
             output_padding = self.output_padding
 

@@ -56,7 +56,7 @@ class PhysicsConv(MorePaddingConv):
         This is a thin wrapper around `equinox.nn.Conv`.
 
         **Arguments:**
-        
+
         - `num_spatial_dims`: The number of spatial dimensions. For example
             traditional, convolutions for image processing have this set to `2`.
         - `in_channels`: The number of input channels.
