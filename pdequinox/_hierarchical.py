@@ -17,7 +17,7 @@ from .blocks import (
 from .conv import PhysicsConv
 
 
-class BaseUNet(eqx.Module):
+class Hierarchical(eqx.Module):
     """
     Uses convolution for downsampling instead of max pooling
     """

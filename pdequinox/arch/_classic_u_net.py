@@ -3,11 +3,11 @@ from typing import Callable
 import jax
 from jaxtyping import PRNGKeyArray
 
-from .._base_u_net import BaseUNet
+from .._hierarchical import Hierarchical
 
 
 # ToDo change to maxpool
-class ClassicUNet(BaseUNet):
+class ClassicUNet(Hierarchical):
     def __init__(
         self,
         num_spatial_dims: int,

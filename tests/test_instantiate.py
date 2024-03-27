@@ -10,7 +10,7 @@ def test_instantiate():
     configurations.
     """
 
-    pdeqx.BaseBlockNet(
+    pdeqx.Sequential(
         num_spatial_dims=1,
         in_channels=1,
         out_channels=1,
@@ -21,7 +21,7 @@ def test_instantiate():
         boundary_mode="periodic",
     )
 
-    pdeqx.BaseUNet(
+    pdeqx.Hierarchical(
         num_spatial_dims=1,
         in_channels=1,
         out_channels=1,

@@ -3,11 +3,11 @@ from typing import Callable
 import jax
 from jaxtyping import PRNGKeyArray
 
-from .._base_block_net import BaseBlockNet
+from .._sequential import Sequential
 from ..blocks import DilatedResBlockFactory, LinearChannelAdjustBlockFactory
 
 
-class DilatedResNet(BaseBlockNet):
+class DilatedResNet(Sequential):
     def __init__(
         self,
         num_spatial_dims: int,
