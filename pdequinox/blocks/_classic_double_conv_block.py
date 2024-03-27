@@ -31,6 +31,32 @@ class ClassicDoubleConvBlock(Block):
         zero_bias_init: bool = False,
         **boundary_kwargs,
     ):
+        """
+        Block that performs two sequential convolutions with activation and
+        optional group normalization in between.
+
+        **Arguments:**
+
+        - `num_spatial_dims`: The number of spatial dimensions. For example
+            traditional convolutions for image processing have this set to `2`.
+        - `in_channels`: The number of input channels.
+        - `out_channels`: The number of output channels.
+        - `boundary_mode`: The boundary mode to use for the convolution.
+            (Keyword only argument)
+        - `key`: A `jax.random.PRNGKey` used to provide randomness for parameter
+            initialisation. (Keyword only argument.)
+        - `activation`: The activation function to use after each convolution.
+            Default is `jax.nn.relu`.
+        - `kernel_size`: The size of the convolutional kernel. Default is `3`.
+        - `use_norm`: Whether to use group normalization. Default is `True`.
+        - `num_groups`: The number of groups to use for group normalization.
+            Default is `1`.
+        - `use_bias`: Whether to use bias in the convolutional layers. Default is
+            `True`.
+        - `zero_bias_init`: Whether to initialise the bias to zero. Default is
+            `False`.
+        """
+
         def conv_constructor(i, o, b, k):
             return PhysicsConv(
                 num_spatial_dims=num_spatial_dims,
@@ -81,11 +107,34 @@ class ClassicDoubleConvBlock(Block):
 
 
 class ClassicDoubleConvBlockFactory(BlockFactory):
-    kernel_size: int = 3
-    use_norm: bool = True
-    num_groups: int = 1
-    use_bias: bool = True
-    zero_bias_init: bool = False
+    def __init__(
+        self,
+        *,
+        kernel_size: int = 3,
+        use_norm: bool = True,
+        num_groups: int = 1,
+        use_bias: bool = True,
+        zero_bias_init: bool = False,
+    ):
+        """
+        Factory for creating `ClassicDoubleConvBlock` instances.
+
+        **Arguments:**
+
+        - `kernel_size`: The size of the convolutional kernel. Default is `3`.
+        - `use_norm`: Whether to use group normalization. Default is `True`.
+        - `num_groups`: The number of groups to use for group normalization.
+            Default is `1`.
+        - `use_bias`: Whether to use bias in the convolutional layers. Default is
+            `True`.
+        - `zero_bias_init`: Whether to initialise the bias to zero. Default is
+            `False`.
+        """
+        self.kernel_size = kernel_size
+        self.use_norm = use_norm
+        self.num_groups = num_groups
+        self.use_bias = use_bias
+        self.zero_bias_init = zero_bias_init
 
     def __call__(
         self,
