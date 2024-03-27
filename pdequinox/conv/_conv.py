@@ -376,13 +376,15 @@ class MorePaddingConvTranspose(Module):
         self.use_bias = use_bias
 
     @jax.named_scope("eqx.nn.ConvTranspose")
-    def __call__(self, x: Array, *, key: Optional[PRNGKeyArray] = None) -> Array:
+    def __call__(self, x: Array, *, output_padding: Optional[Union[int, Sequence[int]]] = None, key: Optional[PRNGKeyArray] = None) -> Array:
         """**Arguments:**
 
         - `x`: The input. Should be a JAX array of shape
             `(in_channels, dim_1, ..., dim_N)`, where `N = num_spatial_dims`.
         - `key`: Ignored; provided for compatibility with the rest of the Equinox API.
             (Keyword only argument.)
+        - `output_padding`: Additional padding for the output shape. If not provided,
+            the `output_padding` used in the initialisation is used.
 
         **Returns:**
 
@@ -395,11 +397,15 @@ class MorePaddingConvTranspose(Module):
                 f"Input to `ConvTranspose` needs to have rank {unbatched_rank},",
                 f" but input has shape {x.shape}.",
             )
+        
+        if output_padding is None:
+            output_padding = self.output_padding
+
         # Given by Relationship 14 of https://arxiv.org/abs/1603.07285
         transpose_padding = tuple(
             (d * (k - 1) - p0, d * (k - 1) - p1 + o)
             for k, (p0, p1), o, d in zip(
-                self.kernel_size, self.padding, self.output_padding, self.dilation
+                self.kernel_size, self.padding, output_padding, self.dilation
             )
         )
         # Decide how much has to pre-paded (for everything non "zeros" padding
@@ -419,7 +425,7 @@ class MorePaddingConvTranspose(Module):
                     p_r - pd_r * s + o,
                 )
                 for (p_l, p_r), (pd_l, pd_r), s, o in zip(
-                    self.padding, pre_dilation_padding, self.stride, self.output_padding
+                    self.padding, pre_dilation_padding, self.stride, output_padding
                 )
             )
             if self.padding_mode == "circular":
