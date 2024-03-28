@@ -35,7 +35,8 @@ class Sequential(eqx.Module):
         **boundary_kwargs,
     ):
         """
-        Generic constructor for sequential block-based architectures like ResNets.
+        Generic constructor for sequential block-based architectures like
+        ResNets.
 
         **Arguments:**
 
