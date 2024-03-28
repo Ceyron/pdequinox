@@ -32,6 +32,36 @@ class ClassicResBlock(eqx.Module):
         zero_bias_init: bool = False,
         **boundary_kwargs,
     ):
+        """
+        Classical Block of a ResNet with postactivation and optional group
+        normalization in between (Default: off)
+
+        If in_channels != out_channels, a bypass convolution (1x1 conv) and
+        group normalization (if `use_norm=True`) is added to the residual
+        connection.
+
+        **Arguments:**
+
+        - `num_spatial_dims`: The number of spatial dimensions. For example
+            traditional convolutions for image processing have this set to `2`.
+        - `in_channels`: The number of input channels.
+        - `out_channels`: The number of output channels.
+        - `boundary_mode`: The boundary mode to use for the convolution.
+            (Keyword only argument)
+        - `key`: A `jax.random.PRNGKey` used to provide randomness for parameter
+            initialisation. (Keyword only argument.)
+        - `activation`: The activation function to use after each convolution.
+            Default is `jax.nn.relu`.
+        - `kernel_size`: The size of the convolutional kernel. Default is `3`.
+        - `use_norm`: Whether to use group normalization. Default is `False`.
+        - `num_groups`: The number of groups to use for group normalization.
+            Default is `1`.
+        - `use_bias`: Whether to use bias in the convolutional layers. Default
+            is `True`.
+        - `zero_bias_init`: Whether to initialise the bias to zero. Default is
+            `False`.
+        """
+
         def conv_constructor(i, o, b, k):
             return PhysicsConv(
                 num_spatial_dims=num_spatial_dims,
@@ -123,6 +153,20 @@ class ClassicResBlockFactory(eqx.Module):
         use_bias: bool = True,
         zero_bias_init: bool = False,
     ):
+        """
+        Factory for creating `ClassicResBlock` instances.
+
+        **Arguments:**
+
+        - `kernel_size`: The size of the convolutional kernel. Default is `3`.
+        - `use_norm`: Whether to use group normalization. Default is `True`.
+        - `num_groups`: The number of groups to use for group normalization.
+            Default is `1`.
+        - `use_bias`: Whether to use bias in the convolutional layers. Default is
+            `True`.
+        - `zero_bias_init`: Whether to initialise the bias to zero. Default is
+            `False`.
+        """
         self.kernel_size = kernel_size
         self.use_norm = use_norm
         self.num_groups = num_groups
