@@ -53,13 +53,13 @@ class ClassicResBlock(eqx.Module):
             self.norm_1 = eqx.nn.GroupNorm(groups=num_groups, channels=out_channels)
         else:
             self.norm_1 = eqx.nn.Identity
-        
+
         self.conv_2 = conv_constructor(out_channels, out_channels, use_bias, k_2)
         if use_norm:
             self.norm_2 = eqx.nn.GroupNorm(groups=num_groups, channels=out_channels)
         else:
             self.norm_2 = eqx.nn.Identity
-        
+
         if out_channels != in_channels:
             bypass_conv_key, _ = jax.random.split(key)
             self.bypass_conv = PointwiseLinearConv(
@@ -78,7 +78,7 @@ class ClassicResBlock(eqx.Module):
         else:
             self.bypass_conv = eqx.nn.Identity()
             self.bypass_norm = eqx.nn.Identity()
-        
+
         self.activation = activation
 
     def __call__(self, x):

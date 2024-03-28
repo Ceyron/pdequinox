@@ -1,6 +1,6 @@
 from . import arch, blocks, conv
-from ._sequential import Sequential
 from ._hierarchical import Hierarchical
+from ._sequential import Sequential
 from ._utils import (
     ConstantEmbeddingMetadataNetwork,
     count_parameters,

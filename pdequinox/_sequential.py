@@ -67,12 +67,14 @@ class Sequential(eqx.Module):
         subkey, key = jr.split(key)
         if num_blocks < 1:
             raise ValueError("num_blocks must be at least 1")
-        
+
         if isinstance(hidden_channels, int):
             hidden_channels = (hidden_channels,) * (num_blocks + 1)
         else:
             if len(hidden_channels) != (num_blocks + 1):
-                raise ValueError("The list of hidden channels must be one longer than the number of blocks")
+                raise ValueError(
+                    "The list of hidden channels must be one longer than the number of blocks"
+                )
 
         self.lifting = lifting_factory(
             num_spatial_dims=num_spatial_dims,
