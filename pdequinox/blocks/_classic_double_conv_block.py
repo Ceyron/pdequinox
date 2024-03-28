@@ -107,6 +107,12 @@ class ClassicDoubleConvBlock(Block):
 
 
 class ClassicDoubleConvBlockFactory(BlockFactory):
+    kernel_size: int
+    use_norm: bool
+    num_groups: int
+    use_bias: bool
+    zero_bias_init: bool
+
     def __init__(
         self,
         *,
