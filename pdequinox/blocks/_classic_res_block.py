@@ -109,6 +109,8 @@ class ClassicResBlock(eqx.Module):
 
 class ClassicResBlockFactory(eqx.Module):
     kernel_size: int
+    use_norm: bool
+    num_groups: int
     use_bias: bool
     zero_bias_init: bool
 
@@ -116,10 +118,14 @@ class ClassicResBlockFactory(eqx.Module):
         self,
         kernel_size: int = 3,
         *,
+        use_norm: bool = False,
+        num_groups: int = 1,
         use_bias: bool = True,
         zero_bias_init: bool = False,
     ):
         self.kernel_size = kernel_size
+        self.use_norm = use_norm
+        self.num_groups = num_groups
         self.use_bias = use_bias
         self.zero_bias_init = zero_bias_init
 
@@ -140,6 +146,8 @@ class ClassicResBlockFactory(eqx.Module):
             out_channels,
             activation=activation,
             kernel_size=self.kernel_size,
+            use_norm=self.use_norm,
+            num_groups=self.num_groups,
             boundary_mode=boundary_mode,
             key=key,
             use_bias=self.use_bias,
