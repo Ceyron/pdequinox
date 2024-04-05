@@ -118,7 +118,7 @@ class ClassicResBlock(eqx.Module):
         x = self.activation(x)
         x = self.conv_2(x)
         x = self.norm_2(x)
-        x = x + x_skip
+        x = x + self.bypass_norm(self.bypass_conv(x_skip))
         x = self.activation(x)
         return x
 
