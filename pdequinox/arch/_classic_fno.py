@@ -21,9 +21,39 @@ class ClassicFNO(Sequential):
         key: PRNGKeyArray,
     ):
         """
-        Vanilla FNO
+        The vanilla Fourier Neural Operator very close to the original Li et al.
+        (2020) paper.
 
-        https://github.com/neuraloperator/neuraloperator/blob/af93f781d5e013f8ba5c52baa547f2ada304ffb0/fourier_1d.py#L62
+        Performs spectral convolution in Fourier to obtain global receptive
+        field.
+
+        Note that this architecture does not take a `boundary_mode` argument.
+        The authors argue that arbitrary boundary conditions can be learned.
+
+        **Arguments:**
+
+        - `num_spatial_dims`: The number of spatial dimensions. For example
+            traditional convolutions for image processing have this set to `2`.
+        - `in_channels`: The number of input channels.
+        - `out_channels`: The number of output channels.
+        - `hidden_channels`: The number of channels in the hidden layers.
+          Default
+            is `32`.
+        - `num_modes`: The number of modes to use in the Fourier basis. Think of
+            modes as the equivalence of kernel size for classical convolutions.
+            Default is `12`.
+        - `num_blocks`: The number of blocks to use. One block consists of one
+            spectral convolution with a byass by a 1x1 convolution, followed by
+            the activation function. Default is `4`.
+        - `activation`: The activation function to use in the blocks. Default is
+            `jax.nn.gelu`. This is often preferrable over `jax.nn.relu` because
+            it recovers more higher modes.
+        - `key`: A `jax.random.PRNGKey` used to provide randomness for parameter
+            initialisation. (Keyword only argument.)
+
+        See also the reference implementation in PyTorch:
+
+            https://github.com/neuraloperator/neuraloperator/blob/af93f781d5e013f8ba5c52baa547f2ada304ffb0/fourier_1d.py#L62
         """
         super().__init__(
             num_spatial_dims=num_spatial_dims,
