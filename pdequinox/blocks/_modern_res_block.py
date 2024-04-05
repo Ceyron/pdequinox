@@ -2,7 +2,8 @@
 Uses the modifications as in PDEArena:
 https://github.com/microsoft/pdearena/blob/22360a766387c3995220b4a1265a936ab9a81b88/pdearena/modules/twod_resnet.py#L15
 
-most importantly, it oes pre-activation instead of post-activation
+most importantly, it does pre-activation instead of post-activation (a
+re-ordering of the operations to allow for a clean bypass/residual connection)
 
 ToDo: check if we also need the no-bias in the bypass
 """
@@ -41,6 +42,42 @@ class ModernResBlock(eqx.Module):
         zero_bias_init: bool = False,
         **boundary_kwargs,
     ):
+        """
+        Block that performs two sequential convolutions with activation and
+        optional group normalization in between. The order of operations is
+        based on "pre-activation" to allow for a clean bypass/residual
+        connection.
+
+        If the number of input channels is different from the number of output
+        channels, a pointwise convolution (without bias) is used to match the
+        number of channels.
+
+        If `use_norm` is `True`, group normalization is used after each
+        convolution. If there is a convolution that matches the number of
+        channels, the bypass will also have group normalization.
+
+        **Arguments:**
+
+        - `num_spatial_dims`: The number of spatial dimensions. For example
+            traditional convolutions for image processing have this set to `2`.
+        - `in_channels`: The number of input channels.
+        - `out_channels`: The number of output channels.
+        - `boundary_mode`: The boundary mode to use for the convolution.
+            (Keyword only argument)
+        - `key`: A `jax.random.PRNGKey` used to provide randomness for parameter
+            initialisation. (Keyword only argument.)
+        - `activation`: The activation function to use after each convolution.
+            Default is `jax.nn.relu`.
+        - `kernel_size`: The size of the convolutional kernel. Default is `3`.
+        - `use_norm`: Whether to use group normalization. Default is `True`.
+        - `num_groups`: The number of groups to use for group normalization.
+            Default is `1`.
+        - `use_bias`: Whether to use bias in the convolutional layers. Default
+            is `True`.
+        - `zero_bias_init`: Whether to initialise the bias to zero. Default is
+            `False`.
+        """
+
         def conv_constructor(i, o, b, k):
             return PhysicsConv(
                 num_spatial_dims=num_spatial_dims,
@@ -130,6 +167,20 @@ class ModernResBlockFactory(eqx.Module):
         use_bias: bool = True,
         zero_bias_init: bool = False,
     ):
+        """
+        Factory for creating `ModernResBlock` instances.
+
+        **Arguments:**
+
+        - `kernel_size`: The size of the convolutional kernel. Default is `3`.
+        - `use_norm`: Whether to use group normalization. Default is `True`.
+        - `num_groups`: The number of groups to use for group normalization.
+            Default is `1`.
+        - `use_bias`: Whether to use bias in the convolutional layers. Default is
+            `True`.
+        - `zero_bias_init`: Whether to initialise the bias to zero. Default is
+            `False`.
+        """
         self.kernel_size = kernel_size
         self.use_norm = use_norm
         self.num_groups = num_groups
