@@ -82,13 +82,13 @@ class ClassicResBlock(eqx.Module):
         if use_norm:
             self.norm_1 = eqx.nn.GroupNorm(groups=num_groups, channels=out_channels)
         else:
-            self.norm_1 = eqx.nn.Identity
+            self.norm_1 = eqx.nn.Identity()
 
         self.conv_2 = conv_constructor(out_channels, out_channels, use_bias, k_2)
         if use_norm:
             self.norm_2 = eqx.nn.GroupNorm(groups=num_groups, channels=out_channels)
         else:
-            self.norm_2 = eqx.nn.Identity
+            self.norm_2 = eqx.nn.Identity()
 
         if out_channels != in_channels:
             bypass_conv_key, _ = jax.random.split(key)
