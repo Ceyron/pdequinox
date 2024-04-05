@@ -39,6 +39,39 @@ class DilatedResBlock(eqx.Module):
         zero_bias_init: bool = False,
         **boundary_kwargs,
     ):
+        """
+        Block that performs a sequence of convolutions with varying dilation
+        rates. Dilation refers to how many (virtual) zeros are inserted between
+        kernel elements, effectively resulting into a larger receptive field. A
+        bypass is added turning this block into a residual element.
+
+        **Arguments:**
+
+        - `num_spatial_dims`: The number of spatial dimensions. For example
+            traditional convolutions for image processing have this set to `2`.
+        - `in_channels`: The number of input channels.
+        - `out_channels`: The number of output channels.
+        - `boundary_mode`: The boundary mode to use for the convolution.
+            (Keyword only argument)
+        - `key`: A `jax.random.PRNGKey` used to provide randomness for parameter
+            initialisation. (Keyword only argument.)
+        - `activation`: The activation function to use after each convolution.
+            Default is `jax.nn.relu`.
+        - `kernel_size`: The size of the convolutional kernel. Default is `3`.
+        - `dilation_rates`: A sequence of integers. Their length identifies the
+            number of sequential convolutions performed. Each integer is the
+            dilation performed at that convolution. Typically, this list follows
+            the pattern of first increasing in dilation rate, and then
+            decreasing again. Default is `(1, 2, 4, 8, 4, 2, 1)`.
+        - `use_norm`: Whether to use group normalization. Default is `True`.
+        - `num_groups`: The number of groups to use for group normalization.
+            Default is `1`.
+        - `use_bias`: Whether to use bias in the convolutional layers. Default is
+            `True`.
+        - `zero_bias_init`: Whether to initialise the bias to zero. Default is
+            `False`.
+        """
+
         def conv_constructor(i, o, d, b, k):
             return PhysicsConv(
                 num_spatial_dims=num_spatial_dims,
@@ -145,6 +178,25 @@ class DilatedResBlockFactory(eqx.Module):
         use_bias: bool = True,
         zero_bias_init: bool = False,
     ):
+        """
+        Factory for creating `DilatedResBlock` instances.
+
+        **Arguments:**
+
+        - `kernel_size`: The size of the convolutional kernel. Default is `3`.
+        - `dilation_rates`: A sequence of integers. Their length identifies the
+            number of sequential convolutions performed. Each integer is the
+            dilation performed at that convolution. Typically, this list follows
+            the pattern of first increasing in dilation rate, and then
+            decreasing again. Default is `(1, 2, 4, 8, 4, 2, 1)`.
+        - `use_norm`: Whether to use group normalization. Default is `True`.
+        - `num_groups`: The number of groups to use for group normalization.
+            Default is `1`.
+        - `use_bias`: Whether to use bias in the convolutional layers. Default is
+            `True`.
+        - `zero_bias_init`: Whether to initialise the bias to zero. Default is
+            `False`.
+        """
         self.kernel_size = kernel_size
         self.dilation_rates = dilation_rates
         self.use_norm = use_norm
