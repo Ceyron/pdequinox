@@ -9,9 +9,31 @@ LinearConvDownBlock = PhysicsConv
 
 
 class LinearConvDownBlockFactory(BlockFactory):
-    kernel_size: int = 3
-    factor: int = 2
-    use_bias: bool = True
+    kernel_size: int
+    factor: int
+    use_bias: bool
+
+    def __init__(
+        self,
+        *,
+        kernel_size: int = 3,
+        factor: int = 2,
+        use_bias: bool = True,
+    ):
+        """
+        Factory for creating `LinearConvDownBlock` instances.
+
+        **Arguments:**
+
+        - `kernel_size`: The size of the convolutional kernel. Default is `3`.
+        - `factor`: The downsampling factor. Default is `2`. This will become
+            the stride of the convolution.
+        - `use_bias`: Whether to use bias after the convolution. Default
+            is `True`.
+        """
+        self.kernel_size = kernel_size
+        self.factor = factor
+        self.use_bias = use_bias
 
     def __call__(
         self,

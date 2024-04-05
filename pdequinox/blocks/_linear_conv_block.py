@@ -9,8 +9,26 @@ LinearConvBlock = PhysicsConv
 
 
 class LinearConvBlockFactory(BlockFactory):
-    kernel_size: int = 3
-    use_bias: bool = True
+    kernel_size: int
+    use_bias: bool
+
+    def __init__(
+        self,
+        *,
+        kernel_size: int = 3,
+        use_bias: bool = True,
+    ):
+        """
+        Factory for creating `LinearConvBlock` instances.
+
+        **Arguments:**
+
+        - `kernel_size`: The size of the convolutional kernel. Default is `3`.
+        - `use_bias`: Whether to use bias in the convolutional layers. Default is
+            `True`.
+        """
+        self.kernel_size = kernel_size
+        self.use_bias = use_bias
 
     def __call__(
         self,

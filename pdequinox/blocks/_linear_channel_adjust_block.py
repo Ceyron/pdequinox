@@ -9,8 +9,25 @@ LinearChannelAdjustBlock = PointwiseLinearConv
 
 
 class LinearChannelAdjustBlockFactory(BlockFactory):
-    use_bias: bool = True
-    zero_bias_init: bool = False
+    use_bias: bool
+    zero_bias_init: bool
+
+    def __init__(
+        self,
+        *,
+        use_bias: bool = True,
+        zero_bias_init: bool = False,
+    ):
+        """
+        Factory for creating `LinearChannelAdjustBlock` instances.
+
+        **Arguments:**
+
+        - `use_bias`: Whether to use a bias in the convolution.
+        - `zero_bias_init`: Whether to initialise the bias to zero.
+        """
+        self.use_bias = use_bias
+        self.zero_bias_init = zero_bias_init
 
     def __call__(
         self,
