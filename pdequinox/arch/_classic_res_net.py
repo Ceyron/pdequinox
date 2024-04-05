@@ -16,6 +16,7 @@ class ClassicResNet(Sequential):
         *,
         hidden_channels: int = 32,
         num_blocks: int = 6,
+        use_norm: bool = False,
         activation: Callable = jax.nn.relu,
         boundary_mode: str = "periodic",
         key: PRNGKeyArray,
@@ -38,6 +39,7 @@ class ClassicResNet(Sequential):
                 zero_bias_init=False,
             ),
             block_factory=ClassicResBlockFactory(
+                use_norm=use_norm,
                 use_bias=True,
                 zero_bias_init=False,
             ),
