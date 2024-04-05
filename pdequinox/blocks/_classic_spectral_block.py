@@ -47,7 +47,7 @@ class ClassicSpectralBlock(Block):
             can be N//2+1, with N being the number of spatial points. Think of
             it as the analogy of the kernel size.
         - `use_bias`: Whether to use a bias in the bypass convolution. Default
-          `True`.
+            `True`.
         - `zero_bias_init`: Whether to initialise the bias to zero. Default is
             `False`.
         """
@@ -100,7 +100,7 @@ class ClassicSpectralBlockFactory(BlockFactory):
             can be N//2+1, with N being the number of spatial points. Think of
             it as the analogy of the kernel size.
         - `use_bias`: Whether to use a bias in the bypass convolution. Default
-          `True`.
+            `True`.
         - `zero_bias_init`: Whether to initialise the bias to zero. Default is
             `False`.
         """
