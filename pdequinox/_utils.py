@@ -119,6 +119,14 @@ def extract_from_ensemble(ensemble, i):
     return network_extracted
 
 
+def combine_to_ensemble(networks: list[eqx.Module]):
+    _, static = eqx.partition(networks[0], eqx.is_array)
+    params = [eqx.filter(network, eqx.is_array) for network in networks]
+    params_combined = jtu.tree_map(lambda *x: jnp.stack(x), *params)
+    ensemble = eqx.combine(params_combined, static)
+    return ensemble
+
+
 def sum_receptive_fields(
     receptive_fields: tuple[tuple[tuple[float, float], ...], ...]
 ) -> tuple[tuple[float, float], ...]:
