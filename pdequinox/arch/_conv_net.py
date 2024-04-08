@@ -36,7 +36,37 @@ class ConvNet(eqx.Module):
         **boundary_kwargs,
     ):
         """
-        Depth denotes how many hidden layers there are
+        A simple feed-forward convolutional neural network.
+
+        **Arguments:**
+
+        - `num_spatial_dims`: The number of spatial dimensions. For example
+            traditional convolutions for image processing have this set to `2`.
+        - `in_channels`: The number of input channels.
+        - `out_channels`: The number of output channels.
+        - `hidden_channels`: The number of channels in the hidden layers.
+            Default is `16`.
+        - `depth`: The number of hidden layers. Default is `10`. If `depth ==
+            0`, there will only be one **linear** convolution from the input
+            channels to the output channels. Hence, `depth` denotes the number
+            of hidden layers. The number of convolutions performed is `depth +
+            1`.
+        - `activation`: The activation function to use in the hidden layers.
+            Default is `jax.nn.relu`.
+        - `kernel_size`: The size of the convolutional kernel. Default is `3`.
+        - `final_activation`: The activation function to use in the final layer.
+            Default is the identity function.
+        - `use_bias`: If `True`, uses bias in the hidden layers. Default is
+            `True`.
+        - `use_final_bias`: If `True`, uses bias in the final layer. Default is
+            `True`.
+        - `boundary_mode`: The boundary mode to use. Default is `periodic`.
+        - `key`: A `jax.random.PRNGKey` used to provide randomness for parameter
+            initialisation. (Keyword only argument.)
+        - `zero_bias_init`: If `True`, initialises the bias to zero. Default is
+            `False`.
+        - `boundary_kwargs`: Additional keyword arguments to pass to the boundary
+            condition factory.
         """
 
         self.activation = activation
