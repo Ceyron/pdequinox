@@ -23,7 +23,24 @@ class ModernResNet(Sequential):
         **boundary_kwargs,
     ):
         """
-        Modern ResNet
+        Modern ResNet using pre-activation residual blocks. Based on the
+        implementation of PDEArena.
+
+        **Arguments:**
+
+        - `num_spatial_dims`: The number of spatial dimensions. For example
+            traditional convolutions for image processing have this set to `2`.
+        - `in_channels`: The number of input channels.
+        - `out_channels`: The number of output channels.
+        - `hidden_channels`: The number of channels in the hidden layers.
+            Default is `32`.
+        - `num_blocks`: The number of blocks to use. Default is `6`.
+        - `use_norm`: If `True`, uses group norm.
+        - `activation`: The activation function to use in the blocks. Default is
+            `jax.nn.relu`.
+        - `key`: A `jax.random.PRNGKey` used to provide randomness for parameter
+            initialisation. (Keyword only argument.)
+        - `boundary_mode`: The boundary mode to use. Default is `periodic`.
         """
         super().__init__(
             num_spatial_dims=num_spatial_dims,
