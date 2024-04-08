@@ -64,3 +64,11 @@ network can select its boundary mode out of the following options:
 
 For higher dimensional problems, it is assumed that the mode is the same for all
 boundaries.
+
+### Boundary condition
+
+All major modes of boundary conditions on physical fields are supported. Note
+however, how the boundary condition changes what is considered a degree of
+freedom
+
+![](img/three_boundary_conditions.svg)
