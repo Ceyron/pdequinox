@@ -6,6 +6,8 @@ most often encountered in autoregressive learning; built on top of
 
 They are designed to map between states (=discretized functions).
 
+    ! boundary modes so far only in homoegenous mode (homogeneous dirichlet & neumann, and periodic)
+
 ### Constructors
 
 You find many common architectures in the `pdequinox.arch` submodule. They build
