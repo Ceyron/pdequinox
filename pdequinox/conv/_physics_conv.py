@@ -93,15 +93,19 @@ class PhysicsConv(MorePaddingConv):
             If they are an integer then the same kernel size / stride / dilation
             will be used along every spatial dimension.
         """
-        if boundary_mode.lower() != "periodic":
-            raise ValueError(
-                f"Only 'periodic' boundary mode is supported, got {boundary_mode}"
-            )
         self.boundary_mode = boundary_mode.lower()
         self.boundary_kwargs = boundary_kwargs
 
-        if boundary_mode == "periodic":
+        if self.boundary_mode == "periodic":
             padding_mode = "circular"
+        elif self.boundary_mode == "dirichlet":
+            padding_mode = "zeros"
+        elif self.boundary_mode == "neumann":
+            padding_mode = "reflect"
+        else:
+            raise ValueError(
+                f"Only 'periodic', 'dirichlet', 'neumann' boundary modes are supported, got {boundary_mode}"
+            )
 
         super().__init__(
             num_spatial_dims=num_spatial_dims,
@@ -212,15 +216,19 @@ class PhysicsConvTranspose(MorePaddingConvTranspose):
             and [this report](https://arxiv.org/abs/1603.07285) for a nice
             reference.
         """
-        if boundary_mode.lower() != "periodic":
-            raise ValueError(
-                f"Only 'periodic' boundary mode is supported, got {boundary_mode}"
-            )
         self.boundary_mode = boundary_mode.lower()
         self.boundary_kwargs = boundary_kwargs
 
-        if boundary_mode == "periodic":
+        if self.boundary_mode == "periodic":
             padding_mode = "circular"
+        elif self.boundary_mode == "dirichlet":
+            padding_mode = "zeros"
+        elif self.boundary_mode == "neumann":
+            padding_mode = "reflect"
+        else:
+            raise ValueError(
+                f"Only 'periodic', 'dirichlet', 'neumann' boundary modes are supported, got {boundary_mode}"
+            )
 
         super().__init__(
             num_spatial_dims=num_spatial_dims,
