@@ -446,7 +446,13 @@ class MorePaddingConvTranspose(Module):
                     f" but got {self.padding_mode}."
                 )
         else:
-            post_dilation_padding = self.padding
+            post_dilation_padding = tuple(
+                (
+                    p_l,
+                    p_r + o,
+                )
+                for (p_l, p_r), o in zip(self.padding, output_padding)
+            )
             x = x
 
         x = jnp.expand_dims(x, axis=0)
