@@ -119,5 +119,7 @@ class ConvNet(eqx.Module):
 
     @property
     def receptive_field(self) -> tuple[tuple[float, float], ...]:
-        individual_receptive_fields = (conv.receptive_field for conv in self.layers)
+        individual_receptive_fields = tuple(
+            conv.receptive_field for conv in self.layers
+        )
         return sum_receptive_fields(individual_receptive_fields)
