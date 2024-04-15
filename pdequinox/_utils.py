@@ -8,6 +8,19 @@ from jaxtyping import Array, PRNGKeyArray, PyTree
 
 
 class ConstantEmbeddingMetadataNetwork(eqx.Module):
+    """
+    Wrap a equinox Module based on a convolutional format (channels,
+    *spatial_dims) to take an additional scalar argument which will be
+    concatenated to the other's input channel as a constant field.
+
+    **Arguments:**
+
+    - `network`: eqx.Module. The network to be wrapped (which has a
+        convolutional input structure)
+    - `normalization_factor`: float. The scalar used to normalize the input to
+        ensure its order of magnitude is similar to the other inputs.
+    """
+
     network: eqx.Module
     normalization_factor: float
 
