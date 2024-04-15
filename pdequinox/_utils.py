@@ -130,6 +130,40 @@ def cycling_dataloader(
     key: PRNGKeyArray,
     return_info: bool = False,
 ):
+    """
+    A generator for looping over the data in batches for a fixed number of
+    steps.
+
+    It performs as many epochs (one full iteration over the data) as needed to
+    produce `num_steps` batches. Note that one batch will never contain data
+    from two epochs. Internally, this generator uses the `dataloader` generator.
+    Hence, if `batch_size` is chosen larger than the length of batch axis in the
+    leaf arrays of `data`, the batch will be of the size of the data.
+
+    For a supervised learning problem use
+
+    ```python
+
+    cycling_dataloader(
+        (inputs, targets), batch_size=batch_size, num_steps=num_steps, key=key,
+    )
+
+    ```
+
+    **Arguments:**
+
+    - `data`: Union[PyTree, Array]. The data to be looped over. This must be
+        JAX-compatible PyTree; in the easiest case an array. Each leaf array in
+        the PyTree must be array-like with a leading a batch axis. These leading
+        batch axes must be identical for all leafs.
+    - `batch_size`: int. The size of the minibatches. (keyword-based argument)
+    - `num_steps`: int. The number of steps to loop over the data.
+      (keyword-based argument)
+    - `key`: JAX PRNGKey. The key to be used for shuffling the data; required
+        for reproducible randomness. (keyword-based argument)
+    - `return_info`: bool. Whether to return the epoch and batch indices in
+        addition to the data. (keyword-based argument)
+    """
     epoch_id = 0
     total_step_id = 0
 
