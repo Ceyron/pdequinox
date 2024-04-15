@@ -123,7 +123,7 @@ def cycling_dataloader(
     data: Union[PyTree, Array],
     *,
     batch_size: int,
-    n_steps: int,
+    num_steps: int,
     key: PRNGKeyArray,
     return_info: bool = False,
 ):
@@ -136,7 +136,7 @@ def cycling_dataloader(
         for batch_id, sub_data in enumerate(
             dataloader(data, batch_size=batch_size, key=subkey)
         ):
-            if total_step_id == n_steps:
+            if total_step_id == num_steps:
                 return
 
             if return_info:
