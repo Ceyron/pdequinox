@@ -216,7 +216,20 @@ def extract_from_ensemble(ensemble: eqx.Module, i: int):
     return network_extracted
 
 
-def combine_to_ensemble(networks: list[eqx.Module]):
+def combine_to_ensemble(networks: list[eqx.Module]) -> eqx.Module:
+    """
+    Given a list of multiple equinox Modules of the same PyTree structure
+    combine them into an essemble (to have the weight arrays with an additional
+    batch/ensemble axis).
+
+    **Arguments:**
+
+    - `networks`: list[eqx.Module]. The networks to be combined.
+
+    **Returns:**
+
+    - `ensemble`: eqx.Module. The ensemble of networks.
+    """
     _, static = eqx.partition(networks[0], eqx.is_array)
     params = [eqx.filter(network, eqx.is_array) for network in networks]
     params_combined = jtu.tree_map(lambda *x: jnp.stack(x), *params)
@@ -227,6 +240,26 @@ def combine_to_ensemble(networks: list[eqx.Module]):
 def sum_receptive_fields(
     receptive_fields: tuple[tuple[tuple[float, float], ...], ...]
 ) -> tuple[tuple[float, float], ...]:
+    """
+    Given a list of receptive fields (each a tuple of tuples of floats) sum them
+    up to get the total receptive field.
+
+    The receptive field is a structure with three nested tuples. The outer-most
+    tuple refers to the collection of receptive fields to be added up. The
+    mid-level tuple is over the number of spatial dimensions; this can be of
+    length one, two, or three. The inner-most tuple always contains two floats
+    representing the receptive field in downward and upward direction.
+
+    **Arguments:**
+
+    - `receptive_fields`: tuple[tuple[tuple[float, float], ...], ...]. The
+        receptive fields to be summed up.
+
+    **Returns:**
+
+    - `total_receptive_field`: tuple[tuple[float, float], ...]. The total
+        receptive field.
+    """
     num_spatial_dims = len(receptive_fields[0])
     return tuple(
         tuple(sum(r[i][direction] for r in receptive_fields) for direction in range(2))
