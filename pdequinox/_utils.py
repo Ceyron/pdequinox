@@ -9,7 +9,7 @@ from jaxtyping import Array, PRNGKeyArray, PyTree
 
 class ConstantEmbeddingMetadataNetwork(eqx.Module):
     """
-    Wrap a equinox Module based on a convolutional format (channels,
+    Wrap an equinox Module based on a convolutional format (channels,
     *spatial_dims) to take an additional scalar argument which will be
     concatenated to the other's input channel as a constant field.
 
@@ -56,6 +56,10 @@ class ConstantEmbeddingMetadataNetwork(eqx.Module):
 
 
 def count_parameters(model: eqx.Module):
+    """
+    Count parameters in an equinox Module (this includes the
+    architectures of PDEquinox).
+    """
     return sum(p.size for p in jtu.tree_leaves(eqx.filter(model, eqx.is_array)))
 
 
@@ -66,9 +70,29 @@ def dataloader(
     key: PRNGKeyArray,
 ):
     """
-    Loop generator over the data. The data can be a PyTree or an Array. For
-    supervised learning problems you can also hand over a tuple of Arrays
-    (=PyTree).
+    A generator for looping over the data in batches.
+
+    The data is shuffled before looping. The length is based on how many
+    minibatches are needed to loop over the data once (n_samples // batch_size +
+    1). In deep learning terminology, one looping over the dataloader represents
+    one epoch.
+
+    For a supervised learning problem use
+
+    ```python dataloader(
+        (inputs, targets), batch_size=batch_size, key=key,
+    )
+    ```
+
+    **Arguments:**
+
+    - `data`: Union[PyTree, Array]. The data to be looped over. This must be
+        JAX-compatible PyTree; in the easiest case an array. Each leaf array in
+        the PyTree must be array-like with a leading a batch axis. These leading
+        batch axes must be identical for all leafs.
+    - `batch_size`: int. The size of the minibatches. (keyword-based argument)
+    - `key`: JAX PRNGKey. The key to be used for shuffling the data; required
+        for reproducible randomness. (keyword-based argument)
     """
 
     n_samples_list = [a.shape[0] for a in jtu.tree_leaves(data)]
