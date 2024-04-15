@@ -79,9 +79,12 @@ def dataloader(
 
     For a supervised learning problem use
 
-    ```python dataloader(
+    ```python
+
+    dataloader(
         (inputs, targets), batch_size=batch_size, key=key,
     )
+
     ```
 
     **Arguments:**
