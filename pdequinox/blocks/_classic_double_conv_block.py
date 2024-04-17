@@ -160,5 +160,10 @@ class ClassicDoubleConvBlockFactory(BlockFactory):
             activation=activation,
             boundary_mode=boundary_mode,
             key=key,
+            kernel_size=self.kernel_size,
+            use_norm=self.use_norm,
+            num_groups=self.num_groups,
+            use_bias=self.use_bias,
+            zero_bias_init=self.zero_bias_init,
             **boundary_kwargs,
         )
