@@ -223,8 +223,8 @@ class MorePaddingConv(Module):
         """The receptive field of the convolutional kernel."""
         return tuple(
             (
-                ((k - 1) // 2) * d,
-                (k // 2) * d,
+                float(((k - 1) // 2) * d),
+                float((k // 2) * d),
             )
             for k, d in zip(self.kernel_size, self.dilation)
         )
