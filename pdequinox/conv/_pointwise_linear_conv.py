@@ -45,8 +45,7 @@ class PointwiseLinearConv(eqx.nn.Conv):
             key=key,
         )
         if use_bias and zero_bias_init:
-            zero_bias = jnp.zeros_like(self.conv.bias)
-            self.conv = eqx.tree_at(lambda leaf: leaf.bias, self.conv, zero_bias)
+            self.bias = jnp.zeros_like(self.bias)
 
     @property
     def receptive_field(self) -> tuple[tuple[float, float], ...]:
