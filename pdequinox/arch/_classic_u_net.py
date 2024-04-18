@@ -76,11 +76,11 @@ class ClassicUNet(Hierarchical):
                 use_norm=use_norm,
             ),
             down_sampling_factory=LinearConvDownBlockFactory(),
-            left_arch_factory=ClassicDoubleConvBlockFactory(
+            left_arc_factory=ClassicDoubleConvBlockFactory(
                 use_norm=use_norm,
             ),
             up_sampling_factory=LinearConvUpBlockFactory(),
-            right_arch_factory=ClassicDoubleConvBlockFactory(
+            right_arc_factory=ClassicDoubleConvBlockFactory(
                 use_norm=use_norm,
             ),
             projection_factory=LinearChannelAdjustBlockFactory(),

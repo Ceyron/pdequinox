@@ -89,11 +89,11 @@ class ModernUNet(Hierarchical):
                 use_norm=use_norm,
             ),
             down_sampling_factory=LinearConvDownBlockFactory(),
-            left_arch_factory=ModernResBlockFactory(
+            left_arc_factory=ModernResBlockFactory(
                 use_norm=use_norm,
             ),
             up_sampling_factory=LinearConvUpBlockFactory(),
-            right_arch_factory=ModernResBlockFactory(
+            right_arc_factory=ModernResBlockFactory(
                 use_norm=use_norm,
             ),
             projection_factory=LinearChannelAdjustBlockFactory(),
