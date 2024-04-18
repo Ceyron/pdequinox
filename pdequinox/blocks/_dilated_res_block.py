@@ -5,7 +5,7 @@ https://github.com/microsoft/pdearena/blob/22360a766387c3995220b4a1265a936ab9a81
 but correctly does the channel matching
 """
 
-from typing import Callable
+from typing import Callable, Literal
 
 import equinox as eqx
 import jax
@@ -28,7 +28,7 @@ class DilatedResBlock(eqx.Module):
         in_channels: int,
         out_channels: int,
         *,
-        boundary_mode: str,
+        boundary_mode: Literal["periodic", "dirichlet", "neumann"],
         key,
         activation: Callable = jax.nn.relu,
         kernel_size: int = 3,
@@ -208,7 +208,7 @@ class DilatedResBlockFactory(eqx.Module):
         out_channels: int,
         activation: Callable,
         *,
-        boundary_mode: str,
+        boundary_mode: Literal["periodic", "dirichlet", "neumann"],
         key: PRNGKeyArray,
     ) -> DilatedResBlock:
         return DilatedResBlock(

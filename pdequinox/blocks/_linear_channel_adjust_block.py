@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Literal
 
 from jaxtyping import PRNGKeyArray
 
@@ -36,7 +36,7 @@ class LinearChannelAdjustBlockFactory(BlockFactory):
         out_channels: int,
         activation: Callable,  # unused
         *,
-        boundary_mode: str,  # unused
+        boundary_mode: Literal["periodic", "dirichlet", "neumann"],  # unused
         key: PRNGKeyArray,
         # unused
     ):

@@ -1,4 +1,4 @@
-from typing import Callable, Union
+from typing import Callable, Literal, Union
 
 import jax
 from jaxtyping import PRNGKeyArray
@@ -115,7 +115,7 @@ class ClassicSpectralBlockFactory(BlockFactory):
         out_channels: int,
         activation: Callable,
         *,
-        boundary_mode: str,  # unused
+        boundary_mode: Literal["periodic", "dirichlet", "neumann"],  # unused
         key: PRNGKeyArray,
         # unused
     ):

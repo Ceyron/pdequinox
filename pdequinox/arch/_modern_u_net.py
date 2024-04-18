@@ -1,4 +1,4 @@
-from typing import Callable, Optional
+from typing import Callable, Literal, Optional
 
 import jax
 from jaxtyping import PRNGKeyArray
@@ -26,7 +26,7 @@ class ModernUNet(Hierarchical):
         use_norm: bool = True,
         activation: Callable = jax.nn.relu,
         key: PRNGKeyArray,
-        boundary_mode: str = "periodic",
+        boundary_mode: Literal["periodic", "dirichlet", "neumann"] = "periodic",
     ):
         """
         A modern UNet version close to the ones used by Gupta & Brandstetter

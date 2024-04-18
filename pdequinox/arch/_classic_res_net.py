@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Literal
 
 import jax
 from jaxtyping import PRNGKeyArray
@@ -18,7 +18,7 @@ class ClassicResNet(Sequential):
         num_blocks: int = 6,
         use_norm: bool = False,
         activation: Callable = jax.nn.relu,
-        boundary_mode: str = "periodic",
+        boundary_mode: Literal["periodic", "dirichlet", "neumann"] = "periodic",
         key: PRNGKeyArray,
     ):
         """

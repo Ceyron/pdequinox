@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Callable
+from typing import Callable, Literal
 
 import equinox as eqx
 from jaxtyping import PRNGKeyArray
@@ -18,7 +18,7 @@ class BlockFactory(eqx.Module, ABC):
         out_channels: int,
         activation: Callable,
         *,
-        boundary_mode: str,
+        boundary_mode: Literal["periodic", "dirichlet", "neumann"],
         key: PRNGKeyArray,
     ) -> Block:
         """

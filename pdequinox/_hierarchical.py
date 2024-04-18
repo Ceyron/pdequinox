@@ -1,4 +1,4 @@
-from typing import Any, Callable, List, Optional
+from typing import Any, Callable, List, Literal, Optional
 
 import equinox as eqx
 import jax.numpy as jnp
@@ -41,7 +41,7 @@ class Hierarchical(eqx.Module):
         activation: Callable,
         key: PRNGKeyArray,
         reduction_factor: int = 2,
-        boundary_mode: str,
+        boundary_mode: Literal["periodic", "dirichlet", "neumann"],
         channel_multipliers: Optional[tuple[int, ...]] = None,
         lifting_factory: BlockFactory = ClassicDoubleConvBlockFactory(),
         down_sampling_factory: BlockFactory = LinearConvDownBlockFactory(),

@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Literal
 
 from jaxtyping import PRNGKeyArray
 
@@ -42,7 +42,7 @@ class LinearConvDownBlockFactory(BlockFactory):
         out_channels: int,
         activation: Callable,  # unused
         *,
-        boundary_mode: str,
+        boundary_mode: Literal["periodic", "dirichlet", "neumann"],
         key: PRNGKeyArray,
     ):
         return LinearConvDownBlock(

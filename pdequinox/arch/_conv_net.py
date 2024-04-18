@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Literal
 
 import equinox as eqx
 import jax
@@ -30,7 +30,7 @@ class ConvNet(eqx.Module):
         final_activation: Callable = _identity,
         use_bias: bool = True,
         use_final_bias: bool = True,
-        boundary_mode: str = "periodic",
+        boundary_mode: Literal["periodic", "dirichlet", "neumann"] = "periodic",
         key: PRNGKeyArray,
         zero_bias_init: bool = False,
     ):

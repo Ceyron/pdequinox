@@ -1,5 +1,5 @@
 from collections.abc import Sequence
-from typing import Union
+from typing import Literal, Union
 
 import jax.numpy as jnp
 from equinox import field
@@ -27,7 +27,7 @@ def compute_same_padding(
 
 
 class PhysicsConv(MorePaddingConv):
-    boundary_mode: str = field(static=True)
+    boundary_mode: Literal["periodic", "dirichlet", "neumann"] = field(static=True)
 
     def __init__(
         self,
@@ -42,7 +42,7 @@ class PhysicsConv(MorePaddingConv):
         use_bias: bool = True,
         *,
         key: PRNGKeyArray,
-        boundary_mode: str,
+        boundary_mode: Literal["periodic", "dirichlet", "neumann"],
         zero_bias_init: bool = False,
     ):
         """
@@ -119,7 +119,7 @@ class PhysicsConv(MorePaddingConv):
 
 
 class PhysicsConvTranspose(MorePaddingConvTranspose):
-    boundary_mode: str = field(static=True)
+    boundary_mode: Literal["periodic", "dirichlet", "neumann"] = field(static=True)
 
     def __init__(
         self,
@@ -135,7 +135,7 @@ class PhysicsConvTranspose(MorePaddingConvTranspose):
         use_bias: bool = True,
         *,
         key: PRNGKeyArray,
-        boundary_mode: str,
+        boundary_mode: Literal["periodic", "dirichlet", "neumann"],
         zero_bias_init: bool = False,
     ):
         """

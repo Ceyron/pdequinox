@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Literal
 
 import jax
 from jaxtyping import PRNGKeyArray
@@ -19,7 +19,7 @@ class DilatedResNet(Sequential):
         dilation_rates: tuple[int, ...] = (1, 2, 4, 8, 4, 2, 1),
         use_norm: bool = True,
         activation: Callable = jax.nn.relu,
-        boundary_mode: str = "periodic",
+        boundary_mode: Literal["periodic", "dirichlet", "neumann"] = "periodic",
         key: PRNGKeyArray,
     ):
         """

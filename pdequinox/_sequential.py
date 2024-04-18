@@ -1,4 +1,4 @@
-from typing import Callable, List, Sequence, Union
+from typing import Callable, List, Literal, Sequence, Union
 
 import equinox as eqx
 import jax.random as jr
@@ -28,7 +28,7 @@ class Sequential(eqx.Module):
         num_blocks: int,
         activation: Callable,
         key: PRNGKeyArray,
-        boundary_mode: str,
+        boundary_mode: Literal["periodic", "dirichlet", "neumann"],
         lifting_factory: BlockFactory = LinearChannelAdjustBlockFactory(),
         block_factory: BlockFactory = ClassicResBlockFactory(),
         projection_factory: BlockFactory = LinearChannelAdjustBlockFactory(),

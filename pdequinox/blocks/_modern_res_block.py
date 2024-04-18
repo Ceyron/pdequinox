@@ -8,7 +8,7 @@ re-ordering of the operations to allow for a clean bypass/residual connection)
 ToDo: check if we also need the no-bias in the bypass
 """
 
-from typing import Callable
+from typing import Callable, Literal
 
 import equinox as eqx
 import jax
@@ -32,7 +32,7 @@ class ModernResBlock(eqx.Module):
         in_channels: int,
         out_channels: int,
         *,
-        boundary_mode: str,
+        boundary_mode: Literal["periodic", "dirichlet", "neumann"],
         key,
         activation: Callable = jax.nn.relu,
         kernel_size: int = 3,
@@ -197,7 +197,7 @@ class ModernResBlockFactory(eqx.Module):
         out_channels: int,
         activation: Callable,
         *,
-        boundary_mode: str,
+        boundary_mode: Literal["periodic", "dirichlet", "neumann"],
         key: PRNGKeyArray,
     ):
         return ModernResBlock(

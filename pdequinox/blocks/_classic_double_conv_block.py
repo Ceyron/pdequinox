@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Literal
 
 import equinox as eqx
 import jax
@@ -21,7 +21,7 @@ class ClassicDoubleConvBlock(Block):
         in_channels: int,
         out_channels: int,
         *,
-        boundary_mode: str,
+        boundary_mode: Literal["periodic", "dirichlet", "neumann"],
         key: PRNGKeyArray,
         activation: Callable = jax.nn.relu,
         kernel_size: int = 3,
@@ -147,7 +147,7 @@ class ClassicDoubleConvBlockFactory(BlockFactory):
         out_channels: int,
         activation: Callable,
         *,
-        boundary_mode: str,
+        boundary_mode: Literal["periodic", "dirichlet", "neumann"],
         key: PRNGKeyArray,
     ):
         return ClassicDoubleConvBlock(

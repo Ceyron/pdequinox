@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Literal
 
 import jax
 from jaxtyping import PRNGKeyArray
@@ -24,7 +24,7 @@ class ClassicUNet(Hierarchical):
         use_norm: bool = True,
         activation: Callable = jax.nn.relu,
         key: PRNGKeyArray,
-        boundary_mode: str = "periodic",
+        boundary_mode: Literal["periodic", "dirichlet", "neumann"] = "periodic",
     ):
         """
         The vanilla UNet archiecture very close to the original Ronneberger et
