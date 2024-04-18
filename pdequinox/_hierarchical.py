@@ -20,12 +20,13 @@ from .conv import PhysicsConv
 class Hierarchical(eqx.Module):
     lifting: Block
     down_sampling_blocks: List[Block]
-    left_arch_blocks: List[Block]  # Includes the bottleneck
+    left_arch_blocks: List[List[Block]]  # Includes the bottleneck
     up_sampling_blocks: List[Block]
-    right_arch_blocks: List[Block]
+    right_arch_blocks: List[List[Block]]
     projection: PhysicsConv
     reduction_factor: int
     num_levels: int
+    num_blocks: int
     channel_multipliers: tuple[int, ...]
 
     def __init__(
@@ -35,6 +36,7 @@ class Hierarchical(eqx.Module):
         out_channels: int,
         hidden_channels: int,
         num_levels: int,
+        num_blocks: int,
         activation: Callable,
         *,
         key: PRNGKeyArray,
@@ -55,6 +57,10 @@ class Hierarchical(eqx.Module):
 
         Hierarchical architectures us a number of different spatial resolutions.
         The lower the resolution, the wider the receptive field of convolutions.
+
+        Allows to increase the number of blocks per level via the `num_blocks`
+        argument. This will be identical for the left arc (=encoder) and the
+        right arc (=decoder). **No multi-skip** as in PDEArena.
 
         **Arguments:**
 
@@ -155,6 +161,10 @@ class Hierarchical(eqx.Module):
             hidden_channels,
         ] + [hidden_channels * m for m in channel_multipliers]
 
+        if num_blocks < 1:
+            raise ValueError("num_blocks must be at least 1")
+        self.num_blocks = num_blocks
+
         for (
             fan_in,
             fan_out,
@@ -175,7 +185,10 @@ class Hierarchical(eqx.Module):
                     **boundary_kwargs,
                 )
             )
-            self.left_arch_blocks.append(
+
+            this_level_left_arch_blocks = []
+            # The first block changes the number of channels
+            this_level_left_arch_blocks.append(
                 left_arch_factory(
                     num_spatial_dims=num_spatial_dims,
                     in_channels=fan_in,
@@ -186,6 +199,21 @@ class Hierarchical(eqx.Module):
                     **boundary_kwargs,
                 )
             )
+            for _ in range(num_blocks - 1):
+                this_level_left_arch_blocks.append(
+                    left_arch_factory(
+                        num_spatial_dims=num_spatial_dims,
+                        # All subsequent blocks have the same number of channels
+                        in_channels=fan_out,
+                        out_channels=fan_out,
+                        activation=activation,
+                        boundary_mode=boundary_mode,
+                        key=left_key,
+                        **boundary_kwargs,
+                    )
+                )
+            self.left_arch_blocks.append(this_level_left_arch_blocks)
+
             self.up_sampling_blocks.append(
                 up_sampling_factory(
                     num_spatial_dims=num_spatial_dims,
@@ -197,10 +225,14 @@ class Hierarchical(eqx.Module):
                     **boundary_kwargs,
                 )
             )
-            self.right_arch_blocks.append(
+
+            this_level_right_arch_blocks = []
+            # The first block changes the number of channels, and operates
+            # together with incoming skip connection
+            this_level_right_arch_blocks.append(
                 right_arch_factory(
                     num_spatial_dims=num_spatial_dims,
-                    in_channels=(fan_out // self.reduction_factor) + fan_in,
+                    in_channels=fan_out // self.reduction_factor + fan_in,
                     out_channels=fan_in,
                     activation=activation,
                     boundary_mode=boundary_mode,
@@ -208,6 +240,20 @@ class Hierarchical(eqx.Module):
                     **boundary_kwargs,
                 )
             )
+            for _ in range(num_blocks - 1):
+                # All subsequent blocks have the same number of channels
+                this_level_right_arch_blocks.append(
+                    right_arch_factory(
+                        num_spatial_dims=num_spatial_dims,
+                        in_channels=fan_in,
+                        out_channels=fan_in,
+                        activation=activation,
+                        boundary_mode=boundary_mode,
+                        key=right_key,
+                        **boundary_kwargs,
+                    )
+                )
+            self.right_arch_blocks.append(this_level_right_arch_blocks)
 
     def __call__(self, x: Any) -> Any:
         spatial_shape = x.shape[1:]
@@ -218,13 +264,16 @@ class Hierarchical(eqx.Module):
         x = self.lifting(x)
 
         skips = []
-        for down, left in zip(self.down_sampling_blocks, self.left_arch_blocks):
+        for down, left_list in zip(self.down_sampling_blocks, self.left_arch_blocks):
             # If num_levels is 0, the loop will not run
             skips.append(x)
             x = down(x)
-            x = left(x)  # The last in the loop is the bottleneck block
 
-        for up, right in zip(
+            # The last in the loop is the bottleneck block
+            for left in left_list:
+                x = left(x)
+
+        for up, right_list in zip(
             reversed(self.up_sampling_blocks),
             reversed(self.right_arch_blocks),
         ):
@@ -234,7 +283,8 @@ class Hierarchical(eqx.Module):
             # Equinox models are by default single batch, hence the channels are
             # at axis=0
             x = jnp.concatenate((skip, x), axis=0)
-            x = right(x)
+            for right in right_list:
+                x = right(x)
 
         x = self.projection(x)
 
@@ -249,13 +299,15 @@ class Hierarchical(eqx.Module):
             block.receptive_field for block in self.down_sampling_blocks
         )
         left_receptive_fields = tuple(
-            block.receptive_field for block in self.left_arch_blocks
+            tuple(block.receptive_field for block in block_list)
+            for block_list in self.left_arch_blocks
         )
         up_receptive_fields = tuple(
             block.receptive_field for block in self.up_sampling_blocks
         )
         right_receptive_fields = tuple(
-            block.receptive_field for block in self.right_arch_blocks
+            tuple(block.receptive_field for block in block_list)
+            for block_list in self.right_arch_blocks
         )
 
         spatial_reduction = tuple(
@@ -279,9 +331,10 @@ class Hierarchical(eqx.Module):
                 (c_i_backward * r, c_i_forward * r)
                 for (c_i_backward, c_i_forward) in conv_receptive_field
             )
-            for conv_receptive_field, r in zip(
+            for conv_receptive_field_list, r in zip(
                 left_receptive_fields, spatial_reduction[1:]
             )
+            for conv_receptive_field in conv_receptive_field_list
         )
 
         # Up block acts on the fan_out spatial resolution
@@ -301,9 +354,10 @@ class Hierarchical(eqx.Module):
                 (c_i_backward * r, c_i_forward * r)
                 for (c_i_backward, c_i_forward) in conv_receptive_field
             )
-            for conv_receptive_field, r in zip(
+            for conv_receptive_field_list, r in zip(
                 right_receptive_fields, spatial_reduction[:-1]
             )
+            for conv_receptive_field in conv_receptive_field_list
         )
 
         collection_of_receptive_fields = (

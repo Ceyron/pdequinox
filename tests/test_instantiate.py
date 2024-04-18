@@ -27,6 +27,7 @@ def test_instantiate():
         out_channels=1,
         hidden_channels=32,
         num_levels=3,
+        num_blocks=1,
         activation=jax.nn.relu,
         key=jax.random.PRNGKey(0),
         boundary_mode="periodic",

@@ -67,6 +67,7 @@ class ClassicUNet(Hierarchical):
             out_channels=out_channels,
             hidden_channels=hidden_channels,
             num_levels=num_levels,
+            num_blocks=1,
             activation=activation,
             key=key,
             boundary_mode=boundary_mode,
