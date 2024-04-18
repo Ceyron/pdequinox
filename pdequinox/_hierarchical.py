@@ -77,6 +77,8 @@ class Hierarchical(eqx.Module):
             be a classical conv net. If set to 1, this will be a single down and
             up sampling block etc. The total number of resolutions are
             `num_levels + 1`.
+        - `num_blocks`: The number of blocks to use at each level. (Also affects
+            the number of blocks in the bottleneck.)
         - `activation`: The activation function to use in the blocks.
         - `key`: A `jax.random.PRNGKey` used to provide randomness for parameter
             initialisation. (Keyword only argument.)
