@@ -35,8 +35,8 @@ class LinearConvBlockFactory(BlockFactory):
         num_spatial_dims: int,
         in_channels: int,
         out_channels: int,
-        activation: Callable,  # unused
         *,
+        activation: Callable,  # unused
         boundary_mode: Literal["periodic", "dirichlet", "neumann"],
         key: PRNGKeyArray,
     ):

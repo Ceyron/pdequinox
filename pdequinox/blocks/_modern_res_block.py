@@ -195,8 +195,8 @@ class ModernResBlockFactory(eqx.Module):
         num_spatial_dims: int,
         in_channels: int,
         out_channels: int,
-        activation: Callable,
         *,
+        activation: Callable,
         boundary_mode: Literal["periodic", "dirichlet", "neumann"],
         key: PRNGKeyArray,
     ):
