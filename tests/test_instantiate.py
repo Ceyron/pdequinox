@@ -76,6 +76,7 @@ def test_instantiate():
         pdeqx.arch.ClassicResNet,
         pdeqx.arch.DilatedResNet,
         pdeqx.arch.ModernResNet,
+        pdeqx.arch.ModernUNet,
     ],
 )
 def test_default_config(arch):

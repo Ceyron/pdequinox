@@ -101,6 +101,7 @@ def test_block_factory_with_dummy_input(block_factory, num_spatial_dims):
             pdeqx.arch.ConvNet,
             pdeqx.arch.DilatedResNet,
             pdeqx.arch.ModernResNet,
+            pdeqx.arch.ModernUNet,
         ]
         for D in [1, 2, 3]
     ],

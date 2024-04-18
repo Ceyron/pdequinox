@@ -10,6 +10,7 @@ from ._conv_net import ConvNet
 from ._dilated_res_net import DilatedResNet
 from ._mlp import MLP
 from ._modern_res_net import ModernResNet
+from ._modern_u_net import ModernUNet
 
 __all__ = [
     "ClassicFNO",
@@ -19,4 +20,5 @@ __all__ = [
     "ClassicUNet",
     "MLP",
     "ModernResNet",
+    "ModernUNet",
 ]
