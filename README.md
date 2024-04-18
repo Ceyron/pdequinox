@@ -8,6 +8,16 @@ They are designed to map between states (=discretized functions).
 
     ! boundary modes so far only in homoegenous mode (homogeneous dirichlet & neumann, and periodic)
 
+### TODOs
+
+* Explain more nicely why we need factories for each block
+* Maybe change exclusively homogeneous boundary conditions??? (then we could
+  exclude the boundary kwargs of all blocks)
+  * We could also change to the typing with a literal
+* re-arrange the parameter count example (according to Georg's hints)
+* think about whether we really need inf receptive field for the FNO
+* add some modern versions of FNOs (RFNO, FFNO, GFNO)
+
 ### Constructors
 
 You find many common architectures in the `pdequinox.arch` submodule. They build
