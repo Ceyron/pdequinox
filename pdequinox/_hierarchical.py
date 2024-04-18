@@ -51,10 +51,10 @@ class Hierarchical(eqx.Module):
     ):
         """
         Generic constructor for hierarchical block-based architectures like
-        UNets. (For the classic UNet, use `pdequinox.arch.ClassicUNet` instead.
+        UNets. (For the classic UNet, use `pdequinox.arch.ClassicUNet` instead.)
 
         Hierarchical architectures us a number of different spatial resolutions.
-        The lower the resolution, the wider the receptive of convolutions.
+        The lower the resolution, the wider the receptive field of convolutions.
 
         **Arguments:**
 
