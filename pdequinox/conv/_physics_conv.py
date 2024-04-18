@@ -28,7 +28,6 @@ def compute_same_padding(
 
 class PhysicsConv(MorePaddingConv):
     boundary_mode: str = field(static=True)
-    boundary_kwargs: dict = field(static=True)
 
     def __init__(
         self,
@@ -45,13 +44,11 @@ class PhysicsConv(MorePaddingConv):
         key: PRNGKeyArray,
         boundary_mode: str,
         zero_bias_init: bool = False,
-        **boundary_kwargs,
     ):
         """
         General n-dimensional convolution with "same" padding to operate on
         fields. Allows to choose a `boundary_mode` affecting the type of padding
-        used. No option to set the padding. Some boundary modes may require
-        additional `boundary_kwargs`.
+        used. No option to set the padding.
 
         This is a thin wrapper around `equinox.nn.Conv`.
 
@@ -79,9 +76,6 @@ class PhysicsConv(MorePaddingConv):
             supported. (Keyword only argument.)
         - `zero_bias_init`: Whether to initialise the bias to zero. (Keyword
             only argument.)
-        - `boundary_kwargs`: Additional keyword arguments to pass to the
-          boundary
-            padding function. (Keyword only argument.)
 
         !!! info
 
@@ -94,7 +88,6 @@ class PhysicsConv(MorePaddingConv):
             will be used along every spatial dimension.
         """
         self.boundary_mode = boundary_mode.lower()
-        self.boundary_kwargs = boundary_kwargs
 
         if self.boundary_mode == "periodic":
             padding_mode = "circular"
@@ -127,7 +120,6 @@ class PhysicsConv(MorePaddingConv):
 
 class PhysicsConvTranspose(MorePaddingConvTranspose):
     boundary_mode: str = field(static=True)
-    boundary_kwargs: dict = field(static=True)
 
     def __init__(
         self,
@@ -145,13 +137,11 @@ class PhysicsConvTranspose(MorePaddingConvTranspose):
         key: PRNGKeyArray,
         boundary_mode: str,
         zero_bias_init: bool = False,
-        **boundary_kwargs,
     ):
         """
         General n-dimensional transposed convolution with "same" padding to
         operate on fields. Allows to choose a `boundary_mode` affecting the type
-        of padding used. No option to set the padding. Some boundary modes may
-        require additional `boundary_kwargs`.
+        of padding used. No option to set the padding.
 
         This is a thin wrapper around `equinox.nn.ConvTranspose`.
 
@@ -180,9 +170,6 @@ class PhysicsConvTranspose(MorePaddingConvTranspose):
             supported. (Keyword only argument.)
         - `zero_bias_init`: Whether to initialise the bias to zero. (Keyword
             only argument.)
-        - `boundary_kwargs`: Additional keyword arguments to pass to the
-          boundary
-            padding function. (Keyword only argument.)
 
         !!! info
 
@@ -217,7 +204,6 @@ class PhysicsConvTranspose(MorePaddingConvTranspose):
             reference.
         """
         self.boundary_mode = boundary_mode.lower()
-        self.boundary_kwargs = boundary_kwargs
 
         if self.boundary_mode == "periodic":
             padding_mode = "circular"

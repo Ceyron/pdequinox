@@ -53,7 +53,6 @@ class LinearConvUpBlockFactory(BlockFactory):
         *,
         boundary_mode: str,
         key: PRNGKeyArray,
-        **boundary_kwargs,
     ):
         return LinearConvUpBlock(
             num_spatial_dims=num_spatial_dims,
@@ -65,5 +64,4 @@ class LinearConvUpBlockFactory(BlockFactory):
             boundary_mode=boundary_mode,
             use_bias=self.use_bias,
             key=key,
-            **boundary_kwargs,
         )

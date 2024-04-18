@@ -40,7 +40,6 @@ class ModernResBlock(eqx.Module):
         num_groups: int = 1,  # for GroupNorm
         use_bias: bool = True,
         zero_bias_init: bool = False,
-        **boundary_kwargs,
     ):
         """
         Block that performs two sequential convolutions with activation and
@@ -90,7 +89,6 @@ class ModernResBlock(eqx.Module):
                 use_bias=b,
                 zero_bias_init=zero_bias_init,
                 key=k,
-                **boundary_kwargs,
             )
 
         conv_1_key, conv_2_key, key = jax.random.split(key, 3)
@@ -201,7 +199,6 @@ class ModernResBlockFactory(eqx.Module):
         *,
         boundary_mode: str,
         key: PRNGKeyArray,
-        **boundary_kwargs,
     ):
         return ModernResBlock(
             num_spatial_dims=num_spatial_dims,
@@ -215,5 +212,4 @@ class ModernResBlockFactory(eqx.Module):
             num_groups=self.num_groups,
             use_bias=self.use_bias,
             zero_bias_init=self.zero_bias_init,
-            **boundary_kwargs,
         )

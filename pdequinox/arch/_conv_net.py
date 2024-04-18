@@ -33,7 +33,6 @@ class ConvNet(eqx.Module):
         boundary_mode: str = "periodic",
         key: PRNGKeyArray,
         zero_bias_init: bool = False,
-        **boundary_kwargs,
     ):
         """
         A simple feed-forward convolutional neural network.
@@ -65,8 +64,6 @@ class ConvNet(eqx.Module):
             initialisation. (Keyword only argument.)
         - `zero_bias_init`: If `True`, initialises the bias to zero. Default is
             `False`.
-        - `boundary_kwargs`: Additional keyword arguments to pass to the boundary
-            condition factory.
         """
 
         self.activation = activation
@@ -86,7 +83,6 @@ class ConvNet(eqx.Module):
                 zero_bias_init=zero_bias_init,
                 boundary_mode=boundary_mode,
                 key=k,
-                **boundary_kwargs,
             )
 
         layers = []

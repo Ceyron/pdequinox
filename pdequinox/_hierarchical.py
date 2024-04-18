@@ -49,7 +49,6 @@ class Hierarchical(eqx.Module):
         up_sampling_factory: BlockFactory = LinearConvUpBlockFactory(),
         right_arc_factory: BlockFactory = ClassicDoubleConvBlockFactory(),
         projection_factory: BlockFactory = LinearChannelAdjustBlockFactory(),
-        **boundary_kwargs,
     ):
         """
         Generic constructor for hierarchical block-based architectures like
@@ -137,7 +136,6 @@ class Hierarchical(eqx.Module):
             activation=activation,
             boundary_mode=boundary_mode,
             key=lifting_key,
-            **boundary_kwargs,
         )
         self.projection = projection_factory(
             num_spatial_dims=num_spatial_dims,
@@ -146,7 +144,6 @@ class Hierarchical(eqx.Module):
             activation=activation,
             boundary_mode=boundary_mode,
             key=projection_key,
-            **boundary_kwargs,
         )
 
         if channel_multipliers is not None:
@@ -184,7 +181,6 @@ class Hierarchical(eqx.Module):
                     activation=activation,
                     boundary_mode=boundary_mode,
                     key=down_key,
-                    **boundary_kwargs,
                 )
             )
 
@@ -198,7 +194,6 @@ class Hierarchical(eqx.Module):
                     activation=activation,
                     boundary_mode=boundary_mode,
                     key=left_key,
-                    **boundary_kwargs,
                 )
             )
             for _ in range(num_blocks - 1):
@@ -211,7 +206,6 @@ class Hierarchical(eqx.Module):
                         activation=activation,
                         boundary_mode=boundary_mode,
                         key=left_key,
-                        **boundary_kwargs,
                     )
                 )
             self.left_arc_blocks.append(this_level_left_arc_blocks)
@@ -224,7 +218,6 @@ class Hierarchical(eqx.Module):
                     activation=activation,
                     boundary_mode=boundary_mode,
                     key=up_key,
-                    **boundary_kwargs,
                 )
             )
 
@@ -239,7 +232,6 @@ class Hierarchical(eqx.Module):
                     activation=activation,
                     boundary_mode=boundary_mode,
                     key=right_key,
-                    **boundary_kwargs,
                 )
             )
             for _ in range(num_blocks - 1):
@@ -252,7 +244,6 @@ class Hierarchical(eqx.Module):
                         activation=activation,
                         boundary_mode=boundary_mode,
                         key=right_key,
-                        **boundary_kwargs,
                     )
                 )
             self.right_arc_blocks.append(this_level_right_arc_blocks)

@@ -32,7 +32,6 @@ class Sequential(eqx.Module):
         lifting_factory: BlockFactory = LinearChannelAdjustBlockFactory(),
         block_factory: BlockFactory = ClassicResBlockFactory(),
         projection_factory: BlockFactory = LinearChannelAdjustBlockFactory(),
-        **boundary_kwargs,
     ):
         """
         Generic constructor for sequential block-based architectures like
@@ -83,7 +82,6 @@ class Sequential(eqx.Module):
             activation=activation,
             boundary_mode=boundary_mode,
             key=subkey,
-            **boundary_kwargs,
         )
         self.blocks = []
         for fan_in, fan_out in zip(
@@ -99,7 +97,6 @@ class Sequential(eqx.Module):
                     activation=activation,
                     boundary_mode=boundary_mode,
                     key=subkey,
-                    **boundary_kwargs,
                 )
             )
         self.projection = projection_factory(
@@ -109,7 +106,6 @@ class Sequential(eqx.Module):
             activation=activation,
             boundary_mode=boundary_mode,
             key=key,
-            **boundary_kwargs,
         )
 
     def __call__(self, x):

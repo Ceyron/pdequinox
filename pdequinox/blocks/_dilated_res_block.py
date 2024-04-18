@@ -37,7 +37,6 @@ class DilatedResBlock(eqx.Module):
         num_groups: int = 1,  # for GroupNorm
         use_bias: bool = True,
         zero_bias_init: bool = False,
-        **boundary_kwargs,
     ):
         """
         Block that performs a sequence of convolutions with varying dilation
@@ -84,7 +83,6 @@ class DilatedResBlock(eqx.Module):
                 use_bias=b,
                 zero_bias_init=zero_bias_init,
                 key=k,
-                **boundary_kwargs,
             )
 
         if use_norm:
@@ -128,7 +126,6 @@ class DilatedResBlock(eqx.Module):
                 use_bias=use_bias,  # Todo: should this be True or False by default?
                 zero_bias_init=zero_bias_init,
                 key=bypass_conv_key,
-                **boundary_kwargs,
             )
             if use_norm:
                 self.bypass_norm = eqx.nn.GroupNorm(
@@ -213,7 +210,6 @@ class DilatedResBlockFactory(eqx.Module):
         *,
         boundary_mode: str,
         key: PRNGKeyArray,
-        **boundary_kwargs,
     ) -> DilatedResBlock:
         return DilatedResBlock(
             num_spatial_dims=num_spatial_dims,
@@ -228,5 +224,4 @@ class DilatedResBlockFactory(eqx.Module):
             num_groups=self.num_groups,
             use_bias=self.use_bias,
             zero_bias_init=self.zero_bias_init,
-            **boundary_kwargs,
         )

@@ -20,7 +20,6 @@ class BlockFactory(eqx.Module, ABC):
         *,
         boundary_mode: str,
         key: PRNGKeyArray,
-        **boundary_kwargs,
     ) -> Block:
         """
         Construct a block (= `equinox.Module`)
@@ -37,7 +36,7 @@ class BlockFactory(eqx.Module, ABC):
             (Keyword only argument.)
         - `key`: A `jax.random.PRNGKey` used to provide randomness for parameter
             initialisation. (Keyword only argument.)
-        - `**boundary_kwargs`: Additional keyword arguments to pass to the boundary
+        - ` `: Additional keyword arguments to pass to the boundary
             mode constructor.
         """
         pass

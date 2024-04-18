@@ -30,7 +30,6 @@ class ClassicResBlock(eqx.Module):
         num_groups: int = 1,  # for group norm
         use_bias: bool = True,
         zero_bias_init: bool = False,
-        **boundary_kwargs,
     ):
         """
         Classical Block of a ResNet with postactivation and optional group
@@ -74,7 +73,6 @@ class ClassicResBlock(eqx.Module):
                 use_bias=b,
                 zero_bias_init=zero_bias_init,
                 key=k,
-                **boundary_kwargs,
             )
 
         k_1, k_2, key = jax.random.split(key, 3)
@@ -182,7 +180,6 @@ class ClassicResBlockFactory(eqx.Module):
         *,
         boundary_mode: str,
         key: PRNGKeyArray,
-        **boundary_kwargs,
     ):
         return ClassicResBlock(
             num_spatial_dims,
@@ -196,5 +193,4 @@ class ClassicResBlockFactory(eqx.Module):
             key=key,
             use_bias=self.use_bias,
             zero_bias_init=self.zero_bias_init,
-            **boundary_kwargs,
         )

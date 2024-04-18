@@ -27,7 +27,6 @@ class ModernUNet(Hierarchical):
         activation: Callable = jax.nn.relu,
         key: PRNGKeyArray,
         boundary_mode: str = "periodic",
-        **boundary_kwargs,
     ):
         """
         A modern UNet version close to the ones used by Gupta & Brandstetter
@@ -97,5 +96,4 @@ class ModernUNet(Hierarchical):
                 use_norm=use_norm,
             ),
             projection_factory=LinearChannelAdjustBlockFactory(),
-            **boundary_kwargs,
         )

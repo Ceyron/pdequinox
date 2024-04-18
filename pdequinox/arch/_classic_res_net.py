@@ -20,7 +20,6 @@ class ClassicResNet(Sequential):
         activation: Callable = jax.nn.relu,
         boundary_mode: str = "periodic",
         key: PRNGKeyArray,
-        **boundary_kwargs,
     ):
         """
         Vanilla ResNet architecture very close the original He et al. (2016)
@@ -75,5 +74,4 @@ class ClassicResNet(Sequential):
                 use_bias=True,
                 zero_bias_init=False,
             ),
-            **boundary_kwargs,
         )

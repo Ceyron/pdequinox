@@ -20,7 +20,6 @@ class ModernResNet(Sequential):
         activation: Callable = jax.nn.relu,
         boundary_mode: str = "periodic",
         key: PRNGKeyArray,
-        **boundary_kwargs,
     ):
         """
         Modern ResNet using pre-activation residual blocks. Based on the
@@ -64,5 +63,4 @@ class ModernResNet(Sequential):
                 use_bias=True,
                 zero_bias_init=False,
             ),
-            **boundary_kwargs,
         )

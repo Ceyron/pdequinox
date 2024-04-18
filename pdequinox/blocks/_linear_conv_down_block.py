@@ -44,7 +44,6 @@ class LinearConvDownBlockFactory(BlockFactory):
         *,
         boundary_mode: str,
         key: PRNGKeyArray,
-        **boundary_kwargs,
     ):
         return LinearConvDownBlock(
             num_spatial_dims=num_spatial_dims,
@@ -55,5 +54,4 @@ class LinearConvDownBlockFactory(BlockFactory):
             boundary_mode=boundary_mode,
             use_bias=self.use_bias,
             key=key,
-            **boundary_kwargs,
         )

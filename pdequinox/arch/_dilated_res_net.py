@@ -21,7 +21,6 @@ class DilatedResNet(Sequential):
         activation: Callable = jax.nn.relu,
         boundary_mode: str = "periodic",
         key: PRNGKeyArray,
-        **boundary_kwargs,
     ):
         """
         ResNet with varying dilation rates; very close to publication of
@@ -73,5 +72,4 @@ class DilatedResNet(Sequential):
                 use_bias=True,
                 zero_bias_init=False,
             ),
-            **boundary_kwargs,
         )

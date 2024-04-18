@@ -117,7 +117,7 @@ class ClassicSpectralBlockFactory(BlockFactory):
         *,
         boundary_mode: str,  # unused
         key: PRNGKeyArray,
-        **boundary_kwargs,  # unused
+        # unused
     ):
         return ClassicSpectralBlock(
             num_spatial_dims=num_spatial_dims,

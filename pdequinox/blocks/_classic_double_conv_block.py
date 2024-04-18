@@ -29,7 +29,6 @@ class ClassicDoubleConvBlock(Block):
         num_groups: int = 1,  # for GroupNorm
         use_bias: bool = True,
         zero_bias_init: bool = False,
-        **boundary_kwargs,
     ):
         """
         Block that performs two sequential convolutions with activation and
@@ -69,7 +68,6 @@ class ClassicDoubleConvBlock(Block):
                 use_bias=b,
                 zero_bias_init=zero_bias_init,
                 key=k,
-                **boundary_kwargs,
             )
 
         k_1, k_2 = jax.random.split(key)
@@ -151,7 +149,6 @@ class ClassicDoubleConvBlockFactory(BlockFactory):
         *,
         boundary_mode: str,
         key: PRNGKeyArray,
-        **boundary_kwargs,
     ):
         return ClassicDoubleConvBlock(
             num_spatial_dims=num_spatial_dims,
@@ -165,5 +162,4 @@ class ClassicDoubleConvBlockFactory(BlockFactory):
             num_groups=self.num_groups,
             use_bias=self.use_bias,
             zero_bias_init=self.zero_bias_init,
-            **boundary_kwargs,
         )

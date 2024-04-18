@@ -25,7 +25,6 @@ class ClassicUNet(Hierarchical):
         activation: Callable = jax.nn.relu,
         key: PRNGKeyArray,
         boundary_mode: str = "periodic",
-        **boundary_kwargs,
     ):
         """
         The vanilla UNet archiecture very close to the original Ronneberger et
@@ -58,8 +57,6 @@ class ClassicUNet(Hierarchical):
         - `key`: A `jax.random.PRNGKey` used to provide randomness for parameter
             initialisation. (Keyword only argument.)
         - `boundary_mode`: The boundary mode to use. Default is `periodic`.
-        - `boundary_kwargs`: Additional keyword arguments to pass to the boundary
-            condition factory.
         """
         super().__init__(
             num_spatial_dims=num_spatial_dims,
@@ -71,7 +68,6 @@ class ClassicUNet(Hierarchical):
             activation=activation,
             key=key,
             boundary_mode=boundary_mode,
-            boundary_kwargs=boundary_kwargs,
             lifting_factory=ClassicDoubleConvBlockFactory(
                 use_norm=use_norm,
             ),
