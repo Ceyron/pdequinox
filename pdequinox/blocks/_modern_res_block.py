@@ -94,22 +94,33 @@ class ModernResBlock(eqx.Module):
             )
 
         conv_1_key, conv_2_key, key = jax.random.split(key, 3)
-        self.conv_1 = conv_constructor(in_channels, out_channels, use_bias, conv_1_key)
+
         if use_norm:
-            self.norm_1 = eqx.nn.GroupNorm(groups=num_groups, channels=out_channels)
+            self.norm_1 = eqx.nn.GroupNorm(groups=num_groups, channels=in_channels)
         else:
             self.norm_1 = eqx.nn.Identity()
-        self.conv_2 = conv_constructor(out_channels, out_channels, use_bias, conv_2_key)
+        self.conv_1 = conv_constructor(in_channels, out_channels, use_bias, conv_1_key)
+
         # In the PDEArena, for some reason, there is always a second group norm
         # even if use_norm is False
         if use_norm:
             self.norm_2 = eqx.nn.GroupNorm(groups=num_groups, channels=out_channels)
         else:
             self.norm_2 = eqx.nn.Identity()
+        self.conv_2 = conv_constructor(out_channels, out_channels, use_bias, conv_2_key)
+
         self.activation = activation
 
         if out_channels != in_channels:
             bypass_conv_key, _ = jax.random.split(key)
+
+            if use_norm:
+                self.bypass_norm = eqx.nn.GroupNorm(
+                    groups=num_groups, channels=in_channels
+                )
+            else:
+                self.bypass_norm = eqx.nn.Identity()
+
             self.bypass_conv = PointwiseLinearConv(
                 num_spatial_dims=num_spatial_dims,
                 in_channels=in_channels,
@@ -117,15 +128,9 @@ class ModernResBlock(eqx.Module):
                 use_bias=False,  # Following PDEArena
                 key=bypass_conv_key,
             )
-            if use_norm:
-                self.bypass_norm = eqx.nn.GroupNorm(
-                    groups=num_groups, channels=out_channels
-                )
-            else:
-                self.bypass_norm = eqx.nn.Identity()
         else:
-            self.bypass_conv = eqx.nn.Identity()
             self.bypass_norm = eqx.nn.Identity()
+            self.bypass_conv = eqx.nn.Identity()
 
     def __call__(self, x):
         x_skip = x
