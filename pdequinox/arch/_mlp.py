@@ -1,5 +1,5 @@
 from math import prod
-from typing import Callable
+from typing import Callable, Literal, Optional
 
 import equinox as eqx
 import jax
@@ -33,6 +33,9 @@ class MLP(eqx.Module):
         final_activation: Callable = _identity,
         use_bias: bool = True,
         use_final_bias: bool = True,
+        boundary_mode: Optional[
+            Literal["periodic", "dirichlet", "neumann"]
+        ] = None,  # unused
         key: PRNGKeyArray,
     ):
         """
@@ -64,6 +67,7 @@ class MLP(eqx.Module):
             `True`.
         - `use_final_bias`: If `True`, uses bias in the final layer. Default is
             `True`.
+        - `boundary_mode`: Unused, just for compatibility with other architectures.
         - `key`: A `jax.random.PRNGKey` used to provide randomness for parameter
             initialisation. (Keyword only argument.)
         """

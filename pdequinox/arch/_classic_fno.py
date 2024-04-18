@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Literal, Optional
 
 import jax
 from jaxtyping import PRNGKeyArray
@@ -18,6 +18,9 @@ class ClassicFNO(Sequential):
         num_modes: int = 12,
         num_blocks: int = 4,
         activation: Callable = jax.nn.gelu,
+        boundary_mode: Optional[
+            Literal["periodic", "dirichlet", "neumann"]
+        ] = None,  # unused
         key: PRNGKeyArray,
     ):
         """
@@ -48,6 +51,7 @@ class ClassicFNO(Sequential):
         - `activation`: The activation function to use in the blocks. Default is
             `jax.nn.gelu`. This is often preferrable over `jax.nn.relu` because
             it recovers more higher modes.
+        - `boundary_mode`: Unused, just for compatibility with other architectures.
         - `key`: A `jax.random.PRNGKey` used to provide randomness for parameter
             initialisation. (Keyword only argument.)
 
