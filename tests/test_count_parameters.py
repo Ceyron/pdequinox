@@ -67,3 +67,39 @@ def test_physics_conv(
     ) + (out_channels if use_bias else 0)
 
     assert num_parameters == num_parameters_expected
+
+
+@pytest.mark.parametrize(
+    "num_spatial_dims,in_channels,out_channels,num_modes",
+    [
+        (num_spatial_dims, in_channels, out_channels, num_modes)
+        for num_spatial_dims in [1, 2, 3]
+        for in_channels in [1, 2, 5]
+        for out_channels in [1, 2, 5]
+        for num_modes in [1, 2, 5, 12]
+    ],
+)
+def test_spectral_conv(
+    num_spatial_dims: int,
+    in_channels: int,
+    out_channels: int,
+    num_modes: int,
+):
+    net = pdeqx.conv.SpectralConv(
+        num_spatial_dims=num_spatial_dims,
+        in_channels=in_channels,
+        out_channels=out_channels,
+        num_modes=num_modes,
+        key=jax.random.PRNGKey(0),
+    )
+
+    num_parameters = pdeqx.count_parameters(net)
+
+    # Compute the expected number of parameters; factor of 2 for real and
+    # imaginary parts; raising to 2**(D-1) because we use the real-valued FFT
+    # (only have to save parameters for half of the relevant modes)
+    num_parameters_expected = (
+        in_channels * out_channels * num_modes**num_spatial_dims * 2
+    ) * 2 ** (num_spatial_dims - 1)
+
+    assert num_parameters == num_parameters_expected
