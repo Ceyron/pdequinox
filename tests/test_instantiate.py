@@ -68,16 +68,21 @@ def test_instantiate():
 
 
 @pytest.mark.parametrize(
-    "arch",
+    "num_spatial_dims,arch,boundary_mode",
     [
-        pdeqx.arch.ConvNet,
-        pdeqx.arch.ClassicFNO,
-        pdeqx.arch.ClassicUNet,
-        pdeqx.arch.ClassicResNet,
-        pdeqx.arch.DilatedResNet,
-        pdeqx.arch.ModernResNet,
-        pdeqx.arch.ModernUNet,
+        (num_spatial_dims, arch, boundary_mode)
+        for num_spatial_dims in [1, 2, 3]
+        for arch in [
+            pdeqx.arch.ClassicFNO,
+            pdeqx.arch.ClassicUNet,
+            pdeqx.arch.ClassicResNet,
+            pdeqx.arch.ConvNet,
+            pdeqx.arch.DilatedResNet,
+            pdeqx.arch.ModernResNet,
+            pdeqx.arch.ModernUNet,
+        ]
+        for boundary_mode in ["periodic", "dirichlet", "neumann"]
     ],
 )
-def test_default_config(arch):
+def test_default_config(num_spatial_dims, arch, boundary_mode):
     arch(1, 2, 5, key=jax.random.PRNGKey(0))
