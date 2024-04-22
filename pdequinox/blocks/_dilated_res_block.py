@@ -118,6 +118,13 @@ class DilatedResBlock(eqx.Module):
         self.activation = activation
 
         if out_channels != in_channels:
+            if use_norm:
+                self.bypass_norm = eqx.nn.GroupNorm(
+                    groups=num_groups, channels=in_channels
+                )
+            else:
+                self.bypass_norm = eqx.nn.Identity()
+
             bypass_conv_key, _ = jax.random.split(key)
             self.bypass_conv = PointwiseLinearConv(
                 num_spatial_dims=num_spatial_dims,
@@ -127,12 +134,6 @@ class DilatedResBlock(eqx.Module):
                 zero_bias_init=zero_bias_init,
                 key=bypass_conv_key,
             )
-            if use_norm:
-                self.bypass_norm = eqx.nn.GroupNorm(
-                    groups=num_groups, channels=out_channels
-                )
-            else:
-                self.bypass_norm = eqx.nn.Identity()
         else:
             self.bypass_conv = eqx.nn.Identity()
             self.bypass_norm = eqx.nn.Identity()
