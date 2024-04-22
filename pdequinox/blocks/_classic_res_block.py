@@ -22,14 +22,14 @@ class ClassicResBlock(eqx.Module):
         in_channels: int,
         out_channels: int,
         *,
-        boundary_mode: Literal["periodic", "dirichlet", "neumann"],
-        key: PRNGKeyArray,
         activation: Callable = jax.nn.relu,
         kernel_size: int = 3,
         use_norm: bool = False,
         num_groups: int = 1,  # for group norm
         use_bias: bool = True,
         zero_bias_init: bool = False,
+        boundary_mode: Literal["periodic", "dirichlet", "neumann"],
+        key: PRNGKeyArray,
     ):
         """
         Classical Block of a ResNet with postactivation and optional group

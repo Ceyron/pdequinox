@@ -18,12 +18,12 @@ class ClassicSpectralBlock(Block):
         in_channels: int,
         out_channels: int,
         *,
-        key: PRNGKeyArray,
         # Uses gelu because it likely recovers more modes
         activation: Callable = jax.nn.gelu,
         num_modes: int = 8,
         use_bias: bool = True,
         zero_bias_init: bool = False,
+        key: PRNGKeyArray,
     ):
         """
         Residual-style block as used in vanilla FNOs; combines a spectral

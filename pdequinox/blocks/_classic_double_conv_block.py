@@ -21,14 +21,14 @@ class ClassicDoubleConvBlock(Block):
         in_channels: int,
         out_channels: int,
         *,
-        boundary_mode: Literal["periodic", "dirichlet", "neumann"],
-        key: PRNGKeyArray,
         activation: Callable = jax.nn.relu,
         kernel_size: int = 3,
         use_norm: bool = True,
         num_groups: int = 1,  # for GroupNorm
         use_bias: bool = True,
         zero_bias_init: bool = False,
+        boundary_mode: Literal["periodic", "dirichlet", "neumann"],
+        key: PRNGKeyArray,
     ):
         """
         Block that performs two sequential convolutions with activation and

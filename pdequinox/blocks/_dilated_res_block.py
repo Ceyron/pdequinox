@@ -28,8 +28,6 @@ class DilatedResBlock(eqx.Module):
         in_channels: int,
         out_channels: int,
         *,
-        boundary_mode: Literal["periodic", "dirichlet", "neumann"],
-        key,
         activation: Callable = jax.nn.relu,
         kernel_size: int = 3,
         dilation_rates: tuple[int] = (1, 2, 4, 8, 4, 2, 1),
@@ -37,6 +35,8 @@ class DilatedResBlock(eqx.Module):
         num_groups: int = 1,  # for GroupNorm
         use_bias: bool = True,
         zero_bias_init: bool = False,
+        boundary_mode: Literal["periodic", "dirichlet", "neumann"],
+        key: PRNGKeyArray,
     ):
         """
         Block that performs a sequence of convolutions with varying dilation
