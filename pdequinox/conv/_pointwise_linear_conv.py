@@ -1,5 +1,6 @@
 import equinox as eqx
 import jax.numpy as jnp
+from jaxtyping import PRNGKeyArray
 
 
 class PointwiseLinearConv(eqx.nn.Conv):
@@ -14,8 +15,8 @@ class PointwiseLinearConv(eqx.nn.Conv):
         out_channels: int,
         use_bias: bool = True,
         *,
-        key,
         zero_bias_init: bool = False,
+        key: PRNGKeyArray,
     ):
         """
         General n-dimensional pointwise linear convolution (=1x1 convolution).
