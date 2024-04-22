@@ -5,8 +5,6 @@ from jaxtyping import PRNGKeyArray
 from ..conv import PhysicsConvTranspose
 from ._base_block import BlockFactory
 
-# LinearConvUpBlock = PhysicsConvTranspose
-
 
 class LinearConvUpBlock(PhysicsConvTranspose):
     def __init__(
