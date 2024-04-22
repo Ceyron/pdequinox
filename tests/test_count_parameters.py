@@ -235,7 +235,7 @@ def test_ClassicDoubleConvBlock(
 
     num_parameters_from_factory = pdeqx.count_parameters(block_from_factory)
 
-    assert num_parameters == num_parameters_from_factory
+    assert num_parameters_from_factory == num_parameters_expected
 
 
 @pytest.mark.parametrize(
