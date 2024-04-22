@@ -545,3 +545,68 @@ def test_DilatedResBlock(
     num_parameters_from_factory = pdeqx.count_parameters(block_from_factory)
 
     assert num_parameters_from_factory == num_parameters_expected
+
+
+@pytest.mark.parametrize(
+    "num_spatial_dims,in_channels,out_channels,use_bias,zero_bias_init",
+    [
+        (
+            num_spatial_dims,
+            in_channels,
+            out_channels,
+            use_bias,
+            zero_bias_init,
+        )
+        for num_spatial_dims in [1, 2, 3]
+        for in_channels in [
+            1,
+            5,
+        ]
+        for out_channels in [1, 3]
+        for use_bias in [True, False]
+        for zero_bias_init in [True, False]
+    ],
+)
+def test_LinearChannelAdjustBlock(
+    num_spatial_dims: int,
+    in_channels: int,
+    out_channels: int,
+    use_bias: bool,
+    zero_bias_init: bool,
+):
+    block = pdeqx.blocks.LinearChannelAdjustBlock(
+        num_spatial_dims=num_spatial_dims,
+        in_channels=in_channels,
+        out_channels=out_channels,
+        key=jax.random.PRNGKey(0),
+        use_bias=use_bias,
+        zero_bias_init=zero_bias_init,
+    )
+
+    num_parameters = pdeqx.count_parameters(block)
+
+    # Compute the expected number of parameters
+    num_parameters_expected = in_channels * out_channels
+
+    if use_bias:
+        num_parameters_expected += out_channels
+
+    assert num_parameters == num_parameters_expected
+
+    block_factory = pdeqx.blocks.LinearChannelAdjustBlockFactory(
+        use_bias=use_bias,
+        zero_bias_init=zero_bias_init,
+    )
+
+    block_from_factory = block_factory(
+        num_spatial_dims=num_spatial_dims,
+        in_channels=in_channels,
+        out_channels=out_channels,
+        activation=jax.nn.relu,
+        boundary_mode="periodic",
+        key=jax.random.PRNGKey(0),
+    )
+
+    num_parameters_from_factory = pdeqx.count_parameters(block_from_factory)
+
+    assert num_parameters_from_factory == num_parameters_expected
