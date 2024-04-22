@@ -343,3 +343,85 @@ def test_ClassicResBlock(
     num_parameters_from_factory = pdeqx.count_parameters(block_from_factory)
 
     assert num_parameters_from_factory == num_parameters_expected
+
+
+@pytest.mark.parametrize(
+    "num_spatial_dims,in_channels,out_channels,activation,num_modes,use_bias,zero_bias_init",
+    [
+        (
+            num_spatial_dims,
+            in_channels,
+            out_channels,
+            activation,
+            num_modes,
+            use_bias,
+            zero_bias_init,
+        )
+        for num_spatial_dims in [1, 2, 3]
+        for in_channels in [1, 2, 5]
+        for out_channels in [1, 2, 5]
+        for activation in [jax.nn.relu, jax.nn.sigmoid]
+        for num_modes in [1, 2, 5, 12]
+        for use_bias in [True, False]
+        for zero_bias_init in [True, False]
+    ],
+)
+def test_ClassicSpectralBlock(
+    num_spatial_dims: int,
+    in_channels: int,
+    out_channels: int,
+    activation: Callable,
+    num_modes: int,
+    use_bias: bool,
+    zero_bias_init: bool,
+):
+    block = pdeqx.blocks.ClassicSpectralBlock(
+        num_spatial_dims=num_spatial_dims,
+        in_channels=in_channels,
+        out_channels=out_channels,
+        activation=activation,
+        key=jax.random.PRNGKey(0),
+        num_modes=num_modes,
+        use_bias=use_bias,
+        zero_bias_init=zero_bias_init,
+    )
+
+    num_parameters = pdeqx.count_parameters(block)
+
+    # Compute the expected number of parameters
+    num_parameters_expected = 0
+
+    # Spectral conv kernel  (factor of two to separately save real and imaginary
+    # parts) (factor of 2**(D-1) because we use the real-valued FFT
+    # (only have to save parameters for half of the relevant modes))
+    num_parameters_expected += (
+        in_channels * out_channels * num_modes**num_spatial_dims * 2
+    ) * 2 ** (num_spatial_dims - 1)
+
+    # Spectral conv bypass 1x1 conv
+    num_parameters_expected += in_channels * out_channels
+
+    # Spectral conv bypass bias
+    if use_bias:
+        num_parameters_expected += out_channels
+
+    assert num_parameters == num_parameters_expected
+
+    block_factory = pdeqx.blocks.ClassicSpectralBlockFactory(
+        num_modes=num_modes,
+        use_bias=use_bias,
+        zero_bias_init=zero_bias_init,
+    )
+
+    block_from_factory = block_factory(
+        num_spatial_dims=num_spatial_dims,
+        in_channels=in_channels,
+        out_channels=out_channels,
+        activation=activation,
+        key=jax.random.PRNGKey(0),
+        boundary_mode="periodic",
+    )
+
+    num_parameters_from_factory = pdeqx.count_parameters(block_from_factory)
+
+    assert num_parameters_from_factory == num_parameters_expected
