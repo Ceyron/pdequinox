@@ -425,3 +425,123 @@ def test_ClassicSpectralBlock(
     num_parameters_from_factory = pdeqx.count_parameters(block_from_factory)
 
     assert num_parameters_from_factory == num_parameters_expected
+
+
+@pytest.mark.parametrize(
+    "num_spatial_dims,in_channels,out_channels,boundary_mode,activation,kernel_size,dilation_rates,use_norm,use_bias,zero_bias_init",
+    [
+        (
+            num_spatial_dims,
+            in_channels,
+            out_channels,
+            boundary_mode,
+            activation,
+            kernel_size,
+            dilation_rates,
+            use_norm,
+            use_bias,
+            zero_bias_init,
+        )
+        for num_spatial_dims in [1, 2, 3]
+        for in_channels in [
+            1,
+            5,
+        ]
+        for out_channels in [
+            1,
+            3,
+        ]
+        for boundary_mode in ["periodic", "dirichlet", "neumann"]
+        for activation in [jax.nn.relu, jax.nn.sigmoid]
+        for kernel_size in [2, 3, 4, 5]
+        for dilation_rates in [(1,), (1, 2, 1), (1, 2, 4, 2, 1), (1, 3, 8)]
+        for use_norm in [True, False]
+        for use_bias in [True, False]
+        for zero_bias_init in [True, False]
+    ],
+)
+def test_DilatedResBlock(
+    num_spatial_dims: int,
+    in_channels: int,
+    out_channels: int,
+    boundary_mode: Literal["periodic", "dirichlet", "neumann"],
+    activation: Callable,
+    kernel_size: int,
+    dilation_rates: tuple[int],
+    use_norm: bool,
+    use_bias: bool,
+    zero_bias_init: bool,
+):
+    block = pdeqx.blocks.DilatedResBlock(
+        num_spatial_dims=num_spatial_dims,
+        in_channels=in_channels,
+        out_channels=out_channels,
+        boundary_mode=boundary_mode,
+        activation=activation,
+        key=jax.random.PRNGKey(0),
+        kernel_size=kernel_size,
+        dilation_rates=dilation_rates,
+        use_norm=use_norm,
+        use_bias=use_bias,
+        zero_bias_init=zero_bias_init,
+    )
+
+    num_parameters = pdeqx.count_parameters(block)
+
+    # Compute the expected number of parameters
+    num_parameters_expected = 0
+
+    # First norm layer
+    if use_norm:
+        num_parameters_expected += 2 * in_channels
+
+    # First conv kernel that performs the adjustment in the number of channels
+    num_parameters_expected += (
+        in_channels * out_channels * kernel_size**num_spatial_dims
+    )
+    # First conv bias
+    if use_bias:
+        num_parameters_expected += out_channels
+
+    # Iterate over all the other convolutions
+    for dilation_rate in dilation_rates[1:]:
+        if use_norm:
+            num_parameters_expected += 2 * out_channels
+        num_parameters_expected += (
+            out_channels * out_channels * kernel_size**num_spatial_dims
+        )
+        if use_bias:
+            num_parameters_expected += out_channels
+
+    # Bypass norm
+    if in_channels != out_channels and use_norm:
+        num_parameters_expected += 2 * in_channels
+    # Bypass conv kernel
+    if in_channels != out_channels:
+        num_parameters_expected += in_channels * out_channels
+        # The bias in the bypass conv is toggled
+        if use_bias:
+            num_parameters_expected += out_channels
+
+    assert num_parameters == num_parameters_expected
+
+    block_factory = pdeqx.blocks.DilatedResBlockFactory(
+        kernel_size=kernel_size,
+        dilation_rates=dilation_rates,
+        use_norm=use_norm,
+        use_bias=use_bias,
+        zero_bias_init=zero_bias_init,
+    )
+
+    block_from_factory = block_factory(
+        num_spatial_dims=num_spatial_dims,
+        in_channels=in_channels,
+        out_channels=out_channels,
+        activation=activation,
+        boundary_mode=boundary_mode,
+        key=jax.random.PRNGKey(0),
+    )
+
+    num_parameters_from_factory = pdeqx.count_parameters(block_from_factory)
+
+    assert num_parameters_from_factory == num_parameters_expected
