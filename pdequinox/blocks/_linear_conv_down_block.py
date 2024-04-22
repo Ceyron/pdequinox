@@ -5,7 +5,33 @@ from jaxtyping import PRNGKeyArray
 from ..conv import PhysicsConv
 from ._base_block import BlockFactory
 
-LinearConvDownBlock = PhysicsConv
+
+class LinearConvDownBlock(PhysicsConv):
+    def __init__(
+        self,
+        num_spatial_dims: int,
+        in_channels: int,
+        out_channels: int,
+        *,
+        kernel_size: int = 3,
+        factor: int = 2,
+        use_bias: bool = True,
+        zero_bias_init: bool = False,
+        boundary_mode: Literal["periodic", "dirichlet", "neumann"],
+        key: PRNGKeyArray,
+    ):
+        super().__init__(
+            num_spatial_dims=num_spatial_dims,
+            in_channels=in_channels,
+            out_channels=out_channels,
+            kernel_size=kernel_size,
+            stride=factor,
+            dilation=1,
+            boundary_mode=boundary_mode,
+            use_bias=use_bias,
+            zero_bias_init=zero_bias_init,
+            key=key,
+        )
 
 
 class LinearConvDownBlockFactory(BlockFactory):
@@ -50,7 +76,7 @@ class LinearConvDownBlockFactory(BlockFactory):
             in_channels=in_channels,
             out_channels=out_channels,
             kernel_size=self.kernel_size,
-            stride=self.factor,
+            factor=self.factor,
             boundary_mode=boundary_mode,
             use_bias=self.use_bias,
             key=key,
