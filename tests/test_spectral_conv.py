@@ -13,29 +13,36 @@ import pdequinox as pdeqx
 
 
 @pytest.mark.parametrize(
-    "considered_mode,derivative_order",
+    "considered_sine_mode,considered_cosine_mode,derivative_order",
     [
-        (2, 1),
-        (2, 2),
-        (5, 1),
-        (5, 2),
+        (considered_sine_mode, considered_cosine_mode, derivative_order)
+        for considered_sine_mode in [2, 5]
+        for considered_cosine_mode in [0, 2, 3]
+        for derivative_order in [1, 2]
     ],
 )
-def test_spectral_conv_derivative(considered_mode, derivative_order):
+def test_spectral_conv_derivative(
+    considered_sine_mode, considered_cosine_mode, derivative_order
+):
     NUM_POINTS = 48
     NUM_MODES = 10
 
     grid = jnp.linspace(0, 2 * jnp.pi, NUM_POINTS, endpoint=False)
 
-    considered_sine_mode = jnp.sin(considered_mode * grid).reshape((1, -1))
+    considered_field = (
+        jnp.sin(considered_sine_mode * grid) + jnp.cos(considered_cosine_mode * grid)
+    ).reshape((1, -1))
     if derivative_order == 1:
-        considered_sine_mode_derivative = considered_mode * jnp.cos(
-            considered_mode * grid
+        considered_field_derivative = (
+            considered_sine_mode * jnp.cos(considered_sine_mode * grid)
+            - considered_cosine_mode * jnp.sin(considered_cosine_mode * grid)
         ).reshape((1, -1))
     elif derivative_order == 2:
-        considered_sine_mode_derivative = -(considered_mode**2) * jnp.sin(
-            considered_mode * grid
+        considered_field_derivative = (
+            -(considered_sine_mode**2) * jnp.sin(considered_sine_mode * grid)
+            - (considered_cosine_mode**2) * jnp.cos(considered_cosine_mode * grid)
         ).reshape((1, -1))
+
     else:
         raise ValueError("derivative_order must be 1 or 2")
 
@@ -62,9 +69,9 @@ def test_spectral_conv_derivative(considered_mode, derivative_order):
         derivative_operator_stripped_reshaped.imag,
     )
 
-    pred = spectral_conv(considered_sine_mode)
+    pred = spectral_conv(considered_field)
 
-    assert pred == pytest.approx(considered_sine_mode_derivative, abs=3e-5)
+    assert pred == pytest.approx(considered_field_derivative, rel=1e-5, abs=3e-5)
 
 
 @pytest.mark.parametrize(
