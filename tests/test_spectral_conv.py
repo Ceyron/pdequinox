@@ -68,16 +68,28 @@ def test_spectral_conv_derivative(considered_mode, derivative_order):
 
 
 @pytest.mark.parametrize(
-    "considered_mode_x,considered_mode_y,derivative_order",
+    "considered_sine_mode_x,considered_cosine_mode_x,considered_sine_mode_y,considered_cosine_mode_y,derivative_order",
     [
-        (2, 2, 1),
-        (2, 2, 2),
-        (5, 5, 1),
-        (5, 5, 2),
+        (
+            considered_sine_mode_x,
+            considered_cosine_mode_x,
+            considered_sine_mode_y,
+            considered_cosine_mode_y,
+            derivative_order,
+        )
+        for considered_sine_mode_x in [2, 5]
+        for considered_cosine_mode_x in [0, 2, 3]
+        for considered_sine_mode_y in [2, 5]
+        for considered_cosine_mode_y in [0, 2, 3]
+        for derivative_order in [1, 2]
     ],
 )
 def test_spectral_conv_derivative_2d(
-    considered_mode_x, considered_mode_y, derivative_order
+    considered_sine_mode_x,
+    considered_cosine_mode_x,
+    considered_sine_mode_y,
+    considered_cosine_mode_y,
+    derivative_order,
 ):
     NUM_POINTS_X = 48
     NUM_POINTS_Y = 36
@@ -87,29 +99,62 @@ def test_spectral_conv_derivative_2d(
     grid_y = jnp.linspace(0, 2 * jnp.pi, NUM_POINTS_Y, endpoint=False)
     grid = jnp.stack(jnp.meshgrid(grid_x, grid_y, indexing="ij"))
 
-    considered_sine_mode = (
-        jnp.sin(considered_mode_x * grid[0]) * jnp.sin(considered_mode_y * grid[1])
+    considered_field = (
+        (
+            jnp.sin(considered_sine_mode_x * grid[0])
+            + jnp.cos(considered_cosine_mode_x * grid[0])
+        )
+        * (
+            jnp.sin(considered_sine_mode_y * grid[1])
+            + jnp.cos(considered_cosine_mode_y * grid[1])
+        )
     )[None, ...]
     if derivative_order == 1:
-        considered_sine_mode_derivative = jnp.stack(
+        considered_field_derivative = jnp.stack(
             [
-                considered_mode_x
-                * jnp.cos(considered_mode_x * grid[0])
-                * jnp.sin(considered_mode_y * grid[1]),
-                considered_mode_y
-                * jnp.sin(considered_mode_x * grid[0])
-                * jnp.cos(considered_mode_y * grid[1]),
+                (
+                    considered_sine_mode_x * jnp.cos(considered_sine_mode_x * grid[0])
+                    - considered_cosine_mode_x
+                    * jnp.sin(considered_cosine_mode_x * grid[0])
+                )
+                * (
+                    jnp.sin(considered_sine_mode_y * grid[1])
+                    + jnp.cos(considered_cosine_mode_y * grid[1])
+                ),
+                (
+                    jnp.sin(considered_sine_mode_x * grid[0])
+                    + jnp.cos(considered_cosine_mode_x * grid[0])
+                )
+                * (
+                    considered_sine_mode_y * jnp.cos(considered_sine_mode_y * grid[1])
+                    - considered_cosine_mode_y
+                    * jnp.sin(considered_cosine_mode_y * grid[1])
+                ),
             ]
         )
     elif derivative_order == 2:
-        considered_sine_mode_derivative = jnp.stack(
+        considered_field_derivative = jnp.stack(
             [
-                -(considered_mode_x**2)
-                * jnp.sin(considered_mode_x * grid[0])
-                * jnp.sin(considered_mode_y * grid[1]),
-                -(considered_mode_y**2)
-                * jnp.sin(considered_mode_x * grid[0])
-                * jnp.sin(considered_mode_y * grid[1]),
+                (
+                    -(considered_sine_mode_x**2)
+                    * jnp.sin(considered_sine_mode_x * grid[0])
+                    - (considered_cosine_mode_x**2)
+                    * jnp.cos(considered_cosine_mode_x * grid[0])
+                )
+                * (
+                    jnp.sin(considered_sine_mode_y * grid[1])
+                    + jnp.cos(considered_cosine_mode_y * grid[1])
+                ),
+                (
+                    jnp.sin(considered_sine_mode_x * grid[0])
+                    + jnp.cos(considered_cosine_mode_x * grid[0])
+                )
+                * (
+                    -(considered_sine_mode_y**2)
+                    * jnp.sin(considered_sine_mode_y * grid[1])
+                    - (considered_cosine_mode_y**2)
+                    * jnp.cos(considered_cosine_mode_y * grid[1])
+                ),
             ]
         )
     else:
@@ -144,6 +189,7 @@ def test_spectral_conv_derivative_2d(
         derivative_operator_stripped_reshaped.imag,
     )
 
-    pred = spectral_conv(considered_sine_mode)
+    pred = spectral_conv(considered_field)
 
-    assert pred == pytest.approx(considered_sine_mode_derivative, abs=3e-5, rel=1e-5)
+    # Need quite large tolerance for single precision
+    assert pred == pytest.approx(considered_field_derivative, abs=3e-4, rel=1e-4)
