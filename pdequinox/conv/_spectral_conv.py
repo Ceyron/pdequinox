@@ -70,6 +70,40 @@ class SpectralConv(eqx.Module):
         return tuple(((jnp.inf, jnp.inf),) * self.num_spatial_dims)
 
 
+def generate_modes_slices(modes: tuple[int, ...]):
+    """
+    Generate slices for the modes in the fourier representation of the input.
+
+    Let `D = len(modes)`, then this function returns a list of list of slices.
+    The length of the outer list is `2 ** (D - 1)`. Each inner list contains `D
+    + 1` slices. The first slice is always `slice(None, None, None)` because it
+    is to be applied to the channel axis of the state tensors in Fourier space.
+
+    The scaling of the outer list of `2 ** (D - 1)` is because we use the
+    real-valued FFT (the spectral conv here is only valid for real-valued
+    inputs). This allows saving half of the modes in the Fourier space.
+
+    **Arguments:**
+
+    - `modes`: The number of modes to use in the fourier representation of the
+        input. This is supposed to be a list of integers. The length of the list
+        determines the number of spatial dimensions (for `rfft` use one, for
+        `rfft2` use two, for `rfftn` use n). This refers to the number of modes
+        to be used in the respective spatial axis. If you want to use equally
+        many modes in all spatial dimensions, pass a list with the same integer
+        repeated `D` times.
+
+    **Returns:**
+
+    A list of list of slices. The length of the outer list is `2 ** (D - 1)`.
+    Each inner list contains `D + 1` slices.
+    """
+    *ms, ml = modes
+    slices_ = [[slice(None, ml)]]
+    slices_ += [[slice(None, mode), slice(-mode, None)] for mode in reversed(ms)]
+    return [[slice(None)] + list(reversed(i)) for i in product(*slices_)]
+
+
 def spectral_conv_nd(
     input: Float[Array, "C_i ..."],
     weight_r: Float[Array, "G C_o C_i ..."],
@@ -91,13 +125,6 @@ def spectral_conv_nd(
             where dim is the number of spatial dimensions.
         modes: number of modes included in the fft representation of the input.
     """
-
-    def generate_modes_slices(modes: tuple[int, ...]):
-        *ms, ml = modes
-        slices_ = [[slice(None, ml)]]
-        slices_ += [[slice(None, mode), slice(-mode, None)] for mode in reversed(ms)]
-        return [[slice(None)] + list(reversed(i)) for i in product(*slices_)]
-
     _, *si, sl = input.shape
     weight = weight_r + 1j * weight_i
     _, o, *_ = weight.shape
