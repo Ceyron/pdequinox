@@ -1,3 +1,7 @@
+"""
+Tests whether the spectral convolution (that is part of FNOs) is implemented
+correctly by using it take spectral derivatives.
+"""
 import equinox as eqx
 import jax
 import jax.numpy as jnp
