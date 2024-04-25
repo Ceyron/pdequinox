@@ -5,6 +5,12 @@ import pytest
 
 import pdequinox as pdeqx
 
+# Uncomment the following line to run the tests on the CPU
+# jax.config.update("jax_platform_name", "cpu")
+
+# Uncomment the following line to run the tests in double precision
+# jax.config.update("jax_enable_x64", True)
+
 
 @pytest.mark.parametrize(
     "considered_mode,derivative_order",
