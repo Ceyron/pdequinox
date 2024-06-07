@@ -24,8 +24,10 @@ force_fields, displacement_fields = pdeqx.sample_data.poisson_1d_dirichlet(
     key=jax.random.PRNGKey(0)
 )
 
-force_fields_train, force_fields_test = force_fields[:800], force_fields[800:]
-displacement_fields_train, displacement_fields_test = displacement_fields[:800], displacement_fields[800:]
+force_fields_train = force_fields[:800]
+force_fields_test = force_fields[800:]
+displacement_fields_train = displacement_fields[:800]
+displacement_fields_test = displacement_fields[800:]
 
 unet = pdeqx.arch.ClassicUNet(1, 1, 1, key=jax.random.PRNGKey(1))
 
@@ -48,9 +50,13 @@ shuffle_key = jax.random.PRNGKey(151)
 for epoch in tqdm(range(100)):
     shuffle_key, subkey = jax.random.split(shuffle_key)
 
-    for batch in pdeqx.dataloader((force_fields_train, displacement_fields_train), batch_size=32, key=subkey):
-        poisson_solver_unet, opt_state, loss = update_fn(
-            poisson_solver_unet,
+    for batch in pdeqx.dataloader(
+        (force_fields_train, displacement_fields_train),
+        batch_size=32,
+        key=subkey
+    ):
+        unet, opt_state, loss = update_fn(
+            unet,
             opt_state,
             *batch,
         )
