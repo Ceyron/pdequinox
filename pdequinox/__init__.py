@@ -1,3 +1,4 @@
+from . import _sample_data as sample_data
 from . import arch, blocks, conv
 from ._hierarchical import Hierarchical
 from ._sequential import Sequential
@@ -23,4 +24,5 @@ __all__ = [
     "blocks",
     "conv",
     "constructor",
+    "sample_data",
 ]
