@@ -1,0 +1,40 @@
+[project]
+name = "pdequinox"
+version = "0.0.1"
+description = "Neural PDE Emulator Architectures in JAX built on top of Equinox."
+readme = "README.md"
+requires-python ="~=3.10"
+authors = [
+  {name = "Felix Koehler"},
+]
+keywords = ["jax", "sciml", "deep-learning", "pde", "neural operator"]
+urls = {repository = "https://github.com/Ceyron/pdequinox" }
+dependencies = ["jax>=0.4.13", "jaxtyping>=0.2.20", "typing_extensions>=4.5.0", "equinox>=0.11.3"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38', 'py39', 'py310', 'py311', 'py312']
+include = '\.pyi?$'
+exclude = '''
+(
+  /(
+      \.eggs
+    | \.git
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+    | docs
+  )/
+)
+'''
+
+[tool.setuptools.packages.find]
+where = ["."]  # list of folders that contain the packages (["."] by default)
+include = ["pdequinox*"]  # package names should match these glob patterns (["*"] by default)
+exclude = []  # exclude packages matching these glob patterns (empty by default)
+namespaces = false  # to disable scanning PEP 420 namespaces (true by default)
