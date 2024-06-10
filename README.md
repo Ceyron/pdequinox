@@ -1,16 +1,43 @@
-# PDEquinox
 
-A collection of neural operator architecture for the image-to-image application,
+<h1 align="center">
+  <img src="img/pdequinox_logo.png" width="120">
+  <br>
+    PDEquinox
+  <br>
+</h1>
+
+<h4 align="center">PDE Emulator Architectures in <a href="https://github.com/patrick-kidger/equinox" target="_blank">Equinox</a>.</h4>
+
+
+<p align="center">
+  <a href="#installation">Installation</a> •
+  <a href="#quickstart">Quickstart</a>
+</p>
+
+<p align="center">
+    <img width=600 src="img/pdequinox_teaser.png">
+</p>
+
+## Installation
+
+Clone the repository, navigate to the folder and install the package with pip:
+```bash
+pip install .
+```
+
+Requires Python 3.10+ and JAX 0.4.13+. 👉 [JAX install guide](https://jax.readthedocs.io/en/latest/installation.html).
+
+<!-- A collection of neural operator architecture for the image-to-image application,
 most often encountered in autoregressive learning; built on top of
 [Equinox](https://github.com/patrick-kidger/equinox).
 
 They are designed to map between states (=discretized functions).
 
-    ! boundary modes so far only in homoegenous mode (homogeneous dirichlet & neumann, and periodic)
+    ! boundary modes so far only in homoegenous mode (homogeneous dirichlet & neumann, and periodic) -->
 
-### Quickstart
+## Quickstart
 
-Training a UNet to become an emulator for the 1D Poisson equation.
+Train a UNet to become an emulator for the 1D Poisson equation.
 
 ```python
 import jax
