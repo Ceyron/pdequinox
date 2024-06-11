@@ -89,6 +89,59 @@ for epoch in tqdm(range(100)):
         )
         loss_history.append(loss)
 ```
+## Background
+
+Neural Emulators are networks learned to efficienty forecast transient
+phenomena, often associated with PDEs. In the simplest case this can be a linear
+advection equation, all the way to more complicated Navier-Stokes cases. If we
+work on Uniform Cartesian grids* (which this package assumes), one can borrow
+plenty of architectures from image-to-image tasks in computer vision (e.g., for
+segmentation). This includes:
+
+* Standard Feedforward ConvNets
+* Convolutional ResNets ([He et al.](https://arxiv.org/abs/1512.03385))
+* U-Nets ([Ronneberger et al.](https://arxiv.org/abs/1505.04597))
+* Dilated ResNets ([Yu et al.](https://arxiv.org/abs/1511.07122), Stachenfeld et al. (https://arxiv.org/abs/2112.15275))
+* Fourier Neural Operators ([Li et al.](https://arxiv.org/abs/2010.08895))
+
+It is interesting to note that most of these architectures resemble classical
+numerical methods or at least share similarities with them. For example,
+ConvNets (or convolutions in general) are related to finite differences, while
+U-Nets resemble multigrid methods. Fourier Neural Operators are related to
+spectral methods. The difference is that the emulators' free parameters are
+found based on a (data-driven) numerical optimization not a symbolic
+manipulation of the differential equations.
+
+(*) This means that we essentially have a pixel or voxel grid on which space is
+discretized. Hence, the space can only be the scaled unit cube $\Omega = (0,
+L)^D$
+
+## Features
+
+* Based on JAX:
+  * One of the best Automatic Differentiation engines (forward & reverse)
+  * Automatic vectorization
+  * Backend-agnostic code (run on CPU, GPU, and TPU)
+* Based on [Equinox](https://github.com/patrick-kidger/equinox):
+  * Single-Batch by design
+  * Integration into the Equinox ecosystem
+* Agnostic to the spatial dimension (works for 1D, 2D, and 3D)
+* Agnostic to the boundary condition (works for Dirichlet, Neumann, and periodic
+  BCs)
+* Composability
+
+## Boundary Conditions
+
+This package assumes that the boundary condition is baked into the neural
+emulator. Hence, most components allow setting `boundary_mode` which can be
+`"dirichlet"`, `"neumann"`, or `"periodic"`. This affects what is considered a
+degree of freedom in the grid.
+
+![](img/three_boundary_conditions.svg)
+
+Dirichlet boundaries fully eliminate degrees of freedom on the boundary.
+Periodic boundaries only keep one end of the domain as a degree of freedom (This
+package follows the convention that the left boundary is the degree of freedom). Neumann boundaries keep both ends as degrees of freedom.
 
 ### TODOs
 
@@ -162,5 +215,3 @@ boundaries.
 All major modes of boundary conditions on physical fields are supported. Note
 however, how the boundary condition changes what is considered a degree of
 freedom
-
-![](img/three_boundary_conditions.svg)
