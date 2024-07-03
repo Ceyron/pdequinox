@@ -82,3 +82,26 @@ plugins:
 
 nav:
     - 'index.md'
+    - 'more_details.md'
+    - Examples:
+        - Introductory:
+            - Train UNet as Poisson Emulator: 'examples/train_unet_as_poisson_solver.ipynb'
+            - Parameter Counting & Receptive Field: 'examples/parameter_count_and_receptive_field.ipynb'
+            - Architecture Showcase: 'examples/architecture_showcase.ipynb'
+        - Advanced:
+            - Seed Parallel Training: 'examples/seed_parallel_training.ipynb'
+    - High-Level API:
+        - Architectures:
+            - MLP: 'api/arch/mlp.md'
+            - Conv: 'api/arch/conv.md'
+            - ResNet: 'api/arch/resnet.md'
+            - UNet: 'api/arch/unet.md'
+            - Dilated: 'api/arch/dilated.md'
+            - FNO: 'api/arch/fno.md'
+        - Utilities: 'api/utils.md'
+        - Sample Data: 'api/sample_data.md'
+    - Low-Level API:
+        - Arch Constructors: 'api/arch_constructors.md'
+        - Blocks: 'api/blocks.md'
+        - Block Factories: 'api/block_factories.md'
+        - Conv: 'api/conv.md'

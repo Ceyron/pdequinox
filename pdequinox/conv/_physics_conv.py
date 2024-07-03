@@ -189,11 +189,12 @@ class PhysicsConvTranspose(MorePaddingConvTranspose):
             the input to a convolution. Moreover, to do so with the same
             "connectivity", i.e. which inputs can affect which outputs.
 
-            Relative to an [`PhysicsConv`][] layer, this can be accomplished by
-            switching the values of `in_channels` and `out_channels`, whilst
-            keeping `kernel_size`, `stride`, `dilation`, and `groups` the same.
+            Relative to an [`pdequinox.conv.PhysicsConv`][] layer, this can be
+            accomplished by switching the values of `in_channels` and
+            `out_channels`, whilst keeping `kernel_size`, `stride`, `dilation`,
+            and `groups` the same.
 
-            When `stride > 1` then [`PhysicsConv`][] maps multiple input shapes
+            When `stride > 1` then [`pdequinox.conv.PhysicsConv`][] maps multiple input shapes
             to the same output shape. `output_padding` is provided to resolve
             this ambiguity, by adding a little extra padding to just the
             bottom/right edges of the input.
