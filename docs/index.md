@@ -1,28 +1,4 @@
-
-<h1 align="center">
-  <img src="docs/imgs/pdequinox_logo.png" width="120">
-  <br>
-    PDEquinox
-  <br>
-</h1>
-
-<h4 align="center">PDE Emulator Architectures in <a href="https://github.com/patrick-kidger/equinox" target="_blank">Equinox</a>.</h4>
-
-
-<p align="center">
-  <a href="#installation">Installation</a> •
-  <a href="#quickstart">Quickstart</a> •
-  <a href="#background">Background</a> •
-  <a href="#features">Features</a> •
-  <a href="#boundary-conditions">Boundary Conditions</a> •
-  <a href="#constructors">Constructors</a> •
-  <a href="#related">Related</a> •
-  <a href="#license">License</a>
-</p>
-
-<p align="center">
-    <img width=600 src="docs/imgs/pdequinox_teaser.png">
-</p>
+# Getting Started
 
 ## Installation
 
@@ -137,7 +113,7 @@ emulator. Hence, most components allow setting `boundary_mode` which can be
 `"dirichlet"`, `"neumann"`, or `"periodic"`. This affects what is considered a
 degree of freedom in the grid.
 
-![](docs/imgs/three_boundary_conditions.svg)
+![](imgs/three_boundary_conditions.svg)
 
 Dirichlet boundaries fully eliminate degrees of freedom on the boundary.
 Periodic boundaries only keep one end of the domain as a degree of freedom (This
@@ -150,7 +126,7 @@ Networks that allow for composability with the `PDEquinox` blocks.
 
 ### Sequential Constructor
 
-![](docs/imgs/sequential_net.svg)
+![](imgs/sequential_net.svg)
 
 The squential network constructor is defined by:
 * a lifting block $\mathcal{L}$
@@ -161,7 +137,7 @@ The squential network constructor is defined by:
 
 ### Hierarchical Constructor
 
-![](docs/imgs/hierarchical_net.svg)
+![](imgs/hierarchical_net.svg)
 
 The hierarchical network constructor is defined by:
 * a lifting block $\mathcal{L}$
@@ -203,7 +179,7 @@ Modulus](https://developer.nvidia.com/modulus).
 
 ## License
 
-MIT, see [here](LICENSE.txt)
+MIT, see [here](https://github.com/Ceyron/pdequinox/blob/main/LICENSE.txt)
 
 ---
 
