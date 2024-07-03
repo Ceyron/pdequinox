@@ -82,3 +82,10 @@ plugins:
 
 nav:
     - 'index.md'
+    - Examples:
+        - Introductory:
+            - Train UNet as Poisson Emulator: 'examples/train_unet_as_poisson_solver.ipynb'
+            - Parameter Counting & Receptive Field: 'examples/parameter_count_and_receptive_field.ipynb'
+            - Architecture Showcase: 'examples/architecture_showcase.ipynb'
+        - Advanced:
+            - Seed Parallel Training: 'examples/seed_parallel_training.ipynb'
