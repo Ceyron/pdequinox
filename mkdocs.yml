@@ -82,6 +82,7 @@ plugins:
 
 nav:
     - 'index.md'
+    - 'more_details.md'
     - Examples:
         - Introductory:
             - Train UNet as Poisson Emulator: 'examples/train_unet_as_poisson_solver.ipynb'
