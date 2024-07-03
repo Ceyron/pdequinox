@@ -97,3 +97,5 @@ nav:
             - UNet: 'api/arch/unet.md'
             - Dilated: 'api/arch/dilated.md'
             - FNO: 'api/arch/fno.md'
+        - Utilities: 'api/utils.md'
+        - Sample Data: 'api/sample_data.md'
