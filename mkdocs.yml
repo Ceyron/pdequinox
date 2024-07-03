@@ -89,3 +89,11 @@ nav:
             - Architecture Showcase: 'examples/architecture_showcase.ipynb'
         - Advanced:
             - Seed Parallel Training: 'examples/seed_parallel_training.ipynb'
+    - High-Level API:
+        - Architectures:
+            - MLP: 'api/arch/mlp.md'
+            - Conv: 'api/arch/conv.md'
+            - ResNet: 'api/arch/resnet.md'
+            - UNet: 'api/arch/unet.md'
+            - Dilated: 'api/arch/dilated.md'
+            - FNO: 'api/arch/fno.md'
