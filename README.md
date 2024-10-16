@@ -1,17 +1,17 @@
 #  ⚠️ ⚠️ ⚠️ I am currently setting up this public repository. Please be patient. ⚠️ ⚠️ ⚠️
 
-<h4 align="center">PDE Emulator Architectures in <a href="https://github.com/patrick-kidger/equinox" target="_blank">Equinox</a>.</h4>
+<h4 align="center">PDE Emulator Architectures for <a href="https://github.com/patrick-kidger/equinox" target="_blank">Equinox</a>.</h4>
 
 
 <p align="center">
   <a href="#installation">Installation</a> •
+  <a href="#documentation">Documentation</a> •
   <a href="#quickstart">Quickstart</a> •
   <a href="#background">Background</a> •
   <a href="#features">Features</a> •
   <a href="#boundary-conditions">Boundary Conditions</a> •
-  <a href="#constructors">Constructors</a> •
-  <a href="#related">Related</a> •
-  <a href="#license">License</a>
+  <!-- <a href="#constructors">Constructors</a> • -->
+  <a href="#acknowledgements">Acknowledgements</a>
 </p>
 
 <p align="center">
@@ -140,7 +140,7 @@ Dirichlet boundaries fully eliminate degrees of freedom on the boundary.
 Periodic boundaries only keep one end of the domain as a degree of freedom (This
 package follows the convention that the left boundary is the degree of freedom). Neumann boundaries keep both ends as degrees of freedom.
 
-## Constructors
+<!-- ## Constructors
 
 There are two primary architectural constructors for Sequential and Hierarchical
 Networks that allow for composability with the `PDEquinox` blocks.
@@ -187,9 +187,11 @@ The hierarchical network constructor is defined by:
 
 For completion, `pdequinox.arch` also provides a `ConvNet` which is a simple
 feed-forward convolutional network. It also provides `MLP` which is a dense
-networks which also requires pre-defining the number of resolution points.
+networks which also requires pre-defining the number of resolution points. -->
 
-## Related
+## Acknowledgements
+
+### Related Work
 
 Similar packages that provide a collection of emulator architectures are
 [PDEBench](https://github.com/pdebench/PDEBench) and
@@ -198,7 +200,15 @@ Neural Networks and Neural Operators, there are also
 [DeepXDE](https://github.com/lululxvi/deepxde) and [NVIDIA
 Modulus](https://developer.nvidia.com/modulus).
 
-## License
+### Citation
+
+This package was developed as part of the `APEBench paper` (accepted at Neurips 2024), we will soon add the citation here.
+
+### Funding
+
+The main author (Felix Koehler) is a PhD student in the group of [Prof. Thuerey at TUM](https://ge.in.tum.de/) and his research is funded by the [Munich Center for Machine Learning](https://mcml.ai/).
+
+### License
 
 MIT, see [here](LICENSE.txt)
 
