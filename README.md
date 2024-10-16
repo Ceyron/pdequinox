@@ -15,7 +15,7 @@
 </p>
 
 <p align="center">
-    <img width=600 src="docs/imgs/pdequinox_teaser.png">
+    <img width=600 src="https://github.com/user-attachments/assets/8948f0e8-b879-468e-aaa2-158788b4d3f2">
 </p>
 
 ## Installation
@@ -134,7 +134,7 @@ emulator. Hence, most components allow setting `boundary_mode` which can be
 `"dirichlet"`, `"neumann"`, or `"periodic"`. This affects what is considered a
 degree of freedom in the grid.
 
-![](docs/imgs/three_boundary_conditions.svg)
+![three_boundary_conditions](https://github.com/user-attachments/assets/a46c276c-4c4b-4890-aca2-49c8b04d1948)
 
 Dirichlet boundaries fully eliminate degrees of freedom on the boundary.
 Periodic boundaries only keep one end of the domain as a degree of freedom (This
@@ -147,7 +147,7 @@ Networks that allow for composability with the `PDEquinox` blocks.
 
 ### Sequential Constructor
 
-![](docs/imgs/sequential_net.svg)
+![sequential_net](https://github.com/user-attachments/assets/866f9cb9-5d6f-462e-8621-26b74526ae68)
 
 The squential network constructor is defined by:
 * a lifting block $\mathcal{L}$
@@ -158,7 +158,7 @@ The squential network constructor is defined by:
 
 ### Hierarchical Constructor
 
-![](docs/imgs/hierarchical_net.svg)
+![hierarchical_net](https://github.com/user-attachments/assets/b574c834-b8c8-476d-aabb-c121ba41d5c3)
 
 The hierarchical network constructor is defined by:
 * a lifting block $\mathcal{L}$
