@@ -1,12 +1,5 @@
 #  ⚠️ ⚠️ ⚠️ I am currently setting up this public repository. Please be patient. ⚠️ ⚠️ ⚠️
 
-<h1 align="center">
-  <img src="docs/imgs/pdequinox_logo.png" width="120">
-  <br>
-    PDEquinox
-  <br>
-</h1>
-
 <h4 align="center">PDE Emulator Architectures in <a href="https://github.com/patrick-kidger/equinox" target="_blank">Equinox</a>.</h4>
 
 
