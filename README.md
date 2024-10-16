@@ -20,12 +20,15 @@
 
 ## Installation
 
-Clone the repository, navigate to the folder and install the package with pip:
 ```bash
-pip install .
+pip install pdequinox
 ```
 
 Requires Python 3.10+ and JAX 0.4.13+. 👉 [JAX install guide](https://jax.readthedocs.io/en/latest/installation.html).
+
+## Documentation
+
+The documentation is available at [fkoehler.site/pdequinox](https://fkoehler.site/pdequinox/).
 
 
 ## Quickstart
