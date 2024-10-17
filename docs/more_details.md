@@ -34,7 +34,7 @@ emulator. Hence, most components allow setting `boundary_mode` which can be
 `"dirichlet"`, `"neumann"`, or `"periodic"`. This affects what is considered a
 degree of freedom in the grid.
 
-![](imgs/three_boundary_conditions.svg)
+![three_boundary_conditions](https://github.com/user-attachments/assets/a46c276c-4c4b-4890-aca2-49c8b04d1948)
 
 Dirichlet boundaries fully eliminate degrees of freedom on the boundary.
 Periodic boundaries only keep one end of the domain as a degree of freedom (This
@@ -47,7 +47,7 @@ Networks that allow for composability with the `PDEquinox` blocks.
 
 ### Sequential Constructor
 
-![](imgs/sequential_net.svg)
+![sequential_net](https://github.com/user-attachments/assets/866f9cb9-5d6f-462e-8621-26b74526ae68)
 
 The squential network constructor is defined by:
 * a lifting block $\mathcal{L}$
@@ -58,7 +58,7 @@ The squential network constructor is defined by:
 
 ### Hierarchical Constructor
 
-![](imgs/hierarchical_net.svg)
+![hierarchical_net](https://github.com/user-attachments/assets/b574c834-b8c8-476d-aabb-c121ba41d5c3)
 
 The hierarchical network constructor is defined by:
 * a lifting block $\mathcal{L}$
