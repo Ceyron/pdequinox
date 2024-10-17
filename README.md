@@ -1,5 +1,19 @@
 <h4 align="center">PDE Emulator Architectures for <a href="https://github.com/patrick-kidger/equinox" target="_blank">Equinox</a>.</h4>
 
+<p style="text-align:center">
+<a href="https://pypi.org/project/pdequinox/">
+  <img src="https://img.shields.io/pypi/v/pdequinox.svg" alt="PyPI">
+</a>
+<a href="https://github.com/ceyron/pdequinox/actions/workflows/test.yml">
+  <img src="https://github.com/ceyron/pdequinox/actions/workflows/test.yml/badge.svg" alt="Tests">
+</a>
+<a href="https://github.com/ceyron/pdequinox/releases">
+  <img src="https://img.shields.io/github/v/release/ceyron/pdequinox?include_prereleases&label=changelog" alt="Changelog">
+</a>
+<a href="https://github.com/ceyron/pdequinox/blob/main/LICENSE.txt">
+  <img src="https://img.shields.io/badge/license-MIT-blue" alt="License">
+</a>
+</p>
 
 <p align="center">
   <a href="#installation">Installation</a> •
@@ -216,5 +230,5 @@ MIT, see [here](LICENSE.txt)
 
 > [fkoehler.site](https://fkoehler.site/) &nbsp;&middot;&nbsp;
 > GitHub [@ceyron](https://github.com/ceyron) &nbsp;&middot;&nbsp;
-> X [@felix_m_koehler](https://twitter.com/felix_m_koehler)
-
+> X [@felix_m_koehler](https://twitter.com/felix_m_koehler) &nbsp;&middot;&nbsp;
+> LinkedIn [Felix Köhler](www.linkedin.com/in/felix-koehler)
