@@ -1,6 +1,6 @@
 <h4 align="center">PDE Emulator Architectures for <a href="https://github.com/patrick-kidger/equinox" target="_blank">Equinox</a>.</h4>
 
-<p style="text-align:center">
+<p align="center">
 <a href="https://pypi.org/project/pdequinox/">
   <img src="https://img.shields.io/pypi/v/pdequinox.svg" alt="PyPI">
 </a>
