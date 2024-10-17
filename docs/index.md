@@ -4,7 +4,7 @@
 
 Clone the repository, navigate to the folder and install the package with pip:
 ```bash
-pip install .
+pip install pdequinox
 ```
 
 Requires Python 3.10+ and JAX 0.4.13+. 👉 [JAX install guide](https://jax.readthedocs.io/en/latest/installation.html).
@@ -68,12 +68,12 @@ for epoch in tqdm(range(100)):
 ## Features
 
 * Based on [JAX](https://github.com/google/jax):
-  * One of the best Automatic Differentiation engines (forward & reverse)
-  * Automatic vectorization
-  * Backend-agnostic code (run on CPU, GPU, and TPU)
-* Based on [Equinox](https://github.com/patrick-kidger/equinox):
-  * Single-Batch by design
-  * Integration into the Equinox SciML ecosystem
+    * One of the best Automatic Differentiation engines (forward & reverse)
+    * Automatic vectorization
+    * Backend-agnostic code (run on CPU, GPU, and TPU)
+* Built on top of [Equinox](https://github.com/patrick-kidger/equinox):
+    * Single-Batch by design
+    * Integration into the Equinox SciML ecosystem
 * Agnostic to the spatial dimension (works for 1D, 2D, and 3D)
 * Agnostic to the boundary condition (works for Dirichlet, Neumann, and periodic
   BCs)
