@@ -16,6 +16,8 @@
     <img width=600 src="https://github.com/user-attachments/assets/8948f0e8-b879-468e-aaa2-158788b4d3f2">
 </p>
 
+A collection of neural architectures for emulating Partial Differential Equations (PDEs) in JAX agnostic to the spatial dimension (1D, 2D, 3D) and boundary conditions (Dirichlet, Neumann, Periodic). This package is built on top of [Equinox](https://github.com/patrick-kidger/equinox).
+
 ## Installation
 
 ```bash
