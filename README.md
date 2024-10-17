@@ -7,6 +7,9 @@
 <a href="https://github.com/ceyron/pdequinox/actions/workflows/test.yml">
   <img src="https://github.com/ceyron/pdequinox/actions/workflows/test.yml/badge.svg" alt="Tests">
 </a>
+<a href="https://fkoehler.site/pdequinox/">
+  <img src="https://img.shields.io/badge/docs-latest-green" alt="docs-latest">
+</a>
 <a href="https://github.com/ceyron/pdequinox/releases">
   <img src="https://img.shields.io/github/v/release/ceyron/pdequinox?include_prereleases&label=changelog" alt="Changelog">
 </a>
