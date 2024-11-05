@@ -25,8 +25,8 @@
   <a href="#background">Background</a> •
   <a href="#features">Features</a> •
   <a href="#boundary-conditions">Boundary Conditions</a> •
-  <!-- <a href="#constructors">Constructors</a> • -->
-  <a href="#acknowledgements">Acknowledgements</a>
+  <a href="#related-work">Related</a> •
+  <a href="#citation">Citation</a>
 </p>
 
 <p align="center">
@@ -157,9 +157,7 @@ Dirichlet boundaries fully eliminate degrees of freedom on the boundary.
 Periodic boundaries only keep one end of the domain as a degree of freedom (This
 package follows the convention that the left boundary is the degree of freedom). Neumann boundaries keep both ends as degrees of freedom.
 
-## Acknowledgements
-
-### Related Work
+## Related Work
 
 Similar packages that provide a collection of emulator architectures are
 [PDEBench](https://github.com/pdebench/PDEBench) and
@@ -168,15 +166,33 @@ Neural Networks and Neural Operators, there are also
 [DeepXDE](https://github.com/lululxvi/deepxde) and [NVIDIA
 Modulus](https://developer.nvidia.com/modulus).
 
-### Citation
+## Citation
 
-This package was developed as part of the `APEBench paper` (accepted at Neurips 2024), we will soon add the citation here.
+This package was developed as part of the [APEBench paper
+(arxiv.org/abs/2411.00180)](https://arxiv.org/abs/2411.00180) (accepted at
+Neurips 2024). If you find it useful for your research, please consider citing
+it:
 
-### Funding
+```bibtex
+@article{koehler2024apebench,
+  title={{APEBench}: A Benchmark for Autoregressive Neural Emulators of {PDE}s},
+  author={Felix Koehler and Simon Niedermayr and R{\"}udiger Westermann and Nils Thuerey},
+  journal={Advances in Neural Information Processing Systems (NeurIPS)},
+  volume={38},
+  year={2024}
+}
+```
+
+(Feel free to also give the project a star on GitHub if you like it.)
+
+[Here](https://github.com/tum-pbs/apebench) you can find the APEBench benchmark
+suite.
+
+## Funding
 
 The main author (Felix Koehler) is a PhD student in the group of [Prof. Thuerey at TUM](https://ge.in.tum.de/) and his research is funded by the [Munich Center for Machine Learning](https://mcml.ai/).
 
-### License
+## License
 
 MIT, see [here](LICENSE.txt)
 
