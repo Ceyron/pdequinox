@@ -3,22 +3,30 @@ A collection of sample architectures used in papers on physics-based deep
 learning.
 """
 
+from ._axial_transformer import AxialTransformer
 from ._classic_fno import ClassicFNO
 from ._classic_res_net import ClassicResNet
 from ._classic_u_net import ClassicUNet
 from ._conv_net import ConvNet
+from ._dense_transformer import DenseTransformer
 from ._dilated_res_net import DilatedResNet
 from ._mlp import MLP
 from ._modern_res_net import ModernResNet
 from ._modern_u_net import ModernUNet
+from ._patch_transformer import PatchTransformer
+from ._swin_transformer import SwinTransformer
 
 __all__ = [
+    "AxialTransformer",
     "ClassicFNO",
     "ClassicResNet",
     "ConvNet",
+    "DenseTransformer",
     "DilatedResNet",
     "ClassicUNet",
     "MLP",
     "ModernResNet",
     "ModernUNet",
+    "PatchTransformer",
+    "SwinTransformer",
 ]
