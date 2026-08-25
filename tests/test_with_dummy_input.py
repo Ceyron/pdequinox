@@ -108,6 +108,7 @@ def test_flower_block_factory_with_dummy_input(num_spatial_dims):
             pdeqx.blocks.ClassicDoubleConvBlockFactory,
             pdeqx.blocks.ClassicResBlockFactory,
             pdeqx.blocks.ClassicSpectralBlockFactory,
+            pdeqx.blocks.CoordinateAugmentationBlockFactory,
             pdeqx.blocks.LinearChannelAdjustBlockFactory,
             pdeqx.blocks.LinearConvBlockFactory,
             pdeqx.blocks.LinearConvDownBlockFactory,
