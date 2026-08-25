@@ -53,6 +53,53 @@ def test_classic_spectral_block_with_dummy_input(num_spatial_dims):
     instantiated_block(dummy_input)
 
 
+# FlowerBlock gets its own test because it requires `out_channels` to be
+# divisible by `num_heads`, which the single-channel parametrizations above
+# cannot satisfy.
+@pytest.mark.parametrize(
+    "num_spatial_dims",
+    [1, 2, 3],
+)
+def test_flower_block_with_dummy_input(num_spatial_dims):
+    instantiated_block = pdeqx.blocks.FlowerBlock(
+        num_spatial_dims=num_spatial_dims,
+        in_channels=3,
+        out_channels=8,
+        num_heads=4,
+        key=jax.random.PRNGKey(0),
+        boundary_mode="periodic",
+    )
+
+    shape = (3,) + (32,) * num_spatial_dims
+
+    dummy_input = jax.random.normal(jax.random.PRNGKey(0), shape)
+
+    instantiated_block(dummy_input)
+
+
+@pytest.mark.parametrize(
+    "num_spatial_dims",
+    [1, 2, 3],
+)
+def test_flower_block_factory_with_dummy_input(num_spatial_dims):
+    factory = pdeqx.blocks.FlowerBlockFactory(num_heads=4)
+
+    instantiated_block = factory(
+        num_spatial_dims=num_spatial_dims,
+        in_channels=3,
+        out_channels=8,
+        activation=jax.nn.gelu,
+        key=jax.random.PRNGKey(0),
+        boundary_mode="periodic",
+    )
+
+    shape = (3,) + (32,) * num_spatial_dims
+
+    dummy_input = jax.random.normal(jax.random.PRNGKey(0), shape)
+
+    instantiated_block(dummy_input)
+
+
 @pytest.mark.parametrize(
     "block_factory,num_spatial_dims",
     [
