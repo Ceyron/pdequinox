@@ -114,6 +114,7 @@ def test_flower_block_factory_with_dummy_input(num_spatial_dims):
             pdeqx.blocks.LinearConvDownBlockFactory,
             pdeqx.blocks.LinearConvUpBlockFactory,
             pdeqx.blocks.ModernResBlockFactory,
+            pdeqx.blocks.PointwiseMLPBlockFactory,
         ]
         for D in [1, 2, 3]
     ],
@@ -148,6 +149,8 @@ def test_block_factory_with_dummy_input(block_factory, num_spatial_dims):
             pdeqx.arch.DilatedResNet,
             pdeqx.arch.ModernResNet,
             pdeqx.arch.ModernUNet,
+            pdeqx.arch.Flower,
+            pdeqx.arch.SequentialFlower,
         ]
         for D in [1, 2, 3]
     ],

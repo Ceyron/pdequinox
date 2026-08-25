@@ -66,6 +66,28 @@ def test_instantiate():
         boundary_mode="periodic",
     )
 
+    pdeqx.arch.Flower(
+        num_spatial_dims=1,
+        in_channels=1,
+        out_channels=1,
+        hidden_channels=32,
+        num_levels=3,
+        num_heads=8,
+        key=jax.random.PRNGKey(0),
+        boundary_mode="periodic",
+    )
+
+    pdeqx.arch.SequentialFlower(
+        num_spatial_dims=1,
+        in_channels=1,
+        out_channels=1,
+        hidden_channels=32,
+        num_blocks=3,
+        num_heads=8,
+        key=jax.random.PRNGKey(0),
+        boundary_mode="periodic",
+    )
+
 
 @pytest.mark.parametrize(
     "num_spatial_dims,arch,boundary_mode",
@@ -80,6 +102,8 @@ def test_instantiate():
             pdeqx.arch.DilatedResNet,
             pdeqx.arch.ModernResNet,
             pdeqx.arch.ModernUNet,
+            pdeqx.arch.Flower,
+            pdeqx.arch.SequentialFlower,
         ]
         for boundary_mode in ["periodic", "dirichlet", "neumann"]
     ],

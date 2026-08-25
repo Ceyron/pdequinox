@@ -19,6 +19,7 @@ from ._linear_conv_block import LinearConvBlock, LinearConvBlockFactory
 from ._linear_conv_down_block import LinearConvDownBlock, LinearConvDownBlockFactory
 from ._linear_conv_up_block import LinearConvUpBlock, LinearConvUpBlockFactory
 from ._modern_res_block import ModernResBlock, ModernResBlockFactory
+from ._pointwise_mlp_block import PointwiseMLPBlock, PointwiseMLPBlockFactory
 
 __all__ = [
     "Block",
@@ -45,4 +46,6 @@ __all__ = [
     "LinearConvUpBlockFactory",
     "ModernResBlock",
     "ModernResBlockFactory",
+    "PointwiseMLPBlock",
+    "PointwiseMLPBlockFactory",
 ]

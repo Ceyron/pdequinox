@@ -32,3 +32,11 @@ convolutions with variable boundary modes or implement spectral convolutions.
         members:
             - __init__
             - __call__
+
+---
+
+::: pdequinox.conv.SelfWarp
+    options:
+        members:
+            - __init__
+            - __call__

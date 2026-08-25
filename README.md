@@ -116,6 +116,7 @@ segmentation). This includes:
 * U-Nets ([Ronneberger et al.](https://arxiv.org/abs/1505.04597))
 * Dilated ResNets ([Yu et al.](https://arxiv.org/abs/1511.07122), [Stachenfeld et al.](https://arxiv.org/abs/2112.15275))
 * Fourier Neural Operators ([Li et al.](https://arxiv.org/abs/2010.08895))
+* Flowers ([Muser et al.](https://arxiv.org/abs/2603.04430)) - built from multi-head warps instead of convolutional, spectral or attention-based mixing
 
 It is interesting to note that most of these architectures resemble classical
 numerical methods or at least share similarities with them. For example,

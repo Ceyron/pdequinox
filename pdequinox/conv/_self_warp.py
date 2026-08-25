@@ -204,7 +204,7 @@ class SelfWarp(eqx.Module):
         !!! tip
 
             This layer maps onto a grid of the same shape as its input, but the
-            underlying [`pdequinox.conv._pullback`][] decouples the output grid
+            underlying pullback routine decouples the output grid
             from the input grid. A learned *adaptive resampling* layer - warping
             and changing the resolution in one step - is therefore expressible
             with the same primitive. The Flower paper does not do this; it uses

@@ -99,6 +99,7 @@ nav:
             - UNet: 'api/arch/unet.md'
             - Dilated: 'api/arch/dilated.md'
             - FNO: 'api/arch/fno.md'
+            - Flower: 'api/arch/flower.md'
         - Utilities: 'api/utils.md'
         - Sample Data: 'api/sample_data.md'
     - Low-Level API:

@@ -13,3 +13,10 @@
 ---
 
 ::: pdequinox.combine_to_ensemble
+
+---
+
+::: pdequinox.ConstantEmbeddingMetadataNetwork
+    options:
+        members:
+            - __call__

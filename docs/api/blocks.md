@@ -69,3 +69,27 @@
         members:
             - __init__
             - __call__
+
+---
+
+::: pdequinox.blocks.FlowerBlock
+    options:
+        members:
+            - __init__
+            - __call__
+
+---
+
+::: pdequinox.blocks.CoordinateAugmentationBlock
+    options:
+        members:
+            - __init__
+            - __call__
+
+---
+
+::: pdequinox.blocks.PointwiseMLPBlock
+    options:
+        members:
+            - __init__
+            - __call__
